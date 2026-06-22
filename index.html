@@ -27,7 +27,7 @@
 html{scroll-behavior:smooth}
 body{
   font-family:var(--body);
-  background:var(--paper-deep);
+  background:var(--paper);
   color:var(--ink);
   line-height:1.7;
   font-size:18px;
@@ -37,16 +37,6 @@ body{
 }
 a{color:inherit;text-decoration:none}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 40px}
-.page{max-width:calc(var(--maxw) + 80px);margin:0 auto;padding:96px 24px 0}
-
-/* ---- card shell for each section ---- */
-.card-section{
-  background:var(--paper);
-  border:1px solid var(--rule);
-  border-radius:22px;
-  margin:0 0 28px;
-  box-shadow:0 1px 2px rgba(15,23,42,.03),0 12px 32px -16px rgba(15,23,42,.07);
-}
 
 /* ---- shared labels ---- */
 .kicker{
@@ -90,8 +80,7 @@ a{color:inherit;text-decoration:none}
 .mast-nav a:hover::after{width:100%}
 
 /* ---- cover / hero ---- */
-.cover{padding:4.5rem 0 4rem}
-.cover .wrap{padding:0 48px}
+.cover{padding:9.5rem 0 4.5rem}
 .cover-top{
   display:flex;justify-content:space-between;align-items:baseline;
   padding-bottom:1.2rem;margin-bottom:3rem;border-bottom:1.5px solid var(--ink);
@@ -128,8 +117,7 @@ a{color:inherit;text-decoration:none}
 .cover-side dd:last-child{margin-bottom:0}
 
 /* ---- article section frame ---- */
-.article{padding:4.5rem 0}
-.article .wrap{padding:0 48px}
+.article{padding:5rem 0;border-top:1px solid var(--rule)}
 .art-head{
   display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start;
   margin-bottom:3rem;
@@ -151,58 +139,83 @@ a{color:inherit;text-decoration:none}
 }
 @media(max-width:720px){.prose-cols{columns:1}}
 
-/* ---- skills as index ---- */
-.index-list{display:grid;grid-template-columns:1fr 1fr;gap:0 3rem}
-.index-row{
-  display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:baseline;
-  padding:1.1rem 0;border-bottom:1px solid var(--rule);
+/* ---- skills: cards ---- */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
+.skill-card{
+  border:1px solid var(--rule);border-radius:14px;padding:1.5rem 1.5rem 1.6rem;
+  background:var(--paper);
 }
-.index-row .ix{font-family:var(--label);font-size:.72rem;color:var(--accent);letter-spacing:.1em;font-weight:600;padding-top:.2rem}
-.index-row h3{font-family:var(--display);font-weight:500;font-size:1.2rem;margin-bottom:.4rem;letter-spacing:-.01em}
-.index-row .items{font-family:var(--label);font-size:.86rem;color:var(--ink-soft);line-height:1.6}
-@media(max-width:720px){.index-list{grid-template-columns:1fr}}
+.skill-card .ix{font-family:var(--label);font-size:.72rem;color:var(--accent);letter-spacing:.1em;font-weight:600}
+.skill-card h3{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:.5rem 0 .7rem;letter-spacing:-.01em}
+.skill-card .items{font-family:var(--label);font-size:.84rem;color:var(--ink-soft);line-height:1.65}
+@media(max-width:900px){.skills-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.skills-grid{grid-template-columns:1fr}}
 
-/* ---- career: ledger ---- */
-.ledger{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem}
-.ledger h4.col{font-family:var(--label);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1.6rem;padding-bottom:.6rem;border-bottom:1px solid var(--rule-strong)}
-.entry{margin-bottom:2rem}
-.entry.muted{opacity:.62}
-.entry .yr{font-family:var(--label);font-size:.74rem;letter-spacing:.06em;color:var(--accent);font-weight:600;margin-bottom:.25rem;display:flex;gap:.6rem;align-items:center}
-.entry .yr .st{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
-.entry .yr .st.grad{color:#1a9e6f}
-.entry .yr .st.end{color:#b35c1e}
-.entry h5{font-family:var(--display);font-weight:600;font-size:1.25rem;letter-spacing:-.01em;line-height:1.2}
-.entry .org{font-family:var(--body);font-style:italic;font-size:1rem;color:var(--ink-soft);margin-bottom:.5rem}
-.entry ul{list-style:none;font-size:.94rem;color:var(--ink-soft)}
-.entry ul li{padding-left:1rem;position:relative;margin-bottom:.2rem}
-.entry ul li::before{content:"—";position:absolute;left:0;color:var(--rule-strong)}
-.entry p.note{font-size:.94rem;color:var(--ink-soft)}
-@media(max-width:720px){.ledger{grid-template-columns:1fr;gap:2.5rem}}
+/* ---- career: vertical timeline graph ---- */
+.timeline-legend{display:flex;gap:2rem;margin-bottom:2.5rem;font-family:var(--label);font-size:.78rem;color:var(--ink-soft)}
+.timeline-legend span{display:inline-flex;align-items:center;gap:.5rem}
+.timeline-legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.timeline-legend .dot.exp{background:var(--accent)}
+.timeline-legend .dot.edu{background:#1a9e6f}
+
+.tgraph{position:relative;padding-left:28px}
+.tgraph::before{
+  content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;
+  background:var(--rule-strong);
+}
+.trow{position:relative;padding-bottom:2.4rem}
+.trow:last-child{padding-bottom:0}
+.trow::before{
+  content:"";position:absolute;left:-28px;top:4px;width:12px;height:12px;border-radius:50%;
+  background:var(--paper);border:2.5px solid var(--accent);z-index:1;
+}
+.trow.edu::before{border-color:#1a9e6f}
+.trow.muted::before{border-color:var(--ink-faint);background:var(--paper)}
+.trow .tyr{
+  font-family:var(--label);font-size:.74rem;letter-spacing:.06em;font-weight:600;
+  color:var(--accent);margin-bottom:.3rem;display:flex;gap:.6rem;align-items:center;
+}
+.trow.edu .tyr{color:#1a9e6f}
+.trow.muted .tyr{color:var(--ink-faint)}
+.trow .tyr .st{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
+.trow .tyr .st.end{color:#b35c1e}
+.trow h5{font-family:var(--display);font-weight:600;font-size:1.2rem;letter-spacing:-.01em;line-height:1.2}
+.trow .org{font-family:var(--body);font-style:italic;font-size:.98rem;color:var(--ink-soft);margin-bottom:.5rem}
+.trow ul{list-style:none;font-size:.92rem;color:var(--ink-soft)}
+.trow ul li{padding-left:1rem;position:relative;margin-bottom:.2rem}
+.trow ul li::before{content:"—";position:absolute;left:0;color:var(--rule-strong)}
+.trow p.note{font-size:.92rem;color:var(--ink-soft)}
+.trow.muted{opacity:.6}
+
+/* ---- credentials: cards ---- */
+.creds-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.cred-card{
+  border:1px solid var(--rule);border-radius:14px;padding:1.3rem 1.4rem;
+  display:flex;flex-direction:column;gap:.3rem;
+}
+.cred-card b{font-family:var(--display);font-weight:600;font-size:1.02rem;color:var(--ink)}
+.cred-card span{font-family:var(--label);font-size:.78rem;color:var(--ink-faint)}
+@media(max-width:720px){.creds-grid{grid-template-columns:1fr}}
 
 .creds{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--rule)}
-.creds .lbl{font-family:var(--label);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1rem}
-.creds-row{display:flex;flex-wrap:wrap;gap:.6rem 2rem}
-.cred{font-family:var(--body);font-size:.98rem}
-.cred b{font-weight:600}
-.cred span{font-style:italic;color:var(--ink-faint)}
+.creds .lbl{font-family:var(--label);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1.2rem}
 
 /* ---- projects: feature list ---- */
-.feature{
-  display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:baseline;
-  padding:2.2rem 0 2.2rem 0;border-bottom:1px solid var(--rule);
-  position:relative;
+/* ---- work: project cards ---- */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
+.work-card{
+  border:1px solid var(--rule);border-radius:16px;padding:1.8rem;
+  display:flex;flex-direction:column;
 }
-.feature .fno{font-family:var(--display);font-style:italic;font-weight:300;font-size:1.6rem;color:var(--accent)}
-.feature .body h3{font-family:var(--display);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;margin-bottom:.4rem;display:inline-block}
-.feature .body h3 .state{font-family:var(--label);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;vertical-align:middle;margin-left:.8rem}
-.feature .body h3 .state.live{color:var(--accent)}
-.feature .body p{font-size:1rem;color:var(--ink-soft);max-width:42rem;margin-bottom:.7rem}
-.feature .body .tags{font-family:var(--label);font-size:.78rem;letter-spacing:.04em;color:var(--ink-faint)}
-.feature .yr{font-family:var(--label);font-size:.74rem;color:var(--ink-faint);white-space:nowrap;letter-spacing:.06em}
-@media(max-width:720px){
-  .feature{grid-template-columns:auto 1fr;gap:1rem}
-  .feature .yr{display:none}
-}
+.work-card .wc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.9rem}
+.work-card .fno{font-family:var(--display);font-style:italic;font-weight:300;font-size:1.4rem;color:var(--accent)}
+.work-card .yr{font-family:var(--label);font-size:.7rem;color:var(--ink-faint);white-space:nowrap;letter-spacing:.06em}
+.work-card h3{font-family:var(--display);font-weight:600;font-size:1.3rem;letter-spacing:-.01em;margin-bottom:.5rem}
+.work-card h3 .state{font-family:var(--label);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;vertical-align:middle;margin-left:.6rem}
+.work-card h3 .state.live{color:var(--accent)}
+.work-card p{font-size:.95rem;color:var(--ink-soft);margin-bottom:1rem;flex-grow:1}
+.work-card .tags{font-family:var(--label);font-size:.74rem;letter-spacing:.03em;color:var(--ink-faint)}
+@media(max-width:720px){.work-grid{grid-template-columns:1fr}}
 
 /* ---- approach: pull quote ---- */
 .pullquote{
@@ -219,8 +232,7 @@ a{color:inherit;text-decoration:none}
 @media(max-width:720px){.tenets{grid-template-columns:1fr}}
 
 /* ---- colophon / contact ---- */
-.colophon{padding:4.5rem 0}
-.colophon .wrap{padding:0 48px}
+.colophon{padding:5rem 0 0;border-top:2px solid var(--ink)}
 .colophon .art-title{margin-bottom:2.5rem}
 .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
 .cx{padding:1.4rem 1rem 1.4rem 0;border-top:1px solid var(--rule)}
@@ -297,16 +309,11 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 
 @media(max-width:720px){
   .wrap{padding:0 24px}
-  .article .wrap{padding:0 24px}
-  .colophon .wrap{padding:0 24px}
   .mast-nav{display:none}
-  .page{padding:84px 14px 0}
-  .card-section{border-radius:16px;margin-bottom:18px}
-  .cover{padding:3.2rem 0 2.4rem}
+  .cover{padding:7rem 0 3rem}
   .cover-deck{grid-template-columns:1fr;gap:1.8rem}
   .cover-side{border-left:none;border-top:1px solid var(--rule-strong);padding-left:0;padding-top:1.4rem;display:grid;grid-template-columns:1fr 1fr}
-  .article{padding:3rem 0}
-  .colophon{padding:3rem 0}
+  .article{padding:3.5rem 0}
 }
 @media(prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
@@ -333,8 +340,7 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 </header>
 
 <!-- COVER -->
-<div class="page">
-<section class="cover card-section">
+<section class="cover">
   <div class="wrap">
     <div class="cover-top rv">
       <span class="issue">Portfolio — No. 01</span>
@@ -358,7 +364,7 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 </section>
 
 <!-- ABOUT -->
-<section class="article card-section" id="about">
+<section class="article" id="about">
   <div class="wrap">
     <div class="art-head rv">
       <div class="art-no">I</div>
@@ -388,7 +394,7 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 </section>
 
 <!-- SKILLS -->
-<section class="article card-section" id="skills">
+<section class="article" id="skills">
   <div class="wrap">
     <div class="art-head rv">
       <div class="art-no">II</div>
@@ -397,37 +403,43 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
         <h2 class="art-title">다루는 것들</h2>
       </div>
     </div>
-    <div class="index-list rv rv-stagger">
-      <div class="index-row">
+    <div class="skills-grid rv rv-stagger">
+      <div class="skill-card">
         <span class="ix">01</span>
-        <div><h3>Backend</h3><div class="items">Java · Spring Boot · Spring Cloud · Node.js · NestJS · Express</div></div>
+        <h3>Backend</h3>
+        <div class="items">Java · Spring Boot · Spring Cloud · Node.js · NestJS · Express</div>
       </div>
-      <div class="index-row">
+      <div class="skill-card">
         <span class="ix">02</span>
-        <div><h3>Data</h3><div class="items">MySQL · Aurora · PostgreSQL · Redis · MongoDB · Query Tuning</div></div>
+        <h3>Data</h3>
+        <div class="items">MySQL · Aurora · PostgreSQL · Redis · MongoDB · Query Tuning</div>
       </div>
-      <div class="index-row">
+      <div class="skill-card">
         <span class="ix">03</span>
-        <div><h3>Realtime</h3><div class="items">WebSocket · Socket.IO · Kafka · RabbitMQ · MQTT</div></div>
+        <h3>Realtime</h3>
+        <div class="items">WebSocket · Socket.IO · Kafka · RabbitMQ · MQTT</div>
       </div>
-      <div class="index-row">
+      <div class="skill-card">
         <span class="ix">04</span>
-        <div><h3>Cloud &amp; DevOps</h3><div class="items">AWS · EC2 · CloudWatch · CodePipeline · Docker · CI/CD</div></div>
+        <h3>Cloud &amp; DevOps</h3>
+        <div class="items">AWS · EC2 · CloudWatch · CodePipeline · Docker · CI/CD</div>
       </div>
-      <div class="index-row">
+      <div class="skill-card">
         <span class="ix">05</span>
-        <div><h3>Architecture</h3><div class="items">DDD · Clean Architecture · Hexagonal · MSA · CQRS · TDD</div></div>
+        <h3>Architecture</h3>
+        <div class="items">DDD · Clean Architecture · Hexagonal · MSA · CQRS · TDD</div>
       </div>
-      <div class="index-row">
+      <div class="skill-card">
         <span class="ix">06</span>
-        <div><h3>Frontend</h3><div class="items">React · React Native · Next.js · JavaScript</div></div>
+        <h3>Frontend</h3>
+        <div class="items">React · React Native · Next.js · JavaScript</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CAREER -->
-<section class="article card-section" id="career">
+<section class="article" id="career">
   <div class="wrap">
     <div class="art-head rv">
       <div class="art-no">III</div>
@@ -436,70 +448,68 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
         <h2 class="art-title">지나온 자리</h2>
       </div>
     </div>
-    <div class="ledger rv">
-      <div>
-        <h4 class="col">경력 · Experience</h4>
-        <div class="entry">
-          <div class="yr">2025 <span class="st">종료</span></div>
-          <h5>더블다운인터액티브</h5>
-          <div class="org">Casino Payment Platform (DDC2)</div>
-          <ul>
-            <li>통합 결제 어댑터 — Xsolla · Google Play · Apple Pay</li>
-            <li>Strategy/Factory · Resilience4j Circuit Breaker</li>
-          </ul>
-        </div>
-        <div class="entry">
-          <div class="yr">2021.04 — 2025.09 <span class="st">종료</span></div>
-          <h5>포커스에이치엔에스</h5>
-          <div class="org">Smart Access 팀</div>
-          <ul>
-            <li>ONEPASS PRO 얼굴 인식 출입통제 시스템</li>
-            <li>iSchool 통학버스 · ASLAN CCTV 관제</li>
-            <li>스마트쉘터 IoT 스마트팜</li>
-          </ul>
-        </div>
+    <div class="timeline-legend rv">
+      <span><i class="dot exp"></i>경력 Experience</span>
+      <span><i class="dot edu"></i>학력 Education</span>
+    </div>
+    <div class="tgraph rv rv-stagger">
+      <div class="trow exp">
+        <div class="tyr">2025 <span class="st end">종료</span></div>
+        <h5>더블다운인터액티브</h5>
+        <div class="org">Casino Payment Platform (DDC2)</div>
+        <ul>
+          <li>통합 결제 어댑터 — Xsolla · Google Play · Apple Pay</li>
+          <li>Strategy/Factory · Resilience4j Circuit Breaker</li>
+        </ul>
       </div>
-      <div>
-        <h4 class="col">학력 · Education</h4>
-        <div class="entry">
-          <div class="yr">2023.03 — 2025.08 <span class="st">졸업</span></div>
-          <h5>한국방송통신대학교</h5>
-          <div class="org">컴퓨터과학과 (편입)</div>
-          <p class="note">알고리즘 · 자료구조 · 소프트웨어 공학 전공 심화</p>
-        </div>
-        <div class="entry">
-          <div class="yr">2020.08 — 2021.03</div>
-          <h5>이젠아카데미</h5>
-          <div class="org">자바 웹&amp;앱 개발자 과정</div>
-          <p class="note">Spring Framework · DB 설계 · 팀 프로젝트</p>
-        </div>
-        <div class="entry">
-          <div class="yr">2015 — 2017 <span class="st grad">졸업</span></div>
-          <h5>학점은행제 평생교육원</h5>
-          <div class="org">정보처리과</div>
-          <p class="note">네트워크 · 데이터베이스 · 프로그래밍 기초</p>
-        </div>
-        <div class="entry muted">
-          <div class="yr">2010 <span class="st">중퇴</span></div>
-          <h5>한세대학교</h5>
-          <div class="org">광고홍보학과</div>
-        </div>
+      <div class="trow edu">
+        <div class="tyr">2023.03 — 2025.08 <span class="st">졸업</span></div>
+        <h5>한국방송통신대학교</h5>
+        <div class="org">컴퓨터과학과 (편입)</div>
+        <p class="note">알고리즘 · 자료구조 · 소프트웨어 공학 전공 심화</p>
+      </div>
+      <div class="trow exp">
+        <div class="tyr">2021.04 — 2025.09 <span class="st end">종료</span></div>
+        <h5>포커스에이치엔에스</h5>
+        <div class="org">Smart Access 팀</div>
+        <ul>
+          <li>ONEPASS PRO 얼굴 인식 출입통제 시스템</li>
+          <li>iSchool 통학버스 · ASLAN CCTV 관제</li>
+          <li>스마트쉘터 IoT 스마트팜</li>
+        </ul>
+      </div>
+      <div class="trow edu">
+        <div class="tyr">2020.08 — 2021.03</div>
+        <h5>이젠아카데미</h5>
+        <div class="org">자바 웹&amp;앱 개발자 과정</div>
+        <p class="note">Spring Framework · DB 설계 · 팀 프로젝트</p>
+      </div>
+      <div class="trow edu">
+        <div class="tyr">2015 — 2017 <span class="st">졸업</span></div>
+        <h5>학점은행제 평생교육원</h5>
+        <div class="org">정보처리과</div>
+        <p class="note">네트워크 · 데이터베이스 · 프로그래밍 기초</p>
+      </div>
+      <div class="trow edu muted">
+        <div class="tyr">2010 <span class="st">중퇴</span></div>
+        <h5>한세대학교</h5>
+        <div class="org">광고홍보학과</div>
       </div>
     </div>
     <div class="creds rv">
       <div class="lbl">Credentials</div>
-      <div class="creds-row">
-        <div class="cred"><b>AWS Solutions Architect — Associate</b> <span>Amazon Web Services, 2023</span></div>
-        <div class="cred"><b>SQLD — SQL Developer</b> <span>한국데이터산업진흥원, 2026</span></div>
-        <div class="cred"><b>컴퓨터활용능력 2급</b> <span>대한상공회의소, 2022</span></div>
-        <div class="cred"><b>정보기기운용기능사</b> <span>한국산업인력공단, 2010</span></div>
+      <div class="creds-grid rv-stagger">
+        <div class="cred-card"><b>AWS Solutions Architect — Associate</b><span>Amazon Web Services, 2023</span></div>
+        <div class="cred-card"><b>SQLD — SQL Developer</b><span>한국데이터산업진흥원, 2026</span></div>
+        <div class="cred-card"><b>컴퓨터활용능력 2급</b><span>대한상공회의소, 2022</span></div>
+        <div class="cred-card"><b>정보기기운용기능사</b><span>한국산업인력공단, 2010</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- WORK -->
-<section class="article card-section" id="work">
+<section class="article" id="work">
   <div class="wrap">
     <div class="art-head rv">
       <div class="art-no">IV</div>
@@ -509,102 +519,102 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
       </div>
     </div>
 
-    <div class="rv rv-stagger">
-      <div class="feature">
-        <span class="fno">01</span>
-        <div class="body">
-          <h3>ONEPASS PRO <span class="state">Deployed</span></h3>
-          <p>얼굴 인식 단말기 기반 통합 출입통제·근태관리 솔루션. 실시간 이벤트 처리와 WebSocket 모니터링으로 보안성과 편의성을 동시에 확보.</p>
-          <div class="tags">Node.js · Express · Socket.IO · MySQL · Redis</div>
+    <div class="work-grid rv rv-stagger">
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">01</span>
+          <span class="yr">포커스HNS</span>
         </div>
-        <span class="yr">포커스HNS</span>
+        <h3>ONEPASS PRO<span class="state">Deployed</span></h3>
+        <p>얼굴 인식 단말기 기반 통합 출입통제·근태관리 솔루션. 실시간 이벤트 처리와 WebSocket 모니터링으로 보안성과 편의성을 동시에 확보.</p>
+        <div class="tags">Node.js · Express · Socket.IO · MySQL · Redis</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">02</span>
-        <div class="body">
-          <h3>아이스쿨 <span class="state">Deployed</span></h3>
-          <p>안심 통학버스 솔루션. GPS 추적, 승하차 알림, 학부모 실시간 알림으로 학생 안전과 보호자 안심을 함께 제공.</p>
-          <div class="tags">Java · Spring Boot · MySQL · Redis · React</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">02</span>
+          <span class="yr">포커스HNS</span>
         </div>
-        <span class="yr">포커스HNS</span>
+        <h3>아이스쿨<span class="state">Deployed</span></h3>
+        <p>안심 통학버스 솔루션. GPS 추적, 승하차 알림, 학부모 실시간 알림으로 학생 안전과 보호자 안심을 함께 제공.</p>
+        <div class="tags">Java · Spring Boot · MySQL · Redis · React</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">03</span>
-        <div class="body">
-          <h3>아슬란 <span class="state">Deployed</span></h3>
-          <p>CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합.</p>
-          <div class="tags">NestJS · PostgreSQL · Redis · WebSocket · Next.js</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">03</span>
+          <span class="yr">포커스HNS</span>
         </div>
-        <span class="yr">포커스HNS</span>
+        <h3>아슬란<span class="state">Deployed</span></h3>
+        <p>CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합.</p>
+        <div class="tags">NestJS · PostgreSQL · Redis · WebSocket · Next.js</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">04</span>
-        <div class="body">
-          <h3>스마트쉘터 <span class="state">Deployed</span></h3>
-          <p>IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리해 효율적인 재배 환경을 구성.</p>
-          <div class="tags">Java · Spring Boot · MySQL · WebSocket · MQTT</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">04</span>
+          <span class="yr">포커스HNS</span>
         </div>
-        <span class="yr">포커스HNS</span>
+        <h3>스마트쉘터<span class="state">Deployed</span></h3>
+        <p>IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리해 효율적인 재배 환경을 구성.</p>
+        <div class="tags">Java · Spring Boot · MySQL · WebSocket · MQTT</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">05</span>
-        <div class="body">
-          <h3>오늘알바 <span class="state live">In Progress</span></h3>
-          <p>단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포.</p>
-          <div class="tags">NestJS · React Native · PostgreSQL · WebSocket</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">05</span>
+          <span class="yr">개인 프로젝트</span>
         </div>
-        <span class="yr">개인 프로젝트</span>
+        <h3>오늘알바<span class="state live">In Progress</span></h3>
+        <p>단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포.</p>
+        <div class="tags">NestJS · React Native · PostgreSQL · WebSocket</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">06</span>
-        <div class="body">
-          <h3>설비 자산관리 서비스 <span class="state">Deployed</span></h3>
-          <p>헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현.</p>
-          <div class="tags">Java · Spring Boot · JPA · Hexagonal · TDD</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">06</span>
+          <span class="yr">개인 프로젝트</span>
         </div>
-        <span class="yr">개인 프로젝트</span>
+        <h3>설비 자산관리 서비스<span class="state live">In Progress</span></h3>
+        <p>헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현.</p>
+        <div class="tags">Java · Spring Boot · JPA · Hexagonal · TDD</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">07</span>
-        <div class="body">
-          <h3>주식 자동매매 시스템 <span class="state">Deployed</span></h3>
-          <p>전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리한 구조로 설계해 전략 교체와 백테스트가 용이하도록 구성.</p>
-          <div class="tags">Java · Spring Boot · 시세 수집 · 전략 패턴 · 자동화</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">07</span>
+          <span class="yr">개인 프로젝트</span>
         </div>
-        <span class="yr">개인 프로젝트</span>
+        <h3>주식 자동매매 시스템<span class="state live">In Progress</span></h3>
+        <p>전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리한 구조로 설계해 전략 교체와 백테스트가 용이하도록 구성.</p>
+        <div class="tags">Java · Spring Boot · 시세 수집 · 전략 패턴 · 자동화</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">08</span>
-        <div class="body">
-          <h3>30일 챌린지 앱 <span class="state live">In Progress</span></h3>
-          <p>습관 형성을 돕는 30일 챌린지 플랫폼. 회사 업무를 병행하며 1인 개발 중인 프로젝트로, 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반 NestJS 서버로 설계.</p>
-          <div class="tags">NestJS · TypeORM · MySQL · Clean Architecture · React Native</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">08</span>
+          <span class="yr">개인 프로젝트</span>
         </div>
-        <span class="yr">개인 프로젝트</span>
+        <h3>30일 챌린지 앱<span class="state live">In Progress</span></h3>
+        <p>습관 형성을 돕는 30일 챌린지 플랫폼. 회사 업무를 병행하며 1인 개발 중인 프로젝트로, 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반 NestJS 서버로 설계.</p>
+        <div class="tags">NestJS · TypeORM · MySQL · Clean Architecture · React Native</div>
       </div>
 
-      <div class="feature">
-        <span class="fno">09</span>
-        <div class="body">
-          <h3>뉴스 키워드 구독 서비스 <span class="state">Deployed</span></h3>
-          <p>구독 키워드 기반 뉴스 피드 서비스. 1시간 주기로 최신 뉴스를 수집·매칭해 보여주며, DDD·클린 아키텍처·TDD로 키워드·뉴스 도메인을 설계하고 Redis 캐싱과 성능 튜닝을 적용.</p>
-          <div class="tags">Java · Spring Boot · Next.js · MySQL · Redis · DDD</div>
+      <div class="work-card">
+        <div class="wc-top">
+          <span class="fno">09</span>
+          <span class="yr">개인 프로젝트</span>
         </div>
-        <span class="yr">개인 프로젝트</span>
+        <h3>뉴스 키워드 구독 서비스<span class="state live">In Progress</span></h3>
+        <p>구독 키워드 기반 뉴스 피드 서비스. 1시간 주기로 최신 뉴스를 수집·매칭해 보여주며, DDD·클린 아키텍처·TDD로 키워드·뉴스 도메인을 설계하고 Redis 캐싱과 성능 튜닝을 적용.</p>
+        <div class="tags">Java · Spring Boot · Next.js · MySQL · Redis · DDD</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- APPROACH -->
-<section class="article card-section" id="approach">
+<section class="article" id="approach">
   <div class="wrap">
     <div class="art-head rv">
       <div class="art-no">V</div>
@@ -614,7 +624,7 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
       </div>
     </div>
     <p class="pullquote rv">
-      좋은 시스템은<br><b>구조의 명료함</b>에서 나온다고 믿습니다.
+      좋은 시스템은 화려함이 아니라<br><b>구조의 명료함</b>에서 나온다고 믿습니다.
     </p>
     <div class="tenets rv">
       <div class="tenet">
@@ -638,7 +648,7 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 </section>
 
 <!-- CONTACT / COLOPHON -->
-<section class="colophon card-section" id="contact">
+<section class="colophon" id="contact">
   <div class="wrap">
     <span class="kicker">Get In Touch</span>
     <h2 class="art-title" style="margin-top:.5rem">함께 일해요</h2>
@@ -650,7 +660,6 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
     </div>
   </div>
 </section>
-</div>
 
 <footer>
   <div class="wrap"><p>© 2026 Kim Suman — Backend Engineer · Ansan, Korea</p></div>
