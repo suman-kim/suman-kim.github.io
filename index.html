@@ -6,21 +6,25 @@
 <title>김수만 — Backend Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..700&family=Gowun+Dodum&family=Nunito:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#ffffff;
-  --paper-deep:#f6f7f9;
-  --ink:#0e1422;
-  --ink-soft:#4a5260;
-  --ink-faint:#9aa1ad;
-  --rule:#eceef1;
-  --rule-strong:#dce0e6;
-  --accent:#1d4ed8;
-  --accent-soft:#3b6fe0;
-  --display:'Fraunces',serif;
+  --paper:#f0f1f3;
+  --paper-deep:#f0f1f3;
+  --card-bg:#ffffff;
+  --ink:#1c1c1e;
+  --ink-soft:#55575c;
+  --ink-faint:#9a9ca3;
+  --rule:#e9e9eb;
+  --rule-strong:#d8d9dd;
+  --accent:#2f3136;
+  --accent-soft:#55575c;
+  --mint:#7a7d85;
+  --card-shadow:0 6px 18px rgba(20,20,22,.08), 0 2px 6px rgba(20,20,22,.05);
+  --card-shadow-hover:0 12px 26px rgba(20,20,22,.13), 0 4px 10px rgba(20,20,22,.07);
+  --display:'Jua',sans-serif;
   --body:'Gowun Dodum',sans-serif;
-  --label:'Nunito','Inter',sans-serif;
+  --label:'Baloo 2','Gowun Dodum',sans-serif;
   --maxw:1100px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -68,7 +72,7 @@ a{color:inherit;text-decoration:none}
 }
 .masthead .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
 .mast-name{font-family:var(--display);font-weight:600;font-size:1.15rem;letter-spacing:-.01em}
-.mast-name em{font-style:italic;color:var(--accent)}
+.mast-name em{font-style:normal;color:var(--accent)}
 .mast-nav{display:flex;gap:2.2rem}
 .mast-nav a{
   font-family:var(--label);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
@@ -96,7 +100,7 @@ a{color:inherit;text-decoration:none}
   margin-bottom:2.2rem;
   font-optical-sizing:auto;
 }
-.cover h1 em{font-style:italic;color:var(--accent);font-weight:300}
+.cover h1 em{font-style:normal;color:var(--accent);font-weight:400}
 .cover-deck{
   display:grid;grid-template-columns:1.6fr 1fr;gap:3rem;align-items:start;
   margin-top:1rem;
@@ -110,21 +114,31 @@ a{color:inherit;text-decoration:none}
 }
 .cover-side{
   font-family:var(--label);font-size:.82rem;line-height:1.5;color:var(--ink-soft);
-  border-left:1px solid var(--rule-strong);padding-left:1.4rem;
+  background:var(--card-bg);
+  border:1.5px solid var(--rule-strong);
+  border-left:5px solid var(--accent);
+  border-radius:18px;
+  padding:1.4rem 1.6rem;
+  box-shadow:var(--card-shadow);
 }
 .cover-side dt{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.15rem}
 .cover-side dd{margin-bottom:1rem;color:var(--ink);font-weight:500}
 .cover-side dd:last-child{margin-bottom:0}
 
 /* ---- article section frame ---- */
-.article{padding:5rem 0;border-top:1px solid var(--rule)}
+.article{padding:5rem 0;border-top:1px solid var(--rule);background:var(--paper)}
+#skills,#work{background:var(--paper-deep)}
 .art-head{
   display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start;
   margin-bottom:3rem;
 }
 .art-no{
-  font-family:var(--display);font-style:italic;font-weight:300;
-  font-size:2.4rem;color:var(--accent);line-height:1;
+  font-family:var(--display);font-style:normal;font-weight:400;
+  font-size:2rem;color:var(--paper);line-height:1;
+  background:var(--accent);
+  width:2.4rem;height:2.4rem;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--card-shadow);
 }
 .art-title{font-family:var(--display);font-weight:500;font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.02em;line-height:1.05}
 .art-kicker{margin-bottom:.4rem;display:block}
@@ -142,9 +156,12 @@ a{color:inherit;text-decoration:none}
 /* ---- skills: cards ---- */
 .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem}
 .skill-card{
-  border:1px solid var(--rule);border-radius:14px;padding:1.5rem 1.5rem 1.6rem;
-  background:var(--paper);
+  border:1.5px solid var(--rule-strong);border-radius:20px;padding:1.5rem 1.5rem 1.6rem;
+  background:var(--card-bg);
+  box-shadow:var(--card-shadow);
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease;
 }
+.skill-card:hover{transform:translateY(-4px);box-shadow:var(--card-shadow-hover)}
 .skill-card .ix{font-family:var(--label);font-size:.72rem;color:var(--accent);letter-spacing:.1em;font-weight:600}
 .skill-card h3{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:.5rem 0 .7rem;letter-spacing:-.01em}
 .skill-card .items{font-family:var(--label);font-size:.84rem;color:var(--ink-soft);line-height:1.65}
@@ -152,11 +169,16 @@ a{color:inherit;text-decoration:none}
 @media(max-width:560px){.skills-grid{grid-template-columns:1fr}}
 
 /* ---- career: vertical timeline graph ---- */
-.timeline-legend{display:flex;gap:2rem;margin-bottom:2.5rem;font-family:var(--label);font-size:.78rem;color:var(--ink-soft)}
-.timeline-legend span{display:inline-flex;align-items:center;gap:.5rem}
-.timeline-legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.timeline-legend .dot.exp{background:var(--accent)}
-.timeline-legend .dot.edu{background:#1a9e6f}
+.track-title{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:var(--display);font-weight:400;font-size:1.3rem;color:var(--ink);
+  margin:0 0 1.6rem;
+}
+.track-title .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.track-title .dot.exp{background:var(--accent)}
+.track-title .dot.edu{background:var(--mint)}
+.track-title .sub{font-family:var(--label);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;margin-left:.2rem}
+.track-block + .track-block{margin-top:3.2rem}
 
 .tgraph{position:relative;padding-left:28px}
 .tgraph::before{
@@ -169,18 +191,18 @@ a{color:inherit;text-decoration:none}
   content:"";position:absolute;left:-28px;top:4px;width:12px;height:12px;border-radius:50%;
   background:var(--paper);border:2.5px solid var(--accent);z-index:1;
 }
-.trow.edu::before{border-color:#1a9e6f}
+.trow.edu::before{border-color:var(--mint)}
 .trow.muted::before{border-color:var(--ink-faint);background:var(--paper)}
 .trow .tyr{
   font-family:var(--label);font-size:.74rem;letter-spacing:.06em;font-weight:600;
   color:var(--accent);margin-bottom:.3rem;display:flex;gap:.6rem;align-items:center;
 }
-.trow.edu .tyr{color:#1a9e6f}
+.trow.edu .tyr{color:var(--mint)}
 .trow.muted .tyr{color:var(--ink-faint)}
 .trow .tyr .st{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:500}
-.trow .tyr .st.end{color:#b35c1e}
+.trow .tyr .st.end{color:var(--ink-faint)}
 .trow h5{font-family:var(--display);font-weight:600;font-size:1.2rem;letter-spacing:-.01em;line-height:1.2}
-.trow .org{font-family:var(--body);font-style:italic;font-size:.98rem;color:var(--ink-soft);margin-bottom:.5rem}
+.trow .org{font-family:var(--body);font-style:normal;font-size:.98rem;color:var(--ink-soft);margin-bottom:.5rem}
 .trow ul{list-style:none;font-size:.92rem;color:var(--ink-soft)}
 .trow ul li{padding-left:1rem;position:relative;margin-bottom:.2rem}
 .trow ul li::before{content:"—";position:absolute;left:0;color:var(--rule-strong)}
@@ -190,9 +212,13 @@ a{color:inherit;text-decoration:none}
 /* ---- credentials: cards ---- */
 .creds-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
 .cred-card{
-  border:1px solid var(--rule);border-radius:14px;padding:1.3rem 1.4rem;
+  border:1.5px solid var(--rule-strong);border-radius:20px;padding:1.3rem 1.4rem;
   display:flex;flex-direction:column;gap:.3rem;
+  background:var(--card-bg);
+  box-shadow:var(--card-shadow);
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease;
 }
+.cred-card:hover{transform:translateY(-3px);box-shadow:var(--card-shadow-hover)}
 .cred-card b{font-family:var(--display);font-weight:600;font-size:1.02rem;color:var(--ink)}
 .cred-card span{font-family:var(--label);font-size:.78rem;color:var(--ink-faint)}
 @media(max-width:720px){.creds-grid{grid-template-columns:1fr}}
@@ -204,11 +230,15 @@ a{color:inherit;text-decoration:none}
 /* ---- work: project cards ---- */
 .work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
 .work-card{
-  border:1px solid var(--rule);border-radius:16px;padding:1.8rem;
+  border:1.5px solid var(--rule-strong);border-radius:20px;padding:1.8rem;
   display:flex;flex-direction:column;
+  background:var(--card-bg);
+  box-shadow:var(--card-shadow);
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease;
 }
+.work-card:hover{transform:translateY(-4px);box-shadow:var(--card-shadow-hover)}
 .work-card .wc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.9rem}
-.work-card .fno{font-family:var(--display);font-style:italic;font-weight:300;font-size:1.4rem;color:var(--accent)}
+.work-card .fno{font-family:var(--display);font-style:normal;font-weight:400;font-size:1.4rem;color:var(--accent)}
 .work-card .yr{font-family:var(--label);font-size:.7rem;color:var(--ink-faint);white-space:nowrap;letter-spacing:.06em}
 .work-card h3{font-family:var(--display);font-weight:600;font-size:1.3rem;letter-spacing:-.01em;margin-bottom:.5rem}
 .work-card h3 .state{font-family:var(--label);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;vertical-align:middle;margin-left:.6rem}
@@ -219,23 +249,29 @@ a{color:inherit;text-decoration:none}
 
 /* ---- approach: pull quote ---- */
 .pullquote{
-  font-family:var(--display);font-weight:300;font-style:italic;
+  font-family:var(--display);font-weight:400;font-style:normal;
   font-size:clamp(1.7rem,4.4vw,2.8rem);line-height:1.3;letter-spacing:-.02em;
   max-width:44rem;margin:0 auto 3.5rem;text-align:center;color:var(--ink);
 }
 .pullquote b{font-style:normal;font-weight:500;color:var(--accent)}
 .tenets{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem 3rem}
 .tenet{display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start}
-.tenet .tn{font-family:var(--display);font-style:italic;font-weight:300;font-size:1.5rem;color:var(--accent);line-height:1}
+.tenet .tn{font-family:var(--display);font-style:normal;font-weight:400;font-size:1.5rem;color:var(--accent);line-height:1}
 .tenet h4{font-family:var(--display);font-weight:600;font-size:1.15rem;margin-bottom:.3rem}
 .tenet p{font-size:.96rem;color:var(--ink-soft)}
 @media(max-width:720px){.tenets{grid-template-columns:1fr}}
 
 /* ---- colophon / contact ---- */
-.colophon{padding:5rem 0 0;border-top:2px solid var(--ink)}
+.colophon{padding:5rem 0 0;border-top:2px solid var(--ink);background:var(--paper-deep)}
 .colophon .art-title{margin-bottom:2.5rem}
-.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
-.cx{padding:1.4rem 1rem 1.4rem 0;border-top:1px solid var(--rule)}
+.contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.cx{
+  padding:1.4rem 1.2rem;border-top:none;
+  background:var(--card-bg);border:1.5px solid var(--rule-strong);border-radius:16px;
+  box-shadow:var(--card-shadow);
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s ease;
+}
+.cx:hover{transform:translateY(-3px);box-shadow:var(--card-shadow-hover)}
 .cx .k{font-family:var(--label);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.4rem}
 .cx .v{font-family:var(--body);font-size:1.05rem;word-break:break-all}
 @media(max-width:720px){.contact-grid{grid-template-columns:1fr 1fr}}
@@ -272,10 +308,10 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
   position:relative;overflow:hidden;
 }
 
-/* animated gradient on the italic cover word */
+/* animated gradient on the cute cover word */
 .cover h1 em{
-  font-style:italic;font-weight:300;
-  background:linear-gradient(100deg,var(--accent) 0%,#6fa3ff 35%,var(--accent) 65%,#1233a6 100%);
+  font-style:normal;font-weight:400;
+  background:linear-gradient(100deg,var(--accent) 0%,#8a8d95 35%,var(--accent) 65%,#0e0f11 100%);
   background-size:300% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;
   animation:gradientFlow 7s ease-in-out infinite;
@@ -304,15 +340,15 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
 
 /* scanline progress bar at very top */
 .scanbar{position:fixed;top:0;left:0;height:3px;width:0;
-  background:linear-gradient(90deg,var(--accent),#6fa3ff);z-index:200;
-  box-shadow:0 0 12px rgba(29,78,216,.5);transition:width .1s ease-out}
+  background:linear-gradient(90deg,var(--accent),#9a9ca3);z-index:200;
+  box-shadow:0 0 12px rgba(20,20,22,.35);transition:width .1s ease-out}
 
 @media(max-width:720px){
   .wrap{padding:0 24px}
   .mast-nav{display:none}
   .cover{padding:7rem 0 3rem}
   .cover-deck{grid-template-columns:1fr;gap:1.8rem}
-  .cover-side{border-left:none;border-top:1px solid var(--rule-strong);padding-left:0;padding-top:1.4rem;display:grid;grid-template-columns:1fr 1fr}
+  .cover-side{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
   .article{padding:3.5rem 0}
 }
 @media(prefers-reduced-motion:reduce){
@@ -448,52 +484,57 @@ footer p{font-family:var(--label);font-size:.7rem;letter-spacing:.16em;text-tran
         <h2 class="art-title">지나온 자리</h2>
       </div>
     </div>
-    <div class="timeline-legend rv">
-      <span><i class="dot exp"></i>경력 Experience</span>
-      <span><i class="dot edu"></i>학력 Education</span>
+    <div class="track-block">
+      <h3 class="track-title rv"><span class="dot exp"></span>경력<span class="sub">Experience</span></h3>
+      <div class="tgraph rv rv-stagger">
+        <div class="trow exp">
+          <div class="tyr">2025 <span class="st end">종료</span></div>
+          <h5>더블다운인터액티브</h5>
+          <div class="org">Casino Payment Platform (DDC2)</div>
+          <ul>
+            <li>통합 결제 어댑터 — Xsolla · Google Play · Apple Pay</li>
+            <li>Strategy/Factory · Resilience4j Circuit Breaker</li>
+          </ul>
+        </div>
+        <div class="trow exp">
+          <div class="tyr">2021.04 — 2025.09 <span class="st end">종료</span></div>
+          <h5>포커스에이치엔에스</h5>
+          <div class="org">Smart Access 팀</div>
+          <ul>
+            <li>ONEPASS PRO 얼굴 인식 출입통제 시스템</li>
+            <li>iSchool 통학버스 · ASLAN CCTV 관제</li>
+            <li>스마트쉘터 IoT 스마트팜</li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="tgraph rv rv-stagger">
-      <div class="trow exp">
-        <div class="tyr">2025 <span class="st end">종료</span></div>
-        <h5>더블다운인터액티브</h5>
-        <div class="org">Casino Payment Platform (DDC2)</div>
-        <ul>
-          <li>통합 결제 어댑터 — Xsolla · Google Play · Apple Pay</li>
-          <li>Strategy/Factory · Resilience4j Circuit Breaker</li>
-        </ul>
-      </div>
-      <div class="trow edu">
-        <div class="tyr">2023.03 — 2025.08 <span class="st">졸업</span></div>
-        <h5>한국방송통신대학교</h5>
-        <div class="org">컴퓨터과학과 (편입)</div>
-        <p class="note">알고리즘 · 자료구조 · 소프트웨어 공학 전공 심화</p>
-      </div>
-      <div class="trow exp">
-        <div class="tyr">2021.04 — 2025.09 <span class="st end">종료</span></div>
-        <h5>포커스에이치엔에스</h5>
-        <div class="org">Smart Access 팀</div>
-        <ul>
-          <li>ONEPASS PRO 얼굴 인식 출입통제 시스템</li>
-          <li>iSchool 통학버스 · ASLAN CCTV 관제</li>
-          <li>스마트쉘터 IoT 스마트팜</li>
-        </ul>
-      </div>
-      <div class="trow edu">
-        <div class="tyr">2020.08 — 2021.03</div>
-        <h5>이젠아카데미</h5>
-        <div class="org">자바 웹&amp;앱 개발자 과정</div>
-        <p class="note">Spring Framework · DB 설계 · 팀 프로젝트</p>
-      </div>
-      <div class="trow edu">
-        <div class="tyr">2015 — 2017 <span class="st">졸업</span></div>
-        <h5>학점은행제 평생교육원</h5>
-        <div class="org">정보처리과</div>
-        <p class="note">네트워크 · 데이터베이스 · 프로그래밍 기초</p>
-      </div>
-      <div class="trow edu muted">
-        <div class="tyr">2010 <span class="st">중퇴</span></div>
-        <h5>한세대학교</h5>
-        <div class="org">광고홍보학과</div>
+
+    <div class="track-block">
+      <h3 class="track-title rv"><span class="dot edu"></span>학력<span class="sub">Education</span></h3>
+      <div class="tgraph rv rv-stagger">
+        <div class="trow edu">
+          <div class="tyr">2023.03 — 2025.08 <span class="st">졸업</span></div>
+          <h5>한국방송통신대학교</h5>
+          <div class="org">컴퓨터과학과 (편입)</div>
+          <p class="note">알고리즘 · 자료구조 · 소프트웨어 공학 전공 심화</p>
+        </div>
+        <div class="trow edu">
+          <div class="tyr">2020.08 — 2021.03</div>
+          <h5>이젠아카데미</h5>
+          <div class="org">자바 웹&amp;앱 개발자 과정</div>
+          <p class="note">Spring Framework · DB 설계 · 팀 프로젝트</p>
+        </div>
+        <div class="trow edu">
+          <div class="tyr">2015 — 2017 <span class="st">졸업</span></div>
+          <h5>학점은행제 평생교육원</h5>
+          <div class="org">정보처리과</div>
+          <p class="note">네트워크 · 데이터베이스 · 프로그래밍 기초</p>
+        </div>
+        <div class="trow edu muted">
+          <div class="tyr">2010 <span class="st">중퇴</span></div>
+          <h5>한세대학교</h5>
+          <div class="org">광고홍보학과</div>
+        </div>
       </div>
     </div>
     <div class="creds rv">
