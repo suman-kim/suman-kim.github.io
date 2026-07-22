@@ -93,6 +93,27 @@
             to { opacity: 1; transform: none; filter: none }
         }
 
+        :root { --ease-out: cubic-bezier(.22, 1, .36, 1) }
+
+        .aurora {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .aurora-1 { top: -9rem; right: -6rem; width: 30rem; height: 30rem; background: radial-gradient(circle at 30% 30%, rgba(47, 91, 255, .5), transparent 70%); animation: drift1 16s ease-in-out infinite }
+        .aurora-2 { top: 8%; left: -9rem; width: 24rem; height: 24rem; background: radial-gradient(circle at 60% 40%, rgba(124, 92, 255, .38), transparent 70%); animation: drift2 21s ease-in-out infinite }
+        .aurora-3 { top: 28%; right: 24%; width: 22rem; height: 22rem; background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, .28), transparent 70%); animation: drift3 18s ease-in-out infinite }
+
+        @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,40px) scale(1.18)} }
+        @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-30px) scale(1.12)} }
+        @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,-45px) scale(1.22)} }
+
+        .diagram { clip-path: inset(0 101% 0 0); transition: clip-path 1.15s var(--ease-out) }
+        .reveal-on-scroll.active .diagram { clip-path: inset(0 0 0 0) }
+
         #scrollProgress {
             position: fixed;
             top: 0;
@@ -115,6 +136,8 @@
 
             .hero-anim > * { opacity: 1; animation: none }
             #scrollProgress { display: none }
+            .aurora { animation: none !important }
+            .diagram { clip-path: none !important; transition: none !important }
         }
 
         .font-display-lg, .font-headline-lg { font-weight: 700; letter-spacing: -.02em; }
@@ -143,8 +166,11 @@
     <main class="pt-20">
 
         <!-- Hero -->
-        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop">
-            <div class="max-w-container-max mx-auto hero-anim">
+        <section class="relative overflow-hidden py-stack-lg px-margin-mobile md:px-margin-desktop">
+            <div class="aurora aurora-1"></div>
+            <div class="aurora aurora-2"></div>
+            <div class="aurora aurora-3"></div>
+            <div class="relative z-10 max-w-container-max mx-auto hero-anim">
                 <span
                     class="font-label-md text-label-md uppercase tracking-widest text-on-primary-container mb-2 block">Case
                     Study · Surveillance</span>
@@ -168,11 +194,20 @@
                 </div>
                 <div class="rounded-xl overflow-hidden diffused-shadow border border-outline-variant/10">
                     <svg viewBox="0 0 800 450" class="w-full h-auto" role="img" aria-label="아슬란 CCTV 통합 관제 콘솔 화면 예시">
+                            <defs>
+                                <linearGradient id="scan" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="#2f5bff" stop-opacity="0"/>
+                                    <stop offset="0.5" stop-color="#4d78ff" stop-opacity="0.22"/>
+                                    <stop offset="1" stop-color="#2f5bff" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
                             <rect width="800" height="450" fill="#0e1116"/>
                             <rect width="800" height="46" fill="#161a22"/>
                             <text x="24" y="30" font-size="17" font-weight="700" fill="#ffffff" font-family="Georgia, serif">ASLAN</text>
                             <text x="92" y="30" font-size="12" fill="#8b8f98">· 통합 관제 콘솔</text>
-                            <circle cx="726" cy="23" r="4" fill="#ff4d4f"/>
+                            <circle cx="726" cy="23" r="4" fill="#ff4d4f">
+                                <animate attributeName="opacity" values="1;0.2;1" dur="1.6s" repeatCount="indefinite"/>
+                            </circle>
                             <text x="738" y="27" font-size="11" font-family="monospace" fill="#e6e8ec">LIVE</text>
                             <g>
                                 <rect x="16" y="58" width="248" height="161" rx="8" fill="#1c212b" stroke="#2f5bff" stroke-width="1.8"/>
@@ -248,9 +283,16 @@
                             </g>
                             <rect x="16" y="404" width="768" height="30" rx="6" fill="#161a22"/>
                             <rect x="28" y="416" width="620" height="6" rx="3" fill="#2b313d"/>
-                            <rect x="28" y="416" width="250" height="6" rx="3" fill="#2f5bff"/>
-                            <circle cx="278" cy="419" r="6" fill="#ffffff"/>
+                            <rect x="28" y="416" width="250" height="6" rx="3" fill="#2f5bff">
+                                <animate attributeName="width" values="60;612;60" dur="9s" repeatCount="indefinite"/>
+                            </rect>
+                            <circle cx="278" cy="419" r="6" fill="#ffffff">
+                                <animate attributeName="cx" values="88;640;88" dur="9s" repeatCount="indefinite"/>
+                            </circle>
                             <text x="664" y="424" font-size="11" font-family="monospace" fill="#8b8f98">14:32:07</text>
+                            <rect x="16" y="56" width="768" height="90" fill="url(#scan)" opacity="0.6">
+                                <animate attributeName="y" values="46;302;46" dur="6.5s" repeatCount="indefinite"/>
+                            </rect>
                         </svg>
                 </div>
             </div>
@@ -358,7 +400,7 @@
                     <h2 class="font-headline-lg text-headline-lg text-primary">아키텍처</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-gutter items-center">
-                    <div class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
+                    <div class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md diagram">
                         <svg viewBox="0 0 760 290" class="w-full h-auto" role="img"
                             aria-label="영상은 네이티브 SDK가, 관제·관리는 웹이 담당하는 2-plane 아키텍처">
                             <defs>
@@ -476,6 +518,10 @@
     </main>
 
     <script>
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.querySelectorAll('svg').forEach(s => { if (s.pauseAnimations) s.pauseAnimations(); });
+        }
+
         const observerOptions = { threshold: 0.1 };
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });

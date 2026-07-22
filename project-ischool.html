@@ -95,6 +95,27 @@
             to { opacity: 1; transform: none; filter: none }
         }
 
+        :root { --ease-out: cubic-bezier(.22, 1, .36, 1) }
+
+        .aurora {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .aurora-1 { top: -9rem; right: -6rem; width: 30rem; height: 30rem; background: radial-gradient(circle at 30% 30%, rgba(47, 91, 255, .5), transparent 70%); animation: drift1 16s ease-in-out infinite }
+        .aurora-2 { top: 8%; left: -9rem; width: 24rem; height: 24rem; background: radial-gradient(circle at 60% 40%, rgba(124, 92, 255, .38), transparent 70%); animation: drift2 21s ease-in-out infinite }
+        .aurora-3 { top: 28%; right: 24%; width: 22rem; height: 22rem; background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, .28), transparent 70%); animation: drift3 18s ease-in-out infinite }
+
+        @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,40px) scale(1.18)} }
+        @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-30px) scale(1.12)} }
+        @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,-45px) scale(1.22)} }
+
+        .diagram { clip-path: inset(0 101% 0 0); transition: clip-path 1.15s var(--ease-out) }
+        .reveal-on-scroll.active .diagram { clip-path: inset(0 0 0 0) }
+
         #scrollProgress {
             position: fixed;
             top: 0;
@@ -117,6 +138,8 @@
 
             .hero-anim > * { opacity: 1; animation: none }
             #scrollProgress { display: none }
+            .aurora { animation: none !important }
+            .diagram { clip-path: none !important; transition: none !important }
         }
 
         .font-display-lg, .font-headline-lg { font-weight: 700; letter-spacing: -.02em; }
@@ -145,8 +168,11 @@
     <main class="pt-20">
 
         <!-- Hero -->
-        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop">
-            <div class="max-w-container-max mx-auto hero-anim">
+        <section class="relative overflow-hidden py-stack-lg px-margin-mobile md:px-margin-desktop">
+            <div class="aurora aurora-1"></div>
+            <div class="aurora aurora-2"></div>
+            <div class="aurora aurora-3"></div>
+            <div class="relative z-10 max-w-container-max mx-auto hero-anim">
                 <span
                     class="font-label-md text-label-md uppercase tracking-widest text-on-primary-container mb-2 block">Case
                     Study · School Safety</span>
@@ -278,7 +304,7 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-gutter items-center">
                     <div
-                        class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
+                        class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md diagram">
                         <svg viewBox="0 0 720 300" class="w-full h-auto">
                             <defs>
                                 <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
