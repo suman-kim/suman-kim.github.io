@@ -87,15 +87,16 @@
     .lift { transition: transform .35s cubic-bezier(.16, 1, .3, 1), box-shadow .35s cubic-bezier(.16, 1, .3, 1), border-color .3s ease; }
     .lift:hover { transform: translateY(-4px); box-shadow: 0 2px 6px rgba(17, 19, 24, .06), 0 34px 60px -26px rgba(17, 19, 24, .32); }
 
-    /* Scroll reveal — section level, staggered children */
-    .reveal > * { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.16, 1, .3, 1), transform .7s cubic-bezier(.16, 1, .3, 1); }
-    .reveal.in > * { opacity: 1; transform: none; }
-    .reveal.in > *:nth-child(2) { transition-delay: .08s; }
-    .reveal.in > *:nth-child(3) { transition-delay: .16s; }
-    .reveal.in > *:nth-child(4) { transition-delay: .24s; }
+    /* Signature reveal — blur-rise, section level, staggered children */
+    :root { --ease-out: cubic-bezier(.22, 1, .36, 1); }
+    .reveal > * { opacity: 0; transform: translateY(18px); filter: blur(7px); transition: opacity .8s var(--ease-out), transform .8s var(--ease-out), filter .8s var(--ease-out); will-change: opacity, transform, filter; }
+    .reveal.in > * { opacity: 1; transform: none; filter: none; }
+    .reveal.in > *:nth-child(2) { transition-delay: .09s; }
+    .reveal.in > *:nth-child(3) { transition-delay: .18s; }
+    .reveal.in > *:nth-child(4) { transition-delay: .27s; }
 
-    .stagger > * { opacity: 0; transform: translateY(20px); transition: opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1); }
-    .stagger.in > * { opacity: 1; transform: none; }
+    .stagger > * { opacity: 0; transform: translateY(16px); filter: blur(6px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out); will-change: opacity, transform, filter; }
+    .stagger.in > * { opacity: 1; transform: none; filter: none; }
     .stagger.in > *:nth-child(1) { transition-delay: .04s; }
     .stagger.in > *:nth-child(2) { transition-delay: .10s; }
     .stagger.in > *:nth-child(3) { transition-delay: .16s; }
@@ -106,20 +107,38 @@
 
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
+    /* Scroll progress bar */
+    #scrollProgress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, #2f5bff, #86a6ff); }
+
+    /* Animated nav underline */
+    .nav-link { position: relative; }
+    .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: right center; transition: transform .4s var(--ease-out); }
+    .nav-link:hover::after, .nav-link.active-link::after { transform: scaleX(1); transform-origin: left center; }
+
+    /* Metric count-up: avoid layout shift */
+    .count { font-variant-numeric: tabular-nums; }
+
+    /* Card hover: subtle accent ring */
+    .lift:hover { border-color: rgba(47, 91, 255, .28); }
+
     /* Mobile drawer */
     #mobileDrawer { transition: opacity .3s ease; }
     #mobileDrawer .panel { transition: transform .38s cubic-bezier(.16, 1, .3, 1); }
     #mobileDrawer.open .panel { transform: translateX(0); }
 
     @media (prefers-reduced-motion: reduce) {
-      .reveal > *, .stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .reveal > *, .stagger > * { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
       .lift { transition: none; }
+      .nav-link::after { transition: none; }
+      #scrollProgress { display: none; }
       html { scroll-behavior: auto; }
     }
   </style>
 </head>
 
 <body class="bg-paper text-ink font-sans antialiased overflow-x-hidden">
+
+  <div id="scrollProgress"></div>
 
   <!-- ============ Header ============ -->
   <header id="siteHeader"
@@ -208,11 +227,11 @@
               </p>
             </div>
             <div class="rounded-2xl border border-line bg-paper p-6">
-              <p class="font-serif text-4xl text-ink">5<span class="text-accent">+</span></p>
+              <p class="font-serif text-4xl text-ink"><span class="count" data-count="5">0</span><span class="text-accent">+</span></p>
               <p class="mt-1 text-sm text-ink-soft">년 실무 경력</p>
             </div>
             <div class="rounded-2xl border border-line bg-paper p-6">
-              <p class="font-serif text-4xl text-ink">9</p>
+              <p class="font-serif text-4xl text-ink"><span class="count" data-count="9">0</span></p>
               <p class="mt-1 text-sm text-ink-soft">설계·구현 프로젝트</p>
             </div>
           </div>
@@ -614,22 +633,47 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
     })();
 
-    // ---- Header scroll state (rAF-throttled) ----
+    // ---- Header scroll state + scroll progress (rAF-throttled) ----
     (function () {
       const header = document.getElementById('siteHeader');
+      const bar = document.getElementById('scrollProgress');
       let ticking = false;
       const update = () => {
-        if (window.scrollY > 24) {
+        const y = window.scrollY;
+        if (y > 24) {
           header.classList.add('bg-paper/85', 'backdrop-blur', 'border-line');
         } else {
           header.classList.remove('bg-paper/85', 'backdrop-blur', 'border-line');
         }
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
         ticking = false;
       };
       window.addEventListener('scroll', () => {
         if (!ticking) { requestAnimationFrame(update); ticking = true; }
       }, { passive: true });
       update();
+    })();
+
+    // ---- Count-up metrics (trigger once on reveal) ----
+    (function () {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const run = (el) => {
+        const target = parseInt(el.dataset.count, 10) || 0;
+        if (reduce) { el.textContent = target; return; }
+        const dur = 1100, start = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased);
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(e => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      document.querySelectorAll('.count').forEach(el => io.observe(el));
     })();
 
     // ---- Scroll reveal (section-level, staggered) ----
@@ -651,6 +695,7 @@
         const on = l.dataset.nav === id;
         l.classList.toggle('text-ink', on);
         l.classList.toggle('font-medium', on);
+        l.classList.toggle('active-link', on);
         l.classList.toggle('text-ink-soft', !on);
       });
       const spy = new IntersectionObserver(entries => {
