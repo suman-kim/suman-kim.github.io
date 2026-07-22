@@ -192,58 +192,63 @@
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-gutter items-center">
                     <div
                         class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
-                        <svg viewBox="0 0 720 320" class="w-full h-auto">
+                        <svg viewBox="0 0 720 250" class="w-full h-auto" role="img"
+                            aria-label="얼굴인식 단말기에서 온프레미스 ONEPASS 서버를 거쳐 클라우드 서버로 이어지는 단계별 아키텍처">
                             <defs>
-                                <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                                    <path d="M0,0 L6,3 L0,6 Z" fill="#76777d" />
+                                <marker id="arrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L6,3 L0,6 Z" fill="#2f5bff" />
                                 </marker>
                             </defs>
-                            <rect x="20" y="30" width="200" height="130" rx="12" fill="#f3f3f4" stroke="#c6c6cd"
+
+                            <!-- On-premise group -->
+                            <rect x="16" y="44" width="476" height="182" rx="16" fill="#f6f6f8" stroke="#e7e8ec"
                                 stroke-width="1.5" />
-                            <text x="120" y="55" text-anchor="middle" font-size="13" font-weight="600"
-                                fill="#1a1c1c">사업장 A</text>
-                            <rect x="38" y="70" width="70" height="34" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="73" y="91" text-anchor="middle" font-size="11" fill="#45464d">ONEPASS 서버</text>
-                            <rect x="112" y="70" width="42" height="34" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="133" y="86" text-anchor="middle" font-size="10" fill="#45464d">MySQL</text>
-                            <text x="133" y="98" text-anchor="middle" font-size="10" fill="#45464d">Redis</text>
-                            <rect x="38" y="114" width="150" height="30" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="113" y="133" text-anchor="middle" font-size="10" fill="#45464d">얼굴 인식 단말기
-                                (Socket.IO)</text>
+                            <text x="34" y="72" font-size="12" font-weight="700" fill="#111318">업장 · 현장 On-premise 설치</text>
 
-                            <rect x="250" y="30" width="200" height="130" rx="12" fill="#f3f3f4" stroke="#c6c6cd"
+                            <!-- Stage 1: 얼굴인식 단말기 -->
+                            <rect x="42" y="104" width="150" height="94" rx="12" fill="#ffffff" stroke="#e7e8ec"
                                 stroke-width="1.5" />
-                            <text x="350" y="55" text-anchor="middle" font-size="13" font-weight="600"
-                                fill="#1a1c1c">사업장 B</text>
-                            <rect x="268" y="70" width="70" height="34" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="303" y="91" text-anchor="middle" font-size="11" fill="#45464d">ONEPASS 서버</text>
-                            <rect x="342" y="70" width="42" height="34" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="363" y="86" text-anchor="middle" font-size="10" fill="#45464d">MySQL</text>
-                            <text x="363" y="98" text-anchor="middle" font-size="10" fill="#45464d">Redis</text>
-                            <rect x="268" y="114" width="150" height="30" rx="6" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="343" y="133" text-anchor="middle" font-size="10" fill="#45464d">얼굴 인식 단말기
-                                (Socket.IO)</text>
+                            <circle cx="66" cy="128" r="11" fill="#eef2ff" />
+                            <text x="66" y="132" text-anchor="middle" font-size="12" font-weight="700"
+                                fill="#1a3fd6">1</text>
+                            <text x="117" y="154" text-anchor="middle" font-size="12.5" font-weight="600"
+                                fill="#111318">얼굴인식 단말기</text>
+                            <text x="117" y="174" text-anchor="middle" font-size="10" fill="#71757f">현장 출입 인증</text>
 
-                            <rect x="480" y="60" width="200" height="70" rx="12" fill="#1a1c1c" />
-                            <text x="580" y="88" text-anchor="middle" font-size="13" font-weight="600"
-                                fill="#ffffff">클라우드</text>
-                            <text x="580" y="104" text-anchor="middle" font-size="10" fill="#c6c6cd">서버 상태 리슨 ·
-                                모니터링</text>
-                            <text x="580" y="118" text-anchor="middle" font-size="10" fill="#c6c6cd">(직접 출입 로직 처리
-                                X)</text>
+                            <!-- Stage 2: ONEPASS PRO 서버 -->
+                            <rect x="300" y="92" width="164" height="118" rx="12" fill="#ffffff" stroke="#2f5bff"
+                                stroke-width="1.6" />
+                            <circle cx="322" cy="114" r="11" fill="#eef2ff" />
+                            <text x="322" y="118" text-anchor="middle" font-size="12" font-weight="700"
+                                fill="#1a3fd6">2</text>
+                            <text x="388" y="118" text-anchor="middle" font-size="12.5" font-weight="700"
+                                fill="#111318">ONEPASS PRO 서버</text>
+                            <text x="382" y="150" text-anchor="middle" font-size="9.5" fill="#71757f">온프레미스 · 출입·근태 처리</text>
+                            <rect x="316" y="166" width="66" height="26" rx="6" fill="#f6f6f8" stroke="#e7e8ec" />
+                            <text x="349" y="183" text-anchor="middle" font-size="10" fill="#45464d">MySQL</text>
+                            <rect x="386" y="166" width="62" height="26" rx="6" fill="#f6f6f8" stroke="#e7e8ec" />
+                            <text x="417" y="183" text-anchor="middle" font-size="10" fill="#45464d">Redis</text>
 
-                            <path d="M220,95 L478,95" stroke="#76777d" stroke-width="1.5" marker-end="url(#arrow)"
-                                stroke-dasharray="4 4" />
-                            <path d="M450,95 L478,95" stroke="#76777d" stroke-width="1.5" marker-end="url(#arrow)"
-                                stroke-dasharray="4 4" />
-                            <text x="360" y="185" text-anchor="middle" font-size="11" fill="#5c5f61">각 사업장 로컬 서버 → 클라우드로
-                                상태(heartbeat) 전송</text>
+                            <!-- Stage 3: 클라우드 서버 -->
+                            <rect x="530" y="104" width="172" height="90" rx="12" fill="#111318" />
+                            <circle cx="552" cy="126" r="11" fill="#2f5bff" />
+                            <text x="552" y="130" text-anchor="middle" font-size="12" font-weight="700"
+                                fill="#ffffff">3</text>
+                            <text x="616" y="130" text-anchor="middle" font-size="12.5" font-weight="700"
+                                fill="#ffffff">클라우드 서버</text>
+                            <text x="616" y="152" text-anchor="middle" font-size="10" fill="#c6c6cd">서버 관리 · 모니터링</text>
+                            <text x="616" y="168" text-anchor="middle" font-size="9" fill="#8b8f98">출입 로직 직접 처리 X</text>
 
-                            <rect x="20" y="220" width="660" height="70" rx="12" fill="#ffffff" stroke="#c6c6cd" />
-                            <text x="350" y="245" text-anchor="middle" font-size="12" font-weight="600"
-                                fill="#1a1c1c">배포 자동화 파이프라인 (N8N)</text>
-                            <text x="350" y="265" text-anchor="middle" font-size="10" fill="#5c5f61">서버 빌드 → Inno
-                                Setup으로 .exe 패키징 → FTP 업로드 → 영업 담당자 이메일 발송 → Git 커밋 기반 릴리즈 노트 생성</text>
+                            <!-- Flow arrows -->
+                            <path d="M192,151 L296,151" stroke="#2f5bff" stroke-width="1.8"
+                                marker-end="url(#arrow)" />
+                            <text x="244" y="142" text-anchor="middle" font-size="9" fill="#45464d">인식 이벤트 · Socket.IO</text>
+
+                            <path d="M464,149 L526,149" stroke="#2f5bff" stroke-width="1.8"
+                                marker-end="url(#arrow)" />
+                            <text x="495" y="140" text-anchor="middle" font-size="9" fill="#45464d">상태 전송</text>
+
+                            <text x="360" y="240" text-anchor="middle" font-size="10.5" fill="#71757f">① 단말기 → ② 온프레미스 서버 → ③ 클라우드, 단계별 통신 구조</text>
                         </svg>
                     </div>
                     <div class="md:col-span-2">
@@ -266,21 +271,89 @@
             </div>
         </section>
 
+        <!-- Deployment Pipeline -->
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
+            <div class="max-w-container-max mx-auto">
+                <div class="flex items-baseline gap-4 mb-stack-md">
+                    <span class="font-label-md text-label-md text-outline-variant uppercase">03</span>
+                    <h2 class="font-headline-lg text-headline-lg text-primary">배포 파이프라인</h2>
+                </div>
+                <p class="text-secondary font-body-md leading-relaxed max-w-3xl mb-stack-md">
+                    On-premise 패키지 특성상 사업장마다 개별로 배포·업데이트해야 하는 구조라, 수동으로 하던
+                    <b class="text-primary">빌드 → 패키징 → 배포 → 공지</b> 과정을 <b class="text-primary">N8N</b> 기반 파이프라인 하나로 자동화했습니다.
+                </p>
+
+                <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-5">
+                    <div class="relative bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-5">
+                        <span class="material-symbols-outlined hidden md:flex absolute -right-[13px] top-1/2 -translate-y-1/2 z-10 text-outline-variant text-[18px] bg-surface rounded-full">chevron_right</span>
+                        <span class="font-label-md text-label-md text-accent-ink">01</span>
+                        <div class="w-9 h-9 rounded-lg bg-accent-soft text-accent-ink flex items-center justify-center my-3">
+                            <span class="material-symbols-outlined text-[20px]">build</span>
+                        </div>
+                        <h3 class="font-headline-md text-base text-primary mb-1">서버 빌드</h3>
+                        <p class="text-secondary text-xs leading-relaxed">애플리케이션 소스 빌드</p>
+                    </div>
+                    <div class="relative bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-5">
+                        <span class="material-symbols-outlined hidden md:flex absolute -right-[13px] top-1/2 -translate-y-1/2 z-10 text-outline-variant text-[18px] bg-surface rounded-full">chevron_right</span>
+                        <span class="font-label-md text-label-md text-accent-ink">02</span>
+                        <div class="w-9 h-9 rounded-lg bg-accent-soft text-accent-ink flex items-center justify-center my-3">
+                            <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                        </div>
+                        <h3 class="font-headline-md text-base text-primary mb-1">.exe 패키징</h3>
+                        <p class="text-secondary text-xs leading-relaxed">Inno Setup 설치 패키지 생성</p>
+                    </div>
+                    <div class="relative bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-5">
+                        <span class="material-symbols-outlined hidden md:flex absolute -right-[13px] top-1/2 -translate-y-1/2 z-10 text-outline-variant text-[18px] bg-surface rounded-full">chevron_right</span>
+                        <span class="font-label-md text-label-md text-accent-ink">03</span>
+                        <div class="w-9 h-9 rounded-lg bg-accent-soft text-accent-ink flex items-center justify-center my-3">
+                            <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+                        </div>
+                        <h3 class="font-headline-md text-base text-primary mb-1">FTP 업로드</h3>
+                        <p class="text-secondary text-xs leading-relaxed">회사 FTP 서버에 자동 업로드</p>
+                    </div>
+                    <div class="relative bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-5">
+                        <span class="material-symbols-outlined hidden md:flex absolute -right-[13px] top-1/2 -translate-y-1/2 z-10 text-outline-variant text-[18px] bg-surface rounded-full">chevron_right</span>
+                        <span class="font-label-md text-label-md text-accent-ink">04</span>
+                        <div class="w-9 h-9 rounded-lg bg-accent-soft text-accent-ink flex items-center justify-center my-3">
+                            <span class="material-symbols-outlined text-[20px]">mail</span>
+                        </div>
+                        <h3 class="font-headline-md text-base text-primary mb-1">배포 알림</h3>
+                        <p class="text-secondary text-xs leading-relaxed">담당 영업에게 메일 자동 발송</p>
+                    </div>
+                    <div class="relative bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-5">
+                        <span class="font-label-md text-label-md text-accent-ink">05</span>
+                        <div class="w-9 h-9 rounded-lg bg-accent-soft text-accent-ink flex items-center justify-center my-3">
+                            <span class="material-symbols-outlined text-[20px]">description</span>
+                        </div>
+                        <h3 class="font-headline-md text-base text-primary mb-1">릴리즈 노트</h3>
+                        <p class="text-secondary text-xs leading-relaxed">Git 커밋 로그를 추출해 자동 정리</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mt-stack-md">
+                    <span class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">N8N</span>
+                    <span class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">Inno Setup</span>
+                    <span class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">FTP</span>
+                    <span class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">Git</span>
+                </div>
+            </div>
+        </section>
+
         <!-- Key Challenges -->
         <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="flex items-baseline gap-4 mb-stack-lg">
-                    <span class="font-label-md text-label-md text-outline-variant uppercase">03</span>
-                    <h2 class="font-headline-lg text-headline-lg text-primary">핵심 기술적 도전</h2>
+                    <span class="font-label-md text-label-md text-outline-variant uppercase">04</span>
+                    <h2 class="font-headline-lg text-headline-lg text-primary">핵심 문제 해결</h2>
                 </div>
 
                 <div
-                    class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md mb-stack-md">
+                    class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
                             <span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
                         </div>
-                        <h3 class="font-headline-md text-xl text-primary">도전 1 — 근태 관리의 "익일 퇴근 처리"</h3>
+                        <h3 class="font-headline-md text-xl text-primary">근태 관리 — "익일 퇴근" 처리 로직</h3>
                     </div>
                     <p class="text-secondary font-body-md leading-relaxed mb-3">사용자마다 근태 규칙이 다르고, 규칙 안에는 근무시작/종료시간과 함께
                         "당일 퇴근" 타입과 "익일 퇴근" 타입이 구분되어 있습니다. 문제는 요일·날짜별로 전날이 휴무일 수도 있다는 점 — 단순히 "전날 = 어제"로 고정할 수 없는
@@ -294,29 +367,6 @@
                         </ol>
                         <p class="text-secondary text-sm mt-2">즉 이벤트 시각이 아니라 <b class="text-primary">근태 규칙 + 직전 기록
                                 유무</b>를 함께 판단해 어느 날짜의 퇴근인지 결정하는 구조입니다.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-[20px]">rocket_launch</span>
-                        </div>
-                        <h3 class="font-headline-md text-xl text-primary">도전 2 — 로컬 설치형 패키지의 배포 자동화</h3>
-                    </div>
-                    <p class="text-secondary font-body-md leading-relaxed mb-3">On-premise 패키지 특성상 사업장마다 개별로 배포·업데이트해야
-                        하는 구조라, 배포 자동화가 까다로운 지점이었습니다.</p>
-                    <div class="bg-surface-container-low rounded-lg p-4">
-                        <span class="text-caption font-label-md text-outline-variant uppercase block mb-2">N8N 기반
-                            파이프라인</span>
-                        <ol class="space-y-1.5 text-secondary text-sm list-decimal list-inside">
-                            <li>서버 빌드</li>
-                            <li>Inno Setup으로 설치용 .exe 패키징</li>
-                            <li>회사 FTP 서버에 자동 업로드</li>
-                            <li>B2B 판매 구조 특성상, 담당 영업 담당자에게 배포 알림 이메일 자동 발송</li>
-                            <li>업데이트 내역은 실제 Git 커밋 로그를 추출해 릴리즈 노트로 자동 작성</li>
-                        </ol>
-                        <p class="text-secondary text-sm mt-2">수동으로 하던 빌드 → 패키징 → 배포 → 공지 과정을 하나의 파이프라인으로 통합했습니다.</p>
                     </div>
                 </div>
 
