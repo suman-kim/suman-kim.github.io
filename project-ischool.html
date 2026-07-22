@@ -5,12 +5,22 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>아이스쿨 — Suman Kim</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap"
-        rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
-        rel="stylesheet">
+    <meta name="description" content="안심 통학버스 솔루션 아이스쿨. GPS 추적, 승하차·학부모 실시간 알림, 얼굴인식 출석 관리를 구현한 케이스 스터디.">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="아이스쿨 — 안심 통학버스 솔루션 · Suman Kim">
+    <meta property="og:description" content="안심 통학버스 솔루션 아이스쿨. GPS 추적, 승하차·학부모 실시간 알림, 얼굴인식 출석 관리를 구현한 케이스 스터디.">
+    <meta property="og:image" content="ischool-dashboard.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="ischool-dashboard.jpg">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111318'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='54' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=block">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">try {
             tailwind.config = {
@@ -18,11 +28,11 @@
                 theme: {
                     extend: {
                         "colors": {
-                            "on-primary-fixed": "#131b2e", "inverse-primary": "#bec6e0", "surface-container-highest": "#e2e2e2", "surface-bright": "#f9f9f9", "outline": "#76777d", "inverse-surface": "#2f3131", "error": "#ba1a1a", "tertiary": "#000000", "on-secondary-fixed": "#191c1e", "outline-variant": "#c6c6cd", "on-tertiary-fixed-variant": "#38485d", "on-primary-fixed-variant": "#3f465c", "on-tertiary": "#ffffff", "tertiary-container": "#0b1c30", "on-tertiary-fixed": "#0b1c30", "on-primary-container": "#7c839b", "on-secondary-fixed-variant": "#444749", "error-container": "#ffdad6", "on-primary": "#ffffff", "tertiary-fixed-dim": "#b7c8e1", "surface-variant": "#e2e2e2", "surface-dim": "#dadada", "primary-fixed-dim": "#bec6e0", "surface-container-low": "#f3f3f4", "on-background": "#1a1c1c", "on-secondary": "#ffffff", "on-error": "#ffffff", "secondary-container": "#e0e3e5", "on-surface": "#1a1c1c", "inverse-on-surface": "#f0f1f1", "surface-container-high": "#e8e8e8", "surface-tint": "#565e74", "surface": "#f9f9f9", "secondary-fixed": "#e0e3e5", "secondary-fixed-dim": "#c4c7c9", "primary-container": "#131b2e", "tertiary-fixed": "#d3e4fe", "surface-container-lowest": "#ffffff", "on-secondary-container": "#626567", "surface-container": "#eeeeee", "secondary": "#5c5f61", "background": "#f9f9f9", "on-surface-variant": "#45464d", "primary": "#000000", "on-error-container": "#93000a", "on-tertiary-container": "#75859d", "primary-fixed": "#dae2fd"
+                            "on-primary-fixed": "#131b2e", "inverse-primary": "#bec6e0", "surface-container-highest": "#e2e2e2", "surface-bright": "#f9f9f9", "outline": "#76777d", "inverse-surface": "#2f3131", "error": "#ba1a1a", "tertiary": "#000000", "on-secondary-fixed": "#191c1e", "outline-variant": "#c6c6cd", "on-tertiary-fixed-variant": "#38485d", "on-primary-fixed-variant": "#3f465c", "on-tertiary": "#ffffff", "tertiary-container": "#0b1c30", "on-tertiary-fixed": "#0b1c30", "on-primary-container": "#1a3fd6", "on-secondary-fixed-variant": "#444749", "error-container": "#ffdad6", "on-primary": "#ffffff", "tertiary-fixed-dim": "#b7c8e1", "surface-variant": "#e2e2e2", "surface-dim": "#dadada", "primary-fixed-dim": "#bec6e0", "surface-container-low": "#f3f3f4", "on-background": "#1a1c1c", "on-secondary": "#ffffff", "on-error": "#ffffff", "secondary-container": "#e0e3e5", "on-surface": "#1a1c1c", "inverse-on-surface": "#f0f1f1", "surface-container-high": "#e8e8e8", "surface-tint": "#565e74", "surface": "#f9f9f9", "secondary-fixed": "#e0e3e5", "secondary-fixed-dim": "#c4c7c9", "primary-container": "#131b2e", "tertiary-fixed": "#d3e4fe", "surface-container-lowest": "#ffffff", "on-secondary-container": "#626567", "surface-container": "#eeeeee", "secondary": "#5c5f61", "background": "#f9f9f9", "on-surface-variant": "#45464d", "primary": "#111318", "on-error-container": "#93000a", "on-tertiary-container": "#75859d", "primary-fixed": "#dae2fd", "ink": "#111318", "ink-soft": "#3f434d", "ink-muted": "#71757f", "line": "#e7e8ec", "paper": "#ffffff", "canvas": "#f6f6f8", "accent": "#2f5bff", "accent-ink": "#1a3fd6", "accent-soft": "#eef2ff"
                         },
                         "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
                         "spacing": { "base": "8px", "container-max": "1280px", "stack-md": "24px", "stack-sm": "12px", "margin-mobile": "20px", "gutter": "24px", "margin-desktop": "64px", "stack-lg": "48px" },
-                        "fontFamily": { "body-lg": ["Hanken Grotesk"], "display-lg": ["Libre Caslon Text"], "headline-lg": ["Libre Caslon Text"], "headline-md": ["Libre Caslon Text"], "body-md": ["Hanken Grotesk"], "display-lg-mobile": ["Libre Caslon Text"], "caption": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"] },
+                        "fontFamily": { "body-lg": ["Pretendard","system-ui","sans-serif"], "display-lg": ["Pretendard","system-ui","sans-serif"], "headline-lg": ["Pretendard","system-ui","sans-serif"], "headline-md": ["Pretendard","system-ui","sans-serif"], "body-md": ["Pretendard","system-ui","sans-serif"], "display-lg-mobile": ["Pretendard","system-ui","sans-serif"], "caption": ["Pretendard","system-ui","sans-serif"], "label-md": ["Pretendard","system-ui","sans-serif"], "serif": ["\"Libre Caslon Text\"","Georgia","serif"], "mono": ["ui-monospace","Menlo","monospace"] },
                         "fontSize": {
                             "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
                             "display-lg": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
@@ -73,28 +83,32 @@
                 transition: none
             }
         }
+
+        .font-display-lg, .font-headline-lg { font-weight: 700; letter-spacing: -.02em; }
+        .font-headline-md { font-weight: 600; letter-spacing: -.01em; }
+        .diffused-shadow { box-shadow: 0 1px 2px rgba(17,19,24,.04), 0 12px 32px -18px rgba(17,19,24,.18); }
     </style>
 </head>
 
 <body class="bg-surface text-on-surface font-body-md overflow-x-hidden">
 
     <header
-        class="fixed top-0 w-full z-50 bg-white/70 glass border-b border-outline-variant/30 transition-all duration-300">
-        <nav class="max-w-container-max mx-auto px-margin-desktop h-20 flex justify-between items-center">
-            <a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors flex items-center gap-2"
-                href="portfolio-v3.html">
+        class="fixed top-0 inset-x-0 z-50 bg-paper/85 backdrop-blur border-b border-line transition-all duration-300">
+        <nav class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-16 md:h-20 flex justify-between items-center">
+            <a class="inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors"
+                href="index.html">
                 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                Suman Kim
+                <span class="font-serif text-lg text-ink">Suman Kim</span>
             </a>
-            <a class="font-body-md text-body-md text-secondary hover:text-primary transition-colors"
-                href="portfolio-v3.html#projects">All Projects</a>
+            <a class="text-sm text-ink-soft hover:text-ink transition-colors"
+                href="index.html#work">All Projects</a>
         </nav>
     </header>
 
     <main class="pt-20">
 
         <!-- Hero -->
-        <section class="py-stack-lg px-margin-desktop">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop">
             <div class="max-w-container-max mx-auto">
                 <span
                     class="font-label-md text-label-md uppercase tracking-widest text-on-primary-container mb-2 block">Case
@@ -122,7 +136,7 @@
         </section>
 
         <!-- Overview -->
-        <section class="py-stack-lg px-margin-desktop reveal-on-scroll">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
                     <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
@@ -147,7 +161,7 @@
         </section>
 
         <!-- Background -->
-        <section class="py-stack-lg px-margin-desktop reveal-on-scroll">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="flex items-baseline gap-4 mb-stack-md">
                     <span class="font-label-md text-label-md text-outline-variant uppercase">01</span>
@@ -164,7 +178,7 @@
         </section>
 
         <!-- Key Features -->
-        <section class="py-stack-lg px-margin-desktop bg-surface-container-lowest reveal-on-scroll">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop bg-surface-container-lowest reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="flex items-baseline gap-4 mb-stack-md">
                     <span class="font-label-md text-label-md text-outline-variant uppercase">02</span>
@@ -219,7 +233,7 @@
         </section>
 
         <!-- Architecture -->
-        <section class="py-stack-lg px-margin-desktop reveal-on-scroll">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="flex items-baseline gap-4 mb-stack-md">
                     <span class="font-label-md text-label-md text-outline-variant uppercase">03</span>
@@ -297,7 +311,7 @@
         </section>
 
         <!-- Key Challenges -->
-        <section class="py-stack-lg px-margin-desktop reveal-on-scroll">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop reveal-on-scroll">
             <div class="max-w-container-max mx-auto">
                 <div class="flex items-baseline gap-4 mb-stack-lg">
                     <span class="font-label-md text-label-md text-outline-variant uppercase">04</span>
@@ -343,10 +357,10 @@
         </section>
 
         <!-- Back to projects -->
-        <section class="py-stack-lg px-margin-desktop">
+        <section class="py-stack-lg px-margin-mobile md:px-margin-desktop">
             <div class="max-w-container-max mx-auto flex justify-center">
                 <a class="border border-outline-variant text-primary px-8 py-4 rounded-full font-label-md text-label-md hover:bg-surface-container-low transition-all flex items-center gap-2"
-                    href="portfolio-v3.html#projects">
+                    href="index.html#work">
                     <span class="material-symbols-outlined text-sm">arrow_back</span>
                     다른 프로젝트 보기
                 </a>
