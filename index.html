@@ -31,6 +31,7 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=block">
 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">try {
       tailwind.config = {
@@ -153,6 +154,15 @@
     .count.pop { animation: pop .5s var(--ease-out); }
     @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.2)} 100%{transform:scale(1)} }
     .mag { transition: transform .25s var(--ease-out), background-color .3s ease, border-color .3s ease; will-change: transform; }
+
+    /* Projects carousel */
+    .projects-swiper { --swiper-theme-color: #2f5bff; overflow: hidden; padding: 8px 6px; }
+    .projects-swiper .swiper-wrapper { align-items: stretch; }
+    .projects-swiper .swiper-slide { height: auto; }
+    .projects-pagination { display: flex; justify-content: center; gap: 6px; margin-top: 26px; }
+    .projects-pagination .swiper-pagination-bullet { width: 7px; height: 7px; background: #c9ccd3; opacity: 1; transition: width .35s var(--ease-out), background .3s ease; }
+    .projects-pagination .swiper-pagination-bullet-active { width: 24px; border-radius: 4px; background: #2f5bff; }
+    .proj-nav:disabled { opacity: .3; cursor: default; }
 
     /* Mobile drawer */
     #mobileDrawer { transition: opacity .3s ease; }
@@ -377,87 +387,105 @@
           </a>
         </div>
 
-        <!-- More projects (compact) -->
+        <!-- More projects (carousel) -->
         <div class="mt-10 flex items-center gap-4">
           <span class="font-mono text-eyebrow uppercase text-ink-muted whitespace-nowrap">More projects</span>
           <span class="h-px flex-1 bg-line"></span>
+          <div class="flex gap-2">
+            <button class="proj-prev proj-nav w-10 h-10 rounded-full border border-line flex items-center justify-center text-ink hover:bg-ink hover:text-white transition-colors" aria-label="이전 프로젝트">
+              <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            </button>
+            <button class="proj-next proj-nav w-10 h-10 rounded-full border border-line flex items-center justify-center text-ink hover:bg-ink hover:text-white transition-colors" aria-label="다음 프로젝트">
+              <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+          </div>
         </div>
 
-        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger">
-          <!-- 03 아슬란 -->
-          <a href="project-aslan.html" class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Surveillance</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">03</span>
+        <div class="mt-6 swiper projects-swiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <a href="project-aslan.html" class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Surveillance</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">03</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink group-hover:text-accent transition-colors">아슬란</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합했습니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · PostgreSQL · Redis · WebSocket · Next.js</p>
+                <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink group-hover:text-accent transition-colors">
+                  자세히 보기 <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">north_east</span>
+                </span>
+              </a>
             </div>
-            <h3 class="text-lg font-bold text-ink group-hover:text-accent transition-colors">아슬란</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합했습니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · PostgreSQL · Redis · WebSocket · Next.js</p>
-            <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-ink group-hover:text-accent transition-colors">
-              자세히 보기 <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">north_east</span>
-            </span>
-          </a>
-          <!-- 04 스마트쉘터 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">IoT</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">04</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">IoT</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">04</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">스마트쉘터</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리합니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · MySQL · WebSocket · MQTT</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">스마트쉘터</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리합니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · MySQL · WebSocket · MQTT</p>
-          </div>
-          <!-- 05 오늘알바 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Platform · 개인</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">05</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Platform · 개인</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">05</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">오늘알바</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포했습니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · React Native · PostgreSQL · WebSocket</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">오늘알바</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포했습니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · React Native · PostgreSQL · WebSocket</p>
-          </div>
-          <!-- 06 설비 자산관리 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Enterprise · 개인</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">06</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Enterprise · 개인</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">06</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">설비 자산관리 서비스</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현했습니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · JPA · Hexagonal · TDD</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">설비 자산관리 서비스</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현했습니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · JPA · Hexagonal · TDD</p>
-          </div>
-          <!-- 07 주식 자동매매 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Trading · 개인</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">07</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Trading · 개인</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">07</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">주식 자동매매 시스템</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리해 전략 교체와 백테스트가 쉽도록 설계했습니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · 전략 패턴 · 시세 수집 · 자동화</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">주식 자동매매 시스템</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리해 전략 교체와 백테스트가 쉽도록 설계했습니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · 전략 패턴 · 시세 수집 · 자동화</p>
-          </div>
-          <!-- 08 30일 챌린지 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Mobile · 개인</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">08</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Mobile · 개인</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">08</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">30일 챌린지 앱</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">습관 형성을 돕는 30일 챌린지 플랫폼. 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반으로 설계 중입니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · TypeORM · MySQL · React Native</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">30일 챌린지 앱</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">습관 형성을 돕는 30일 챌린지 플랫폼. 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반으로 설계 중입니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">NestJS · TypeORM · MySQL · React Native</p>
-          </div>
-          <!-- 09 뉴스 키워드 구독 -->
-          <div class="group lift rounded-xl border border-line bg-paper p-6 flex flex-col sm:col-span-2 lg:col-span-1">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Platform · 개인</span>
-              <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">09</span>
+            <div class="swiper-slide">
+              <div class="group lift h-full rounded-xl border border-line bg-paper p-6 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono text-[11px] uppercase tracking-wider text-ink-muted">Platform · 개인</span>
+                  <span class="font-serif text-lg text-line group-hover:text-accent transition-colors">09</span>
+                </div>
+                <h3 class="text-lg font-bold text-ink">뉴스 키워드 구독 서비스</h3>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">구독 키워드 기반 뉴스 피드 서비스. DDD·클린 아키텍처·TDD로 설계하고 Redis 캐싱으로 성능을 튜닝했습니다.</p>
+                <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · Next.js · MySQL · Redis</p>
+              </div>
             </div>
-            <h3 class="text-lg font-bold text-ink">뉴스 키워드 구독 서비스</h3>
-            <p class="mt-2 text-sm leading-relaxed text-ink-soft flex-grow">구독 키워드 기반 뉴스 피드 서비스. DDD·클린 아키텍처·TDD로 설계하고 Redis 캐싱으로 성능을 튜닝했습니다.</p>
-            <p class="mt-4 font-mono text-xs text-ink-muted">Java · Spring Boot · Next.js · MySQL · Redis</p>
           </div>
         </div>
+        <div class="swiper-pagination projects-pagination"></div>
       </div>
     </section>
 
@@ -649,7 +677,28 @@
     </footer>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script>
+    // ---- Projects carousel (Swiper) ----
+    (function () {
+      if (typeof Swiper === 'undefined') return;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      new Swiper('.projects-swiper', {
+        slidesPerView: 1.15,
+        spaceBetween: 16,
+        grabCursor: true,
+        loop: true,
+        speed: 650,
+        autoplay: reduce ? false : { delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true },
+        pagination: { el: '.projects-pagination', clickable: true },
+        navigation: { prevEl: '.proj-prev', nextEl: '.proj-next' },
+        breakpoints: {
+          640: { slidesPerView: 2, spaceBetween: 16 },
+          1024: { slidesPerView: 3, spaceBetween: 16 }
+        }
+      });
+    })();
+
     // ---- Mobile drawer ----
     (function () {
       const drawer = document.getElementById('mobileDrawer');
