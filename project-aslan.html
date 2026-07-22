@@ -19,6 +19,7 @@
         href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&display=swap">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=block">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">try {
             tailwind.config = {
@@ -113,6 +114,13 @@
 
         .diagram { clip-path: inset(0 101% 0 0); transition: clip-path 1.15s var(--ease-out) }
         .reveal-on-scroll.active .diagram { clip-path: inset(0 0 0 0) }
+
+        .features-swiper { --swiper-theme-color: #2f5bff; overflow: hidden; padding: 6px 4px }
+        .features-swiper .swiper-wrapper { align-items: stretch }
+        .features-swiper .swiper-slide { height: auto }
+        .features-pagination { position: static; display: flex; justify-content: center; gap: 6px }
+        .features-pagination .swiper-pagination-bullet { width: 7px; height: 7px; background: #c6c6cd; opacity: 1; transition: width .35s ease }
+        .features-pagination .swiper-pagination-bullet-active { width: 22px; border-radius: 4px; background: #2f5bff }
 
         #scrollProgress {
             position: fixed;
@@ -345,49 +353,72 @@
                     <span class="font-label-md text-label-md text-outline-variant uppercase">02</span>
                     <h2 class="font-headline-lg text-headline-lg text-primary">핵심 기능</h2>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-gutter">
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">videocam</span>
+                <div class="swiper features-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">videocam</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">실시간 다채널 영상 관제</h3>
+                                <p class="text-caption text-secondary">네이티브 영상 SDK를 호출해 여러 채널을 한 화면에서 실시간 재생</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">실시간 다채널 영상 관제</h3>
-                        <p class="text-caption text-secondary">네이티브 영상 SDK를 호출해 여러 채널을 한 화면에서 실시간 재생</p>
-                    </div>
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">history</span>
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">history</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">녹화 조회 · 타임라인</h3>
+                                <p class="text-caption text-secondary">시간대별로 녹화를 탐색하고 원하는 구간을 재생</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">녹화 조회 · 타임라인</h3>
-                        <p class="text-caption text-secondary">시간대별로 녹화를 탐색하고 원하는 구간을 재생</p>
-                    </div>
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">notifications_active</span>
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">notifications_active</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">실시간 이벤트 알림</h3>
+                                <p class="text-caption text-secondary">장비·서버 이벤트를 즉시 관제 화면에 표시</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">실시간 이벤트 알림</h3>
-                        <p class="text-caption text-secondary">장비·서버 이벤트를 즉시 관제 화면에 표시</p>
-                    </div>
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">dvr</span>
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">dvr</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">카메라 · NVR 관리</h3>
+                                <p class="text-caption text-secondary">장비 등록, 상태 점검, 채널 구성을 한 곳에서 관리</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">카메라 · NVR 관리</h3>
-                        <p class="text-caption text-secondary">장비 등록, 상태 점검, 채널 구성을 한 곳에서 관리</p>
-                    </div>
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">grid_view</span>
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">grid_view</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">관제 대시보드</h3>
+                                <p class="text-caption text-secondary">사이트·채널 상태를 한눈에 보는 통합 대시보드</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">관제 대시보드</h3>
-                        <p class="text-caption text-secondary">사이트·채널 상태를 한눈에 보는 통합 대시보드</p>
-                    </div>
-                    <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-primary text-[20px]">admin_panel_settings</span>
+                        <div class="swiper-slide">
+                            <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10 h-full">
+                                <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
+                                    <span class="material-symbols-outlined text-primary text-[20px]">admin_panel_settings</span>
+                                </div>
+                                <h3 class="font-label-md text-label-md mb-1">사용자 · 권한</h3>
+                                <p class="text-caption text-secondary">역할별 접근 권한과 사용자 계정을 관리</p>
+                            </div>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">사용자 · 권한</h3>
-                        <p class="text-caption text-secondary">역할별 접근 권한과 사용자 계정을 관리</p>
                     </div>
+                </div>
+                <div class="flex items-center justify-center gap-4 mt-stack-md">
+                    <button class="feat-prev w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors" aria-label="이전 기능">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    </button>
+                    <div class="swiper-pagination features-pagination"></div>
+                    <button class="feat-next w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors" aria-label="다음 기능">
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -517,6 +548,7 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             document.querySelectorAll('svg').forEach(s => { if (s.pauseAnimations) s.pauseAnimations(); });
@@ -538,6 +570,18 @@
             };
             window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(update); ticking = true; } }, { passive: true });
             update();
+        })();
+
+        (function () {
+            if (typeof Swiper === 'undefined') return;
+            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            new Swiper('.features-swiper', {
+                slidesPerView: 1.15, spaceBetween: 16, grabCursor: true, loop: true, speed: 600,
+                autoplay: reduce ? false : { delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true },
+                pagination: { el: '.features-pagination', clickable: true },
+                navigation: { prevEl: '.feat-prev', nextEl: '.feat-next' },
+                breakpoints: { 640: { slidesPerView: 2, spaceBetween: 16 }, 1024: { slidesPerView: 3, spaceBetween: 16 } }
+            });
         })();
     </script>
 </body>
