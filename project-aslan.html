@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>아슬란 (ASLAN) — CCTV·NVR 통합 관제 · Suman Kim</title>
-    <meta name="description" content="CCTV·NVR을 한 화면에서 관제하는 영상 통합 관제 웹. 실시간 멀티 채널 스트리밍, 녹화 조회, 이벤트 알림을 하나의 콘솔로 통합한 케이스 스터디.">
+    <meta name="description" content="CCTV·NVR을 하나의 웹에서 관제하는 통합 관제 솔루션. 영상은 네이티브 SDK로 재생하고, 장비·녹화·이벤트 관리와 관제 UI를 웹으로 묶은 케이스 스터디.">
     <meta property="og:type" content="article">
     <meta property="og:title" content="아슬란 (ASLAN) — CCTV·NVR 통합 영상 관제 · Suman Kim">
-    <meta property="og:description" content="CCTV·NVR을 한 화면에서 관제하는 영상 통합 관제 웹. 실시간 멀티 채널 스트리밍, 녹화 조회, 이벤트 알림을 하나의 콘솔로 통합한 케이스 스터디.">
+    <meta property="og:description" content="CCTV·NVR을 하나의 웹에서 관제하는 통합 관제 솔루션. 영상은 네이티브 SDK로 재생하고, 장비·녹화·이벤트 관리와 관제 UI를 웹으로 묶은 케이스 스터디.">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="icon"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111318'/%3E%3Ctext x='50' y='68' font-family='Georgia,serif' font-size='54' fill='%23fff' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
@@ -113,8 +113,8 @@
                     Study · Surveillance</span>
                 <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-stack-sm">아슬란
                     (ASLAN)</h1>
-                <p class="font-body-lg text-body-lg text-secondary max-w-2xl mb-stack-md">CCTV·NVR을 한 화면에서 관제하는 영상 통합 관제 웹.
-                    실시간 멀티 채널 스트리밍부터 녹화 조회, 이벤트 알림까지 하나의 콘솔로 묶었습니다.</p>
+                <p class="font-body-lg text-body-lg text-secondary max-w-2xl mb-stack-md">CCTV·NVR을 하나의 웹에서 관제하는 통합 관제 솔루션.
+                    영상은 네이티브 SDK로 재생하고, 장비·녹화·이벤트 관리와 관제 UI를 웹으로 묶었습니다.</p>
                 <div class="flex flex-wrap gap-2 mb-stack-lg">
                     <span
                         class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">NestJS</span>
@@ -127,7 +127,7 @@
                     <span
                         class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">WebSocket</span>
                     <span
-                        class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">RTSP·HLS</span>
+                        class="text-caption font-label-md text-on-primary-container bg-surface-container-low px-3 py-1 rounded-full">네이티브 영상 SDK</span>
                 </div>
                 <div class="rounded-xl overflow-hidden diffused-shadow border border-outline-variant/10">
                     <svg viewBox="0 0 800 450" class="w-full h-auto" role="img" aria-label="아슬란 CCTV 통합 관제 콘솔 화면 예시">
@@ -137,78 +137,77 @@
                             <text x="92" y="30" font-size="12" fill="#8b8f98">· 통합 관제 콘솔</text>
                             <circle cx="726" cy="23" r="4" fill="#ff4d4f"/>
                             <text x="738" y="27" font-size="11" font-family="monospace" fill="#e6e8ec">LIVE</text>
-                            
                             <g>
                                 <rect x="16" y="58" width="248" height="161" rx="8" fill="#1c212b" stroke="#2f5bff" stroke-width="1.8"/>
-                                <rect x="16" y="158" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="16" y="158" width="248" height="61" fill="#232a34"/>
                                 <circle cx="106" cy="136" r="8" fill="#333c48"/>
                                 <rect x="94" y="152" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="146" cy="122" r="10" fill="#2f5bff"/>
                                 <rect x="132" y="138" width="28" height="48" rx="11" fill="#2f5bff"/>
                                 <rect x="26" y="68" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="32" y="81" font-size="10" font-family="monospace" fill="#cfd3da">CH 01</text>
-                                <circle cx="240" cy="77" r="4" fill="#ff4d4f"/>
-                                <text x="248" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="224" cy="77" r="4" fill="#ff4d4f"/>
+                                <text x="232" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <g>
                                 <rect x="276" y="58" width="248" height="161" rx="8" fill="#1c212b" stroke="#2b313d" stroke-width="1"/>
-                                <rect x="276" y="158" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="276" y="158" width="248" height="61" fill="#232a34"/>
                                 <circle cx="366" cy="136" r="8" fill="#333c48"/>
                                 <rect x="354" y="152" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="406" cy="122" r="10" fill="#3a4350"/>
                                 <rect x="392" y="138" width="28" height="48" rx="11" fill="#3a4350"/>
                                 <rect x="286" y="68" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="292" y="81" font-size="10" font-family="monospace" fill="#cfd3da">CH 02</text>
-                                <circle cx="500" cy="77" r="4" fill="#ff4d4f"/>
-                                <text x="508" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="484" cy="77" r="4" fill="#ff4d4f"/>
+                                <text x="492" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <g>
                                 <rect x="536" y="58" width="248" height="161" rx="8" fill="#1c212b" stroke="#2b313d" stroke-width="1"/>
-                                <rect x="536" y="158" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="536" y="158" width="248" height="61" fill="#232a34"/>
                                 <circle cx="626" cy="136" r="8" fill="#333c48"/>
                                 <rect x="614" y="152" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="666" cy="122" r="10" fill="#3a4350"/>
                                 <rect x="652" y="138" width="28" height="48" rx="11" fill="#3a4350"/>
                                 <rect x="546" y="68" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="552" y="81" font-size="10" font-family="monospace" fill="#cfd3da">CH 03</text>
-                                <circle cx="760" cy="77" r="4" fill="#ff4d4f"/>
-                                <text x="768" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="744" cy="77" r="4" fill="#ff4d4f"/>
+                                <text x="752" y="81" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <g>
                                 <rect x="16" y="231" width="248" height="161" rx="8" fill="#1c212b" stroke="#2b313d" stroke-width="1"/>
-                                <rect x="16" y="331" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="16" y="331" width="248" height="61" fill="#232a34"/>
                                 <circle cx="106" cy="309" r="8" fill="#333c48"/>
                                 <rect x="94" y="326" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="146" cy="295" r="10" fill="#3a4350"/>
                                 <rect x="132" y="312" width="28" height="48" rx="11" fill="#3a4350"/>
                                 <rect x="26" y="241" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="32" y="254" font-size="10" font-family="monospace" fill="#cfd3da">CH 04</text>
-                                <circle cx="240" cy="250" r="4" fill="#ff4d4f"/>
-                                <text x="248" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="224" cy="250" r="4" fill="#ff4d4f"/>
+                                <text x="232" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <g>
                                 <rect x="276" y="231" width="248" height="161" rx="8" fill="#1c212b" stroke="#2b313d" stroke-width="1"/>
-                                <rect x="276" y="331" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="276" y="331" width="248" height="61" fill="#232a34"/>
                                 <circle cx="366" cy="309" r="8" fill="#333c48"/>
                                 <rect x="354" y="326" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="406" cy="295" r="10" fill="#3a4350"/>
                                 <rect x="392" y="312" width="28" height="48" rx="11" fill="#3a4350"/>
                                 <rect x="286" y="241" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="292" y="254" font-size="10" font-family="monospace" fill="#cfd3da">CH 05</text>
-                                <circle cx="500" cy="250" r="4" fill="#ff4d4f"/>
-                                <text x="508" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="484" cy="250" r="4" fill="#ff4d4f"/>
+                                <text x="492" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <g>
                                 <rect x="536" y="231" width="248" height="161" rx="8" fill="#1c212b" stroke="#2b313d" stroke-width="1"/>
-                                <rect x="536" y="331" width="248" height="61" rx="0" fill="#232a34"/>
+                                <rect x="536" y="331" width="248" height="61" fill="#232a34"/>
                                 <circle cx="626" cy="309" r="8" fill="#333c48"/>
                                 <rect x="614" y="326" width="24" height="42" rx="9" fill="#333c48"/>
                                 <circle cx="666" cy="295" r="10" fill="#3a4350"/>
                                 <rect x="652" y="312" width="28" height="48" rx="11" fill="#3a4350"/>
                                 <rect x="546" y="241" width="52" height="18" rx="4" fill="#000000" opacity="0.55"/>
                                 <text x="552" y="254" font-size="10" font-family="monospace" fill="#cfd3da">CH 06</text>
-                                <circle cx="760" cy="250" r="4" fill="#ff4d4f"/>
-                                <text x="768" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
+                                <circle cx="744" cy="250" r="4" fill="#ff4d4f"/>
+                                <text x="752" y="254" font-size="9" font-family="monospace" fill="#ff8183">REC</text>
                             </g>
                             <rect x="16" y="404" width="768" height="30" rx="6" fill="#161a22"/>
                             <rect x="28" y="416" width="620" height="6" rx="3" fill="#2b313d"/>
@@ -253,8 +252,8 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
                     <p class="text-secondary font-body-md leading-relaxed md:col-span-2">CCTV와 NVR은 제조사·모델마다 프로토콜과 전용 뷰어가
-                        제각각이라, 현장에서는 장비마다 다른 툴로 실시간 영상·녹화·이벤트를 따로 확인해야 했습니다. 사이트와 채널이 늘어날수록 관제 부담이 빠르게 커졌습니다.</p>
-                    <p class="text-secondary font-body-md leading-relaxed">여러 사이트의 다채널 영상을 한 화면에서 실시간으로 보고, 녹화를 시간대별로
+                        제각각이라, 현장에서는 장비마다 다른 툴로 영상·녹화·이벤트를 따로 확인해야 했습니다. 사이트와 채널이 늘어날수록 관제 부담이 빠르게 커졌습니다.</p>
+                    <p class="text-secondary font-body-md leading-relaxed">여러 사이트의 다채널 영상을 한 화면에서 보고, 녹화를 시간대별로
                         조회하고, 이벤트를 즉시 파악할 수 있는 <b class="text-primary">통합 웹 관제</b>가 필요했습니다.</p>
                 </div>
             </div>
@@ -272,22 +271,22 @@
                         <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-primary text-[20px]">videocam</span>
                         </div>
-                        <h3 class="font-label-md text-label-md mb-1">실시간 멀티 채널 스트리밍</h3>
-                        <p class="text-caption text-secondary">여러 카메라 영상을 한 화면에서 동시에 실시간으로 재생</p>
+                        <h3 class="font-label-md text-label-md mb-1">실시간 다채널 영상 관제</h3>
+                        <p class="text-caption text-secondary">네이티브 영상 SDK를 호출해 여러 채널을 한 화면에서 실시간 재생</p>
                     </div>
                     <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
                         <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-primary text-[20px]">history</span>
                         </div>
                         <h3 class="font-label-md text-label-md mb-1">녹화 조회 · 타임라인</h3>
-                        <p class="text-caption text-secondary">시간대별로 녹화 파일을 탐색하고 원하는 구간을 재생</p>
+                        <p class="text-caption text-secondary">시간대별로 녹화를 탐색하고 원하는 구간을 재생</p>
                     </div>
                     <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
                         <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-primary text-[20px]">notifications_active</span>
                         </div>
                         <h3 class="font-label-md text-label-md mb-1">실시간 이벤트 알림</h3>
-                        <p class="text-caption text-secondary">움직임·연결 끊김 등 이벤트를 즉시 관제 화면에 표시</p>
+                        <p class="text-caption text-secondary">장비·서버 이벤트를 즉시 관제 화면에 표시</p>
                     </div>
                     <div class="bg-white p-stack-md rounded-xl diffused-shadow border border-outline-variant/10">
                         <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center mb-3">
@@ -323,57 +322,54 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-gutter items-center">
                     <div class="md:col-span-3 bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
-                        <svg viewBox="0 0 760 260" class="w-full h-auto" role="img"
-                            aria-label="카메라·NVR에서 미디어 변환과 NestJS 백엔드를 거쳐 Next.js 관제 웹으로 이어지는 아키텍처">
+                        <svg viewBox="0 0 760 290" class="w-full h-auto" role="img"
+                            aria-label="영상은 네이티브 SDK가, 관제·관리는 웹이 담당하는 2-plane 아키텍처">
                             <defs>
                                 <marker id="arw" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
                                     <path d="M0,0 L6,3 L0,6 Z" fill="#2f5bff"/>
                                 </marker>
                             </defs>
-                            <!-- stage boxes -->
-                            <rect x="16" y="44" width="152" height="72" rx="12" fill="#ffffff" stroke="#e7e8ec" stroke-width="1.5"/>
-                            <text x="92" y="76" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111318">카메라 · NVR</text>
-                            <text x="92" y="94" text-anchor="middle" font-size="9.5" fill="#71757f">현장 영상 장비</text>
-
-                            <rect x="212" y="44" width="152" height="72" rx="12" fill="#ffffff" stroke="#e7e8ec" stroke-width="1.5"/>
-                            <text x="288" y="76" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111318">미디어 변환</text>
-                            <text x="288" y="94" text-anchor="middle" font-size="9.5" fill="#71757f">RTSP → HLS · WebRTC</text>
-
-                            <rect x="408" y="44" width="152" height="72" rx="12" fill="#ffffff" stroke="#2f5bff" stroke-width="1.6"/>
-                            <text x="484" y="72" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111318">NestJS 백엔드</text>
-                            <text x="484" y="90" text-anchor="middle" font-size="9.5" fill="#71757f">API · 이벤트 게이트웨이</text>
-
-                            <rect x="604" y="44" width="140" height="72" rx="12" fill="#111318"/>
-                            <text x="674" y="72" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Next.js 관제 웹</text>
-                            <text x="674" y="90" text-anchor="middle" font-size="9.5" fill="#c6c6cd">다채널 관제 UI</text>
-
-                            <!-- data stores under backend -->
-                            <rect x="396" y="168" width="86" height="40" rx="8" fill="#f6f6f8" stroke="#e7e8ec"/>
-                            <text x="439" y="192" text-anchor="middle" font-size="10.5" fill="#45464d">PostgreSQL</text>
-                            <rect x="492" y="168" width="72" height="40" rx="8" fill="#f6f6f8" stroke="#e7e8ec"/>
-                            <text x="528" y="192" text-anchor="middle" font-size="10.5" fill="#45464d">Redis</text>
-                            <path d="M460,116 L446,166" stroke="#c6c6cd" stroke-width="1.4"/>
-                            <path d="M500,116 L520,166" stroke="#c6c6cd" stroke-width="1.4"/>
-
-                            <!-- flow arrows -->
-                            <path d="M168,80 L210,80" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
-                            <text x="189" y="72" text-anchor="middle" font-size="9" fill="#45464d">RTSP</text>
-                            <path d="M364,80 L406,80" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
-                            <text x="385" y="72" text-anchor="middle" font-size="8.5" fill="#45464d">스트림</text>
-                            <path d="M560,80 L602,80" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
-                            <text x="581" y="72" text-anchor="middle" font-size="8.5" fill="#45464d">HLS</text>
-
-                            <text x="380" y="238" text-anchor="middle" font-size="10.5" fill="#71757f">현장 장비 → 미디어 변환 → 백엔드 → 관제 웹 · 이벤트는 WebSocket으로 실시간 push</text>
+                            <!-- shared device (left) -->
+                            <rect x="16" y="66" width="140" height="186" rx="12" fill="#ffffff" stroke="#e7e8ec" stroke-width="1.5"/>
+                            <text x="86" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111318">카메라 · NVR</text>
+                            <text x="86" y="168" text-anchor="middle" font-size="9.5" fill="#71757f">현장 영상 장비</text>
+                            <!-- shared web (right) -->
+                            <rect x="600" y="66" width="150" height="186" rx="12" fill="#111318"/>
+                            <text x="675" y="150" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">Next.js 관제 웹</text>
+                            <text x="675" y="168" text-anchor="middle" font-size="9.5" fill="#c6c6cd">다채널 관제 UI</text>
+                            <!-- video plane -->
+                            <text x="250" y="60" font-size="9" font-weight="700" fill="#1a3fd6" letter-spacing="1">VIDEO PLANE</text>
+                            <rect x="250" y="70" width="210" height="60" rx="12" fill="#ffffff" stroke="#2f5bff" stroke-width="1.6"/>
+                            <text x="355" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#111318">네이티브 영상 SDK</text>
+                            <text x="355" y="114" text-anchor="middle" font-size="9.5" fill="#71757f">C++ 플레이어 · 직접 디코딩</text>
+                            <path d="M156,108 L248,100" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
+                            <text x="200" y="90" text-anchor="middle" font-size="8.5" fill="#45464d">RTSP·SDK</text>
+                            <path d="M460,100 L598,116" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
+                            <text x="528" y="96" text-anchor="middle" font-size="8.5" fill="#45464d">SDK 호출·렌더</text>
+                            <!-- control plane -->
+                            <text x="250" y="164" font-size="9" font-weight="700" fill="#71757f" letter-spacing="1">CONTROL PLANE</text>
+                            <rect x="250" y="172" width="210" height="56" rx="12" fill="#ffffff" stroke="#e7e8ec" stroke-width="1.5"/>
+                            <text x="355" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#111318">NestJS 백엔드</text>
+                            <text x="355" y="213" text-anchor="middle" font-size="9.5" fill="#71757f">API · 이벤트 게이트웨이</text>
+                            <path d="M156,196 L248,200" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
+                            <path d="M460,200 L598,184" stroke="#2f5bff" stroke-width="1.8" marker-end="url(#arw)"/>
+                            <text x="528" y="182" text-anchor="middle" font-size="8.5" fill="#45464d">이벤트 push·WS</text>
+                            <rect x="256" y="240" width="94" height="34" rx="8" fill="#f6f6f8" stroke="#e7e8ec"/>
+                            <text x="303" y="261" text-anchor="middle" font-size="10" fill="#45464d">PostgreSQL</text>
+                            <rect x="360" y="240" width="80" height="34" rx="8" fill="#f6f6f8" stroke="#e7e8ec"/>
+                            <text x="400" y="261" text-anchor="middle" font-size="10" fill="#45464d">Redis</text>
+                            <path d="M320,228 L312,238" stroke="#c6c6cd" stroke-width="1.3"/>
+                            <path d="M388,228 L396,238" stroke="#c6c6cd" stroke-width="1.3"/>
                         </svg>
                     </div>
                     <div class="md:col-span-2">
-                        <p class="text-secondary font-body-md leading-relaxed mb-3">현장 영상 장비부터 관제 화면까지, 스트리밍과 이벤트를 <b
-                                class="text-primary">하나의 흐름</b>으로 묶은 구조입니다.</p>
+                        <p class="text-secondary font-body-md leading-relaxed mb-3">영상 재생과 관제·관리를 <b
+                                class="text-primary">두 평면으로 분리</b>한 구조입니다.</p>
                         <ul class="space-y-2 text-secondary text-sm">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>카메라·NVR의 RTSP 스트림을 브라우저가 재생할 수 있는 HLS/WebRTC로 변환</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>NestJS 백엔드가 API와 이벤트 게이트웨이를 담당하고, 장비 이벤트를 WebSocket으로 관제 화면에 push</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>영상은 프론트가 <b class="text-primary">네이티브 영상 SDK</b>를 호출하면 SDK(C++)가 장비에 직접 붙어 디코딩·렌더링</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>NestJS 백엔드가 API·이벤트 게이트웨이를 담당하고, 장비·서버 이벤트를 WebSocket으로 관제 화면에 push</span></li>
                             <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>PostgreSQL에 장비·이벤트·녹화 메타데이터를, Redis에 실시간 채널 상태·세션을 저장</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>Next.js로 다채널 관제 UI를 구성</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[16px] mt-1">check_circle</span><span>Next.js로 다채널 관제 UI를 구성하고, SDK 영상 영역과 웹 관제 화면을 함께 조율</span></li>
                         </ul>
                     </div>
                 </div>
@@ -391,36 +387,19 @@
                 <div class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md mb-stack-md">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-[20px]">smart_display</span>
+                            <span class="material-symbols-outlined text-primary text-[20px]">cast</span>
                         </div>
-                        <h3 class="font-headline-md text-xl text-primary">브라우저에서의 다채널 실시간 재생</h3>
+                        <h3 class="font-headline-md text-xl text-primary">영상은 네이티브 SDK로, 관제는 웹으로 — 역할 분리</h3>
                     </div>
-                    <p class="text-secondary font-body-md leading-relaxed mb-3">CCTV는 대부분 RTSP로 스트리밍하는데, 브라우저는 이를 직접 재생하지 못합니다. 다채널 영상을 웹에서 부드럽게 보여주는 것이 핵심 과제였습니다.</p>
+                    <p class="text-secondary font-body-md leading-relaxed mb-3">브라우저로 다채널 CCTV를 저지연으로 디코딩·재생하는 건 한계가 큽니다(코덱·하드웨어 디코딩·다채널 부하). 영상 재생과 웹 관제를 한 덩어리로 묶으면 양쪽 다 무거워집니다.</p>
                     <div class="bg-surface-container-low rounded-lg p-4">
                         <span class="text-caption font-label-md text-outline-variant uppercase block mb-2">해결</span>
                         <ul class="space-y-1.5 text-secondary text-sm list-disc list-inside">
-                            <li>RTSP 스트림을 브라우저가 재생할 수 있는 <b class="text-primary">HLS/WebRTC</b>로 변환해 웹에서 재생</li>
-                            <li>채널별 스트림을 필요할 때만 열고 닫도록 관리해 불필요한 부하를 줄임</li>
+                            <li>영상 재생은 <b class="text-primary">C++ 네이티브 영상 SDK</b>가 담당 — 프론트에서 SDK를 호출하면 SDK가 장비에 직접 붙어 디코딩·렌더링</li>
+                            <li>웹(아슬란)은 무거운 영상 파이프라인을 지지 않고 <b class="text-primary">장비·녹화·이벤트 관리와 관제 UI</b>에 집중</li>
+                            <li>프론트(Next.js)가 한 화면에서 SDK 영상 영역과 웹 관제 UI를 함께 배치·제어</li>
                         </ul>
-                        <p class="text-secondary text-sm mt-2">브라우저 제약을 우회해 <b class="text-primary">여러 채널을 한 화면에서 실시간</b>으로 볼 수 있게 했습니다.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md mb-stack-md">
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-[20px]">hub</span>
-                        </div>
-                        <h3 class="font-headline-md text-xl text-primary">제각각인 장비 규격의 추상화</h3>
-                    </div>
-                    <p class="text-secondary font-body-md leading-relaxed mb-3">제조사·모델마다 프로토콜과 기능이 달라, 상위 관제 로직이 장비 종류에 휘둘리면 유지보수가 빠르게 어려워집니다.</p>
-                    <div class="bg-surface-container-low rounded-lg p-4">
-                        <span class="text-caption font-label-md text-outline-variant uppercase block mb-2">해결</span>
-                        <ul class="space-y-1.5 text-secondary text-sm list-disc list-inside">
-                            <li>장비 연동 계층을 <b class="text-primary">어댑터</b>로 분리해, 상위 로직은 통일된 인터페이스로 카메라·NVR을 다루도록 설계</li>
-                            <li>새로운 장비가 추가돼도 어댑터만 확장하면 되는 구조</li>
-                        </ul>
-                        <p class="text-secondary text-sm mt-2">관제 로직과 장비 연동을 분리해 <b class="text-primary">장비가 늘어도 흔들리지 않는 구조</b>를 지향했습니다.</p>
+                        <p class="text-secondary text-sm mt-2">무거운 실시간 영상은 네이티브에, 관리·관제 로직은 웹에 두는 <b class="text-primary">역할 분리</b>로 양쪽의 강점을 살렸습니다.</p>
                     </div>
                 </div>
 
@@ -431,14 +410,15 @@
                         </div>
                         <h3 class="font-headline-md text-xl text-primary">이벤트를 늦지 않게 — 실시간 전달</h3>
                     </div>
-                    <p class="text-secondary font-body-md leading-relaxed mb-3">관제에서는 이벤트를 '늦지 않게' 보는 것이 중요합니다. 폴링만으로는 지연과 부하가 함께 커집니다.</p>
+                    <p class="text-secondary font-body-md leading-relaxed mb-3">관제에서는 장비·서버 이벤트를 '늦지 않게' 보는 것이 중요합니다. 폴링만으로는 지연과 부하가 함께 커집니다.</p>
                     <div class="bg-surface-container-low rounded-lg p-4">
                         <span class="text-caption font-label-md text-outline-variant uppercase block mb-2">해결</span>
                         <ul class="space-y-1.5 text-secondary text-sm list-disc list-inside">
-                            <li>장비 이벤트를 <b class="text-primary">WebSocket</b>으로 관제 화면에 실시간 push</li>
+                            <li>이벤트를 <b class="text-primary">WebSocket</b>으로 관제 화면에 실시간 push</li>
                             <li><b class="text-primary">Redis</b>로 채널·장비의 실시간 상태를 관리해 대시보드가 항상 최신 상태를 반영</li>
+                            <li><b class="text-primary">PostgreSQL</b>에는 이벤트·녹화·장비 메타데이터를 적재해 이력 조회에 사용</li>
                         </ul>
-                        <p class="text-secondary text-sm mt-2">수신과 상태 관리를 실시간 경로로 묶어 <b class="text-primary">즉시성 있는 관제</b>를 만들었습니다.</p>
+                        <p class="text-secondary text-sm mt-2">실시간 경로와 이력 저장을 분리해 <b class="text-primary">즉시성과 정확성</b>을 함께 잡았습니다.</p>
                     </div>
                 </div>
 
