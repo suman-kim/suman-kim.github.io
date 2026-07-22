@@ -348,14 +348,18 @@
                 </div>
 
                 <div
-                    class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
+                    class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md mb-stack-md">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
                             <span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
                         </div>
-                        <h3 class="font-headline-md text-xl text-primary">근태 관리 — "익일 퇴근" 처리 로직</h3>
+                        <h3 class="font-headline-md text-xl text-primary">근태 관리 — 손 대지 않는 자동 출퇴근 판정</h3>
                     </div>
-                    <p class="text-secondary font-body-md leading-relaxed mb-3">사용자마다 근태 규칙이 다르고, 규칙 안에는 근무시작/종료시간과 함께
+                    <p class="text-secondary font-body-md leading-relaxed mb-3">얼굴 인식이 성공하면 단말기 화면에 <b
+                            class="text-primary">출근/퇴근 버튼</b>이 떠서 사용자가 직접 선택할 수 있었지만, 버튼을 누르려면 결국 손을 써야 했습니다. "얼굴만 대면 끝"이라는
+                        얼굴 인식의 장점이 사라지는 지점이라고 판단해, 출근·퇴근 구분을 최대한 <b class="text-primary">서버 내부 로직으로 자동 판정</b>하는 방향으로
+                        살리고 싶었습니다.</p>
+                    <p class="text-secondary font-body-md leading-relaxed mb-3">그런데 사용자마다 근태 규칙이 다르고, 규칙 안에는 근무시작/종료시간과 함께
                         "당일 퇴근" 타입과 "익일 퇴근" 타입이 구분되어 있습니다. 문제는 요일·날짜별로 전날이 휴무일 수도 있다는 점 — 단순히 "전날 = 어제"로 고정할 수 없는
                         구조였습니다.</p>
                     <div class="bg-surface-container-low rounded-lg p-4">
@@ -366,7 +370,29 @@
                             <li>전날 기록에 퇴근시간이 없다면, 이번 이벤트를 전날의 퇴근시간으로 귀속 처리</li>
                         </ol>
                         <p class="text-secondary text-sm mt-2">즉 이벤트 시각이 아니라 <b class="text-primary">근태 규칙 + 직전 기록
-                                유무</b>를 함께 판단해 어느 날짜의 퇴근인지 결정하는 구조입니다.</p>
+                                유무</b>를 함께 판단해, 사용자가 버튼을 누르지 않아도 어느 날짜의 출근·퇴근인지 서버가 결정하는 구조입니다.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl diffused-shadow border border-outline-variant/10 p-stack-md">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-[20px]">sync</span>
+                        </div>
+                        <h3 class="font-headline-md text-xl text-primary">이벤트 수신 안정성 — 누락 이벤트 자동 복구</h3>
+                    </div>
+                    <p class="text-secondary font-body-md leading-relaxed mb-3">얼굴 인식 단말기의 인식 이벤트는 <b
+                            class="text-primary">MQTT</b>와 <b class="text-primary">Socket.IO</b> 두 경로로 서버에 전달됩니다.
+                        실시간성은 좋지만, 네트워크 상황에 따라 가끔 이벤트가 누락되는 증상이 있었습니다. 근태·출입 기록의 정확성과 직결되는 문제라 그냥 둘 수 없었습니다.</p>
+                    <div class="bg-surface-container-low rounded-lg p-4">
+                        <span class="text-caption font-label-md text-outline-variant uppercase block mb-2">해결</span>
+                        <ul class="space-y-1.5 text-secondary text-sm list-disc list-inside">
+                            <li>단말기 자체에 저장된 이벤트 로그와 서버 DB에 적재된 이벤트를 백그라운드에서 주기적으로 대조</li>
+                            <li>서버에 반영되지 않은(누락된) 이벤트를 찾아내 자동으로 재등록</li>
+                            <li>실시간 수신(MQTT·Socket.IO)은 그대로 두고, 대조·복구는 별도 백그라운드 작업으로 분리해 안정성을 보강</li>
+                        </ul>
+                        <p class="text-secondary text-sm mt-2">실시간 경로로 놓친 이벤트도 결국 기록에 반영되도록, <b
+                                class="text-primary">실시간 수신과 정합성 보정을 이중화</b>한 구조입니다.</p>
                     </div>
                 </div>
 
