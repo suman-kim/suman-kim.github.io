@@ -376,6 +376,7 @@
       .mark { position:absolute; top:24px; left:var(--m); z-index:2; }
       .theme-link { top:24px; }
       .hero-l .mark-slot { display:none; }
+      .hero-note { display:none; }
       .why-head, .statement, .problems, .principles { grid-column:1 / -1; }
       .pin-steps { grid-column:1 / -1; order:2; }
       .pin-stage { grid-column:1 / -1; order:1; position:relative; top:auto; height:auto; padding:12px; margin:0 calc(var(--m) * -1); }
@@ -419,7 +420,7 @@
         <span class="line"><span data-line style="--i:0">AI 에이전트</span></span>
         <span class="line"><span data-line style="--i:1">통합 관제 시스템</span></span>
       </h1>
-      <p class="hero-copy hero-fade">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 맥북에 항상 떠 있으면서 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
+      <p class="hero-copy hero-fade">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
       <div class="hero-act hero-fade late">
         <a class="btn btn-light" href="#how">동작 방식 보기</a>
         <span class="hero-meta">개인 프로젝트 · 2026년 10월부터 · NestJS, PostgreSQL, React</span>
@@ -444,7 +445,7 @@
         <button type="button" class="ui-btn primary" id="gSend">Claude에게 보내기</button>
       </div>
     </div>
-    <p class="hero-note hero-fade late">위 창은 직접 눌러 볼 수 있습니다. task를 연결하지 않고 보내면 막히고, 연결한 뒤 보내면 이 페이지 테마가 실제로 바뀝니다.</p>
+    <p class="hero-note hero-fade late">task를 연결하고 보내면 이 페이지 테마가 실제로 바뀝니다.</p>
   </div>
 </header>
 
@@ -524,7 +525,7 @@
     <div class="flows-head">
       <div>
         <h2 id="flows-h" data-rise>전체 흐름도</h2>
-        <p>세션, hook, 서버, runner, GitHub 사이에서 일이 어떤 순서로 넘어가는지 정리했습니다. 탭을 바꿔 가며 보거나 ‘단계별로 재생’을 눌러 보세요.</p>
+        <p>세션, hook, 서버, runner, GitHub 사이에서 일이 넘어가는 순서입니다.</p>
       </div>
       <button type="button" class="btn btn-accent" id="wfPlay">단계별로 재생</button>
     </div>
@@ -660,7 +661,6 @@
   <section class="sec wrap" id="features" aria-labelledby="feat-h">
     <div class="feat-head">
       <h2 id="feat-h" data-rise>주요 기능</h2>
-      <p>오른쪽 화면은 실제 대시보드와 세션 화면을 같은 구성으로 옮겨 그린 것입니다. 시연 영상은 준비되는 대로 붙이고 있습니다.</p>
     </div>
 
     <!--
@@ -671,7 +671,7 @@
     <article class="grid feature" id="f-context">
       <div class="f-text">
         <h3 data-rise>세션 시작 시 맥락 전달</h3>
-        <p class="one">새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다. 덕분에 어디까지 했는지 설명할 일이 거의 없어졌습니다.</p>
+        <p class="one">새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다.</p>
         <ul>
           <li>넣는 순서는 앱 정보, 이 세션의 task, 열린 task, 실수 기록 순이고 8,000자를 넘으면 뒤에서부터 자릅니다.</li>
           <li>세션은 MCP 도구로 task 상태를 바꾸고, 실수나 인수인계 문서, 버그를 직접 기록합니다.</li>
@@ -690,7 +690,6 @@
 <span class="k">실수 기록</span> 리뷰로 넘긴 task를 다시 진행 중으로
           바꾸려 함 → 새 task를 만들어 진행</code></pre>
         </div>
-        <figcaption>새 세션이 받은 맥락 블록</figcaption>
       </figure>
     </article>
 
@@ -720,7 +719,6 @@
             </tbody>
           </table>
         </div>
-        <figcaption>판정 대상은 수정과 셸 실행뿐입니다. 맨 위 창에서 직접 해 볼 수 있습니다.</figcaption>
       </figure>
     </article>
 
@@ -749,14 +747,13 @@
             </tbody>
           </table>
         </div>
-        <figcaption>테스트용 앱에서 처음 돌려 본 실행 네 번입니다. 구독으로 돌려서 금액은 API 요금으로 환산한 값입니다.</figcaption>
       </figure>
     </article>
 
     <article class="grid feature" id="f-sessions">
       <div class="f-text">
         <h3 data-rise>세션 모니터링</h3>
-        <p class="one">터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다. 세션이 여러 개 떠 있을 때 어느 쪽이 제 답을 기다리는지 터미널을 뒤질 필요가 없어졌습니다.</p>
+        <p class="one">터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다.</p>
         <ul>
           <li>상태는 hook 기록으로 추정합니다. 작업 중, 입력 대기, 30분 넘게 소식 없음, 종료 네 가지입니다.</li>
           <li>세션마다 연결된 task, 누가 시작했는지, 마지막 메시지와 도구를 보여 줍니다.</li>
@@ -776,7 +773,6 @@
             </tbody>
           </table>
         </div>
-        <figcaption>상태는 마지막 hook 기록을 보고 추정한 값입니다.</figcaption>
       </figure>
     </article>
 
@@ -786,8 +782,8 @@
         <p class="one">앱마다 개발 단계, 배포 기록, 버그, 제가 직접 해야 할 일, 작업 히스토리, 비용을 한 페이지에 모았습니다.</p>
         <ul>
           <li>사이드바의 앱 이름 옆 점 색으로 가장 급한 상태를 보여 줍니다. 배포가 실패했거나 심각한 버그가 있으면 빨강, 답변 대기면 주황 식입니다.</li>
-          <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다. 처음 연동했을 때는 90건을 가져오는 데 48초가 걸렸습니다.</li>
-          <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다. 하루알바는 97일째라 이 알림이 떠 있습니다.</li>
+          <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다.</li>
+          <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다.</li>
           <li>스토어 제출처럼 제가 직접 해야 하는 일은 세션이 ‘내 할 일’로 따로 등록합니다.</li>
         </ul>
       </div>
@@ -815,7 +811,6 @@
             <div class="signal"><b>하루알바</b> · 97일째 조용합니다. 계속할까요, 멈춤으로 둘까요?</div>
           </div>
         </div>
-        <figcaption>배포 기록은 GitHub Actions와 Railway가 남긴 기록에서 가져옵니다.</figcaption>
       </figure>
     </article>
 
@@ -847,7 +842,6 @@
             <button type="button" class="ui-btn secondary" tabindex="-1">반려</button>
           </div>
         </div>
-        <figcaption>이 기획을 승인하자 TH-2, TH-3이 만들어졌고 바로 실행할 수 있었습니다.</figcaption>
       </figure>
     </article>
 
@@ -872,7 +866,6 @@
             <li class="cur"><span class="ck" aria-hidden="true"></span><span>백그라운드 세션 시작<span class="d">기획 읽기 → UI 시안 → 첫 task</span></span></li>
           </ol>
         </div>
-        <figcaption>벌금통 앱은 이 과정으로 만들어졌습니다.</figcaption>
       </figure>
     </article>
   </section>
@@ -918,7 +911,7 @@
     <div class="grid ops">
       <div class="ops-text">
         <h2 id="ops-h" data-rise>운영</h2>
-        <p class="lead">개발 도구이긴 하지만 매일 켜 두고 쓰기 때문에, 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고 죽으면 다시 띄웁니다. DB가 Docker 안에 있어서 DB 포트가 열릴 때까지 기다렸다가 시작하고, 실행 중에는 맥북이 잠들지 않게 막아 둡니다.</p>
+        <p class="lead">매일 켜 두고 쓰는 서버라 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고, 죽으면 다시 띄웁니다.</p>
         <dl class="figs">
           <div><dt>5분</dt><dd>GitHub에서 배포, Actions 결과, 머지된 PR을 가져오는 주기</dd></div>
           <div><dt>14일</dt><dd>하루 한 번 pg_dump로 백업하고, 백업을 보관하는 기간</dd></div>

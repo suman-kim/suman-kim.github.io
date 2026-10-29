@@ -118,16 +118,17 @@
     [data-ui] .ui-btn:active { transform:scale(.97); }
 
     /* ---------- 히어로 ---------- */
-    .hero { display:grid; grid-template-columns:7fr 5fr; min-height:max(700px, 100svh); position:relative; }
-    .hero-l { background:var(--hero-l); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:space-between; gap:48px; padding:clamp(24px,2.8vw,40px) var(--m) clamp(32px,4vw,56px); }
-    .hero-r { background:var(--hero-r); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:center; gap:14px; padding:clamp(80px,8vw,104px) var(--m) clamp(32px,4vw,56px); position:relative; }
+    .hero { }
+    .hero-l { background:var(--hero-l); color:var(--hero-ink); display:flex; flex-direction:column; gap:clamp(80px,13vh,160px); padding:clamp(24px,2.8vw,40px) var(--m) clamp(32px,4vw,56px); }
+    .hero-body { display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); gap:clamp(32px,5vw,80px); align-items:end; }
     .topbar { display:flex; flex-wrap:wrap; align-items:center; gap:14px 32px; }
+    .topbar .toggles { margin-left:auto; }
     .mark { display:inline-flex; gap:10px; align-items:center; font-size:var(--step-small); font-weight:600; text-decoration:none; color:var(--hero-ink); }
     .mark b { display:inline-grid; place-items:center; width:34px; height:34px; background:var(--hero-ink); color:#14181d; font-size:13px; letter-spacing:-0.02em; }
     .nav { display:flex; flex-wrap:wrap; gap:6px 22px; font-size:var(--step-small); }
     .nav a { color:var(--hero-muted); text-decoration:none; padding:6px 0; transition:color .15s ease; }
     .nav a:hover { color:var(--hero-ink); }
-    .toggles { position:absolute; top:clamp(24px,2.8vw,40px); right:var(--m); display:flex; gap:20px; }
+    .toggles { display:flex; gap:20px; }
     .toggles button { background:none; border:0; padding:6px 0; font:inherit; font-size:var(--step-small); color:var(--hero-ink); cursor:pointer; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px; }
     .toggles button:hover { color:#ffffff; text-decoration-thickness:2px; }
     .hero h1 { font-size:var(--step-display); line-height:1.02; letter-spacing:-0.045em; }
@@ -137,34 +138,14 @@
     .hero-act { margin-top:32px; display:flex; flex-wrap:wrap; align-items:center; gap:14px 28px; }
     .hero-act .link { color:var(--hero-ink); font-size:var(--step-small); }
     .hero-meta { margin-top:28px; font-size:var(--step-small); color:var(--hero-muted); }
-    .hero-note { font-size:var(--step-small); color:var(--hero-muted); max-width:36em; }
 
-    /* 프로젝트 화면 슬라이드 */
-    .show { width:100%; }
-    .show-stage { position:relative; aspect-ratio:16/9; overflow:hidden; background:#0b0e12; }
-    .slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; display:block; }
-    .slide.on { opacity:1; z-index:1; }
-    .slide img { width:100%; height:100%; object-fit:cover; object-position:top left; display:block; transform:scale(1.04); transition:transform 6s linear; }
-    .slide.on img { transform:scale(1); }
-    .slide:focus-visible { outline:3px solid var(--hero-ink); outline-offset:-3px; }
-    .show-bar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px 20px; margin-top:16px; }
-    .show-cap b { display:block; font-size:var(--step-lead); font-weight:700; letter-spacing:-0.02em; color:var(--hero-ink); }
-    .show-cap span { display:block; margin-top:2px; font-size:var(--step-small); color:var(--hero-muted); }
-    .show-ctl { display:flex; align-items:center; gap:6px; }
-    .show-ctl .arrow { width:44px; height:44px; display:grid; place-items:center; background:var(--hero-l); color:var(--hero-ink); border:0; border-radius:0; cursor:pointer; transition:background-color .18s ease, transform .18s var(--ease-out); }
-    .show-ctl .arrow:hover { background:#000; }
-    .show-ctl .arrow:active { transform:scale(.94); }
-    .show-ctl .arrow svg { width:20px; height:20px; }
-    .dots { display:flex; gap:2px; }
-    .dots button { width:28px; height:44px; display:grid; place-items:center; background:none; border:0; padding:0; cursor:pointer; }
-    .dots button::before { content:''; width:8px; height:8px; border-radius:50%; background:var(--hero-muted); opacity:.5; transition:opacity .2s ease, width .3s var(--ease-out); }
-    .dots button[aria-current="true"]::before { opacity:1; width:22px; border-radius:4px; background:var(--hero-ink); }
 
     /* ---------- 숫자 띠 ---------- */
-    .figs { background:var(--surface); display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:var(--gap); padding:clamp(32px,4vw,56px) var(--m); }
+    .figs { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; }
+    .figs div { background:var(--hero-r); padding:clamp(18px,2vw,28px); }
     .figs div { display:flex; flex-direction:column; gap:8px; }
     .figs b { font-size:var(--step-display); font-weight:800; letter-spacing:-0.05em; line-height:1; font-variant-numeric:tabular-nums; }
-    .figs span { color:var(--ink); }
+    .figs span { color:var(--hero-muted); font-size:var(--step-small); }
 
     /* ---------- 일하는 방식 ---------- */
     .how-list { margin-top:clamp(36px,4vw,56px); display:flex; flex-direction:column; gap:4px; }
@@ -269,16 +250,11 @@
 
     /* ---------- 좁은 화면 ---------- */
     @media (max-width: 1100px) {
-      .hero { grid-template-columns:1fr 1fr; }
       .other { grid-template-columns:minmax(0,4fr) minmax(0,8fr); }
       .other .side { grid-column:2; flex-direction:row; flex-wrap:wrap; align-items:center; }
     }
     @media (max-width: 900px) {
-      .hero { grid-template-columns:1fr; }
-      .hero-r { padding-top:24px; padding-bottom:72px; position:static; }
-      .toggles { top:28px; }
-      .topbar { padding-right:150px; }
-      .figs { grid-template-columns:repeat(2, minmax(0,1fr)); row-gap:28px; }
+      .hero-body { grid-template-columns:minmax(0,1fr); row-gap:72px; }
       .how-row, .stack-row, .job { grid-template-columns:minmax(0,1fr); gap:8px; }
       .f-text, .f-fig { grid-column:1 / -1; }
       .f-fig { margin-top:24px; }
@@ -308,8 +284,13 @@
         <a href="#background" data-en="Background">학력 · 자격증</a>
         <a href="#contact" data-en="Contact">연락</a>
       </nav>
+      <div class="toggles">
+        <button type="button" id="langBtn" aria-label="Switch to English">EN</button>
+        <button type="button" id="themeBtn">다크 모드</button>
+      </div>
     </div>
-    <div>
+    <div class="hero-body">
+    <div class="hero-main">
       <h1 class="lines">
         <span class="line"><span data-line style="--i:0" data-en="From server to screen,">서버부터 화면까지,</span></span>
         <span class="line"><span data-line style="--i:1" data-en="one continuous flow.">한 흐름으로 설계합니다.</span></span>
@@ -320,41 +301,18 @@
         <a class="link" href="mailto:zzsdsdsd@gmail.com" data-en="Get in touch">연락하기</a>
         <a class="link" href="https://github.com/suman-kim">GitHub</a>
       </div>
-      <p class="hero-meta hero-fade late" data-en="Full-stack developer · 5+ years · Realtime, payments, IoT">풀스택 개발자 · 실무 5년+ · 실시간, 결제, IoT</p>
     </div>
-  </div>
-  <div class="hero-r">
-    <div class="toggles">
-      <button type="button" id="langBtn" aria-label="Switch to English">EN</button>
-      <button type="button" id="themeBtn">다크 모드</button>
+    <div class="figs" role="group" aria-label="요약" data-en-label="Summary">
+      <div data-rise><b>5+</b><span data-en="Years of experience">년 실무 경력</span></div>
+      <div data-rise style="--d:1"><b>11</b><span data-en="Projects designed &amp; built">설계·구현 프로젝트</span></div>
+      <div data-rise style="--d:2"><b>3</b><span data-en="Core domains: realtime, payments, IoT">주력 도메인 · 실시간, 결제, IoT</span></div>
+      <div data-rise style="--d:3"><b>5</b><span data-en="Certifications">보유 자격증</span></div>
     </div>
-    <div class="show" id="show" role="region" aria-roledescription="carousel" aria-label="프로젝트 화면" data-en-label="Project screens">
-      <div class="show-stage">
-        <a class="slide on" href="#p-onepass"><img src="assets/onepass.jpg" width="1200" height="674" alt="ONEPASS PRO 관리자 대시보드" data-en-alt="ONEPASS PRO admin dashboard"></a>
-        <a class="slide" href="#p-ischool" tabindex="-1" aria-hidden="true"><img src="assets/ischool.jpg" width="1200" height="674" alt="아이스쿨 운행 관제 화면" data-en-alt="iSchool operations dashboard"></a>
-        <a class="slide" href="#p-cyphers" tabindex="-1" aria-hidden="true"><img src="assets/cyphers-meta.jpg" width="1200" height="629" alt="사이퍼즈 메타 첫 화면" data-en-alt="Cyphers Meta home"></a>
-      </div>
-      <div class="show-bar">
-        <p class="show-cap" aria-live="polite"><b id="capName">ONEPASS PRO</b><span id="capDesc">얼굴 인식 출입통제·근태관리 솔루션</span></p>
-        <div class="show-ctl">
-          <button type="button" class="arrow" id="showPrev" aria-label="이전 화면" data-en-label="Previous screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
-          <span class="dots" id="showDots"></span>
-          <button type="button" class="arrow" id="showNext" aria-label="다음 화면" data-en-label="Next screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
-        </div>
-      </div>
     </div>
-    <p class="hero-note hero-fade late" data-en="Real screens from the services. Click a screen to read about that project.">실제 서비스 화면입니다. 화면을 누르면 해당 프로젝트 설명으로 이동합니다.</p>
   </div>
 </header>
 
 <main>
-  <section class="figs" aria-label="요약" data-en-label="Summary">
-    <div data-rise><b>5+</b><span data-en="Years of experience">년 실무 경력</span></div>
-    <div data-rise style="--d:1"><b>11</b><span data-en="Projects designed &amp; built">설계·구현 프로젝트</span></div>
-    <div data-rise style="--d:2"><b>3</b><span data-en="Core domains: realtime, payments, IoT">주력 도메인 · 실시간, 결제, IoT</span></div>
-    <div data-rise style="--d:3"><b>5</b><span data-en="Certifications">보유 자격증</span></div>
-  </section>
-
   <section class="sec wrap" id="about" aria-labelledby="about-h">
     <div class="grid">
       <h2 id="about-h" style="grid-column:1 / span 8" data-rise data-en="How I work">일하는 방식</h2>
@@ -381,6 +339,13 @@
           <p class="tools">Prometheus · Grafana · AWS CloudWatch · CloudTrail</p>
         </div>
       </div>
+      <div class="how-row" data-rise>
+        <h3 data-en="Working with AI">AI 활용</h3>
+        <div>
+          <p data-en="These days I use AI actively, with Claude Code as my everyday development tool. Running several sessions at once kept losing context and breaking rules, so I built my own control server that handles task tracking, isolated runs and PRs. I decide what to hand to AI and what to judge myself, and every result comes back as a PR that I review before merging. &lt;a class=&quot;link&quot; href=&quot;agent-control.html&quot;&gt;See the control system&lt;/a&gt;">최근에는 AI를 적극적으로 활용합니다. Claude Code를 매일 쓰는 개발 도구로 두고, 여러 세션을 동시에 돌릴 때 맥락이 끊기거나 규칙이 지켜지지 않는 문제를 막으려고 task 관리, 작업 격리, PR 생성까지 이어지는 관제 서버를 직접 만들어 쓰고 있습니다. AI에게 맡길 일과 제가 판단할 일을 나누고, 결과는 항상 PR로 받아 직접 검토한 뒤 반영합니다. <a class="link" href="agent-control.html">관제 시스템 보기</a></p>
+          <p class="tools">Claude Code · MCP · hook · git worktree</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -405,7 +370,6 @@
       </div>
       <figure class="f-fig" data-rise style="--d:1">
         <img src="assets/onepass.jpg" width="1200" height="674" alt="ONEPASS PRO 관리자 대시보드: 실시간 출입 기록, 근태 통계, 출입문 상태" data-en-alt="ONEPASS PRO admin dashboard: live access log, attendance stats, door status" loading="lazy">
-        <figcaption data-en="Admin dashboard: live access log, attendance stats and door status">관리자 대시보드. 실시간 출입 기록, 근태 통계, 출입문 상태</figcaption>
       </figure>
     </article>
     <article class="grid feature" id="p-ischool">
@@ -423,7 +387,6 @@
       </div>
       <figure class="f-fig" data-rise style="--d:1">
         <img src="assets/ischool.jpg" width="1200" height="674" alt="아이스쿨 운행 관제 화면" data-en-alt="iSchool operations dashboard" loading="lazy">
-        <figcaption data-en="Operations dashboard for administrators">관리자용 운행 관제 화면</figcaption>
       </figure>
     </article>
     <div class="other" id="p-aslan">
@@ -471,7 +434,6 @@
             <b>차단</b> · 이 세션에 진행 중인 task가 없어서 파일 수정과 Bash를 막았습니다.</span></div>
           <div class="g-row" style="padding-bottom:14px"><span class="g-who"></span><span class="g-text box allow" data-en="&lt;b&gt;Allowed&lt;/b&gt; · after linking PO-13 (in progress)"><b>통과</b> · PO-13을 진행 중으로 연결한 뒤</span></div>
         </div>
-        <figcaption data-en="The guard that this very page was built under">이 페이지도 이 가드 아래에서 task를 만들어 가며 작업했습니다.</figcaption>
       </figure>
     </article>
     <div class="other" id="p-todayalba">
@@ -501,7 +463,6 @@
       </div>
       <figure class="f-fig" data-rise style="--d:1">
         <img src="assets/cyphers-meta.jpg" width="1200" height="629" alt="사이퍼즈 메타 첫 화면: 전적·통계 검색" data-en-alt="Cyphers Meta home: match and stats search" loading="lazy">
-        <figcaption data-en="cyphers-meta.co.kr home: 13,058 collected matches at the time of capture">cyphers-meta.co.kr 첫 화면. 캡처 당시 수집 매치 13,058건</figcaption>
       </figure>
     </article>
     <div class="other" id="p-asset">
@@ -650,7 +611,6 @@
     langBtn.setAttribute('aria-label', l === 'en' ? '한국어로 보기' : 'Switch to English');
     try { localStorage.setItem('pf-lang', l); } catch (e) {}
     themeLabel();
-    caption();
   }
   langBtn.addEventListener('click', function () { setLang(lang === 'en' ? 'ko' : 'en'); });
   themeBtn.addEventListener('click', function () {
@@ -660,59 +620,6 @@
     themeLabel();
   });
 
-  // 프로젝트 화면 슬라이드: 5초마다 넘기고, 마우스를 올리거나 포커스가 있으면 멈춘다
-  var SLIDES = [
-    { name:['ONEPASS PRO','ONEPASS PRO'], desc:['얼굴 인식 출입통제·근태관리 솔루션','Face-recognition access control & attendance'] },
-    { name:['아이스쿨','iSchool'], desc:['GPS 기반 안심 통학버스 솔루션','GPS-based safe school-bus service'] },
-    { name:['사이퍼즈 메타','Cyphers Meta'], desc:['운영 중인 게임 전적·통계 서비스','Live game stats service'] }
-  ];
-  var show = document.getElementById('show');
-  var slides = Array.prototype.slice.call(show.querySelectorAll('.slide'));
-  var dotsBox = document.getElementById('showDots');
-  var capName = document.getElementById('capName'), capDesc = document.getElementById('capDesc');
-  var cur = 0, hold = false, timer = null;
-  var dots = SLIDES.map(function (_, i) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.addEventListener('click', function () { goTo(i); restart(); });
-    dotsBox.appendChild(b);
-    return b;
-  });
-  function caption() {
-    var L = lang === 'en' ? 1 : 0;
-    capName.textContent = SLIDES[cur].name[L];
-    capDesc.textContent = SLIDES[cur].desc[L];
-    dots.forEach(function (b, i) {
-      b.setAttribute('aria-current', i === cur ? 'true' : 'false');
-      b.setAttribute('aria-label', (lang === 'en' ? 'Screen ' : '화면 ') + (i + 1) + ' · ' + SLIDES[i].name[L]);
-    });
-  }
-  function goTo(i) {
-    cur = (i + slides.length) % slides.length;
-    slides.forEach(function (sl, k) {
-      var on = k === cur;
-      sl.classList.toggle('on', on);
-      sl.tabIndex = on ? 0 : -1;
-      if (on) sl.removeAttribute('aria-hidden'); else sl.setAttribute('aria-hidden', 'true');
-    });
-    caption();
-  }
-  function restart() {
-    clearInterval(timer);
-    if (reduce) return;
-    timer = setInterval(function () { if (!hold && !document.hidden) goTo(cur + 1); }, 5000);
-  }
-  document.getElementById('showPrev').addEventListener('click', function () { goTo(cur - 1); restart(); });
-  document.getElementById('showNext').addEventListener('click', function () { goTo(cur + 1); restart(); });
-  show.addEventListener('mouseenter', function () { hold = true; });
-  show.addEventListener('mouseleave', function () { hold = false; });
-  show.addEventListener('focusin', function () { hold = true; });
-  show.addEventListener('focusout', function () { hold = false; });
-  show.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { goTo(cur + 1); restart(); }
-    if (e.key === 'ArrowLeft') { goTo(cur - 1); restart(); }
-  });
-  goTo(0); restart();
 
   setLang(lang);
 
