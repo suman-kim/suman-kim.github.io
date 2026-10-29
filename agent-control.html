@@ -12,7 +12,7 @@
   <meta property="og:description" content="Claude Code로 개인 앱 여러 개를 개발하면서 만든 로컬 관제 서버입니다.">
   <meta property="og:image" content="https://suman-kim.github.io/og-image.png">
   <meta property="og:locale" content="ko_KR">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e1a18'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23ebe5e3'%3EKSM%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314181d'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23e7eaee'%3EKSM%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <script>
     // 다른 페이지와 같은 테마 저장값(pf-theme)을 쓰고, 없으면 라이트
@@ -26,22 +26,22 @@
   <style>
     /* ---------- 토큰 ---------- */
     :root, :root[data-theme="light"] {
-      --bg:#ebe5e3; --surface:#e1dad7; --field:#d6cdc9;
-      --ink:#2b2622; --muted:#5c5450; --accent:#0f7d45; --accent-ink:#ffffff;
-      --hero-l:#1e1a18; --hero-r:#2b2623; --hero-ink:#f3eeeb; --hero-muted:#c4bab5;
+      --bg:#e7eaee; --surface:#dde2e8; --field:#d1d7df;
+      --ink:#1b2129; --muted:#515b67; --accent:#0b7a57; --accent-ink:#ffffff;
+      --hero-l:#14181d; --hero-r:#1f252d; --hero-ink:#eef1f5; --hero-muted:#b4bdc7;
       /* 화면 조각 (제품 UI) */
-      --ui-bg:#ffffff; --ui-soft:#f4f2f1; --ui-border:#e2dedc; --ui-ink:#1a1817; --ui-muted:#6b6562;
-      --ui-chart:#1d5fbf; --ui-ok:#157a3c; --ui-bad:#b42318; --ui-wait:#9a5800; --ui-primary:#1a1817; --ui-primary-ink:#ffffff;
+      --ui-bg:#ffffff; --ui-soft:#f1f3f6; --ui-border:#dde2e8; --ui-ink:#141920; --ui-muted:#5d6773;
+      --ui-chart:#1d5fbf; --ui-ok:#157a3c; --ui-bad:#b42318; --ui-wait:#9a5800; --ui-primary:#141920; --ui-primary-ink:#ffffff;
       /* 흐름도 역할 */
-      --a-person:#9a5800; --a-session:#1d5fbf; --a-hook:#0e7490; --a-server:#0f7d45; --a-runner:#b0245e; --a-github:#4b4440;
+      --a-person:#9a5800; --a-session:#1d5fbf; --a-hook:#0e7490; --a-server:#0b7a57; --a-runner:#b0245e; --a-github:#48525e;
     }
     :root[data-theme="dark"] {
-      --bg:#181514; --surface:#221e1c; --field:#2c2725;
-      --ink:#f0eae7; --muted:#b5aca7; --accent:#4cc285; --accent-ink:#0b1a11;
-      --hero-l:#0f0d0c; --hero-r:#1d1918; --hero-ink:#f3eeeb; --hero-muted:#bdb3ae;
-      --ui-bg:#26211f; --ui-soft:#2f2a28; --ui-border:#3b3532; --ui-ink:#f2ede9; --ui-muted:#aba29d;
-      --ui-chart:#78a6ff; --ui-ok:#5fd38d; --ui-bad:#ff8a80; --ui-wait:#f0b45a; --ui-primary:#f2ede9; --ui-primary-ink:#1a1817;
-      --a-person:#f0b45a; --a-session:#78a6ff; --a-hook:#5fd4e8; --a-server:#4cc285; --a-runner:#ff86b4; --a-github:#c9bfba;
+      --bg:#111419; --surface:#191e25; --field:#222832;
+      --ink:#e8ecf1; --muted:#a6b0bc; --accent:#45c49a; --accent-ink:#061a13;
+      --hero-l:#0b0e12; --hero-r:#171c23; --hero-ink:#eef1f5; --hero-muted:#a9b3be;
+      --ui-bg:#1d232b; --ui-soft:#252c35; --ui-border:#343c47; --ui-ink:#eef2f6; --ui-muted:#a3adb9;
+      --ui-chart:#78a6ff; --ui-ok:#5fd38d; --ui-bad:#ff8a80; --ui-wait:#f0b45a; --ui-primary:#eef2f6; --ui-primary-ink:#141920;
+      --a-person:#f0b45a; --a-session:#78a6ff; --a-hook:#5fd4e8; --a-server:#45c49a; --a-runner:#ff86b4; --a-github:#bcc5cf;
     }
     :root {
       --m: clamp(16px, 2.6vw, 40px);
@@ -87,7 +87,7 @@
       transition:transform .18s var(--ease-out), background-color .18s ease, color .18s ease;
     }
     .btn:active { transform:translateY(1px) scale(.98); }
-    .btn-light { background:var(--hero-ink); color:#1e1a18; }
+    .btn-light { background:var(--hero-ink); color:#14181d; }
     .btn-light:hover { background:#ffffff; }
     .btn-accent { background:var(--accent); color:var(--accent-ink); }
     .btn-accent:hover { filter:brightness(1.08); }
@@ -125,7 +125,7 @@
     .hero-l { background:var(--hero-l); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:space-between; padding:clamp(24px,2.8vw,40px) var(--m) clamp(32px,4vw,56px); }
     .hero-r { background:var(--hero-r); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; padding:clamp(72px,8vw,96px) var(--m) clamp(32px,4vw,56px); position:relative; }
     .mark { display:inline-flex; gap:10px; align-items:center; font-size:var(--step-small); font-weight:600; text-decoration:none; color:var(--hero-ink); }
-    .mark b { display:inline-grid; place-items:center; width:34px; height:34px; background:var(--hero-ink); color:#1e1a18; font-size:13px; letter-spacing:-0.02em; }
+    .mark b { display:inline-grid; place-items:center; width:34px; height:34px; background:var(--hero-ink); color:#14181d; font-size:13px; letter-spacing:-0.02em; }
     .mark:hover span { text-decoration:underline; text-underline-offset:4px; }
     .theme-link { position:absolute; top:clamp(24px,2.8vw,40px); right:var(--m); background:none; border:0; padding:6px 0; font:inherit; font-size:var(--step-small); color:var(--hero-ink); cursor:pointer; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px; }
     .theme-link:hover { color:#ffffff; text-decoration-thickness:2px; }
@@ -174,7 +174,7 @@
     }
     .thumb.t-chat { font-family:inherit; }
     .thumb i { font-style:normal; display:inline-block; width:.6em; height:.6em; border-radius:50%; margin-right:.45em; background:var(--ui-chart); }
-    .thumb.t-term { background:#1a1817; color:#f2ede9; }
+    .thumb.t-term { background:#141920; color:#eef2f6; }
     .why-split { margin-top:clamp(56px,6vw,96px); row-gap:40px; }
     .problems { grid-column:1 / span 6; }
     .principles { grid-column:7 / span 6; background:var(--surface); padding:clamp(24px,2.6vw,40px); align-self:start; }
@@ -202,8 +202,8 @@
     .run .bar span.cur { color:var(--ui-ink); font-weight:600; }
     .run .meta { display:flex; flex-wrap:wrap; gap:4px 18px; padding:12px 16px; color:var(--ui-muted); font-size:13px; }
     .run .meta code { color:var(--ui-ink); }
-    .run pre { margin:0; padding:14px 16px; background:#181615; color:#e9e4e1; min-height:198px; max-height:236px; overflow:hidden; line-height:1.7; white-space:pre-wrap; word-break:break-all; }
-    .run pre .c { color:#9b938f; }
+    .run pre { margin:0; padding:14px 16px; background:#12161b; color:#e3e8ee; min-height:198px; max-height:236px; overflow:hidden; line-height:1.7; white-space:pre-wrap; word-break:break-all; }
+    .run pre .c { color:#8a95a2; }
     .run pre .g { color:#7fd6a0; }
     .run pre .y { color:#f2c27a; }
     .run pre .b { color:#9cc2ff; }
@@ -284,8 +284,8 @@
     .player iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
 
     /* 기능 조각 공통 */
-    .ctx pre { margin:0; padding:16px; background:#181615; color:#e9e4e1; line-height:1.75; white-space:pre-wrap; }
-    .ctx pre .k { color:#9b938f; }
+    .ctx pre { margin:0; padding:16px; background:#12161b; color:#e3e8ee; line-height:1.75; white-space:pre-wrap; }
+    .ctx pre .k { color:#8a95a2; }
     .ctx pre .h { color:#f2c27a; }
     .ctx pre .g { color:#7fd6a0; }
     .rule-res { font-weight:600; }
@@ -297,7 +297,7 @@
     .apps .side a { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
     .apps .side a.cur { background:var(--ui-bg); font-weight:600; }
     .apps .side a i { width:8px; height:8px; border-radius:50%; background:var(--ui-muted); flex:0 0 auto; }
-    .apps .side a i.ok { background:var(--ui-ok); } .apps .side a i.live { background:var(--ui-chart); } .apps .side a i.wait { background:var(--ui-wait); } .apps .side a i.quiet { background:#b8b1ad; }
+    .apps .side a i.ok { background:var(--ui-ok); } .apps .side a i.live { background:var(--ui-chart); } .apps .side a i.wait { background:var(--ui-wait); } .apps .side a i.quiet { background:#b1b9c3; }
     .apps .side a .c { margin-left:auto; color:var(--ui-muted); font-size:13px; }
     .apps .main { padding:16px; display:flex; flex-direction:column; gap:14px; }
     .stage-bar { display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; }
