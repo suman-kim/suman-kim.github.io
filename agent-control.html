@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 에이전트 통합 관제 시스템 · 김수만</title>
+  <meta name="description" content="여러 개의 Claude Code 세션을 하나의 개발팀처럼 움직이도록 관제하는 시스템. 기능별 설명과 시연 영상.">
+  <meta name="author" content="김수만">
+  <link rel="canonical" href="https://suman-kim.github.io/agent-control.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="AI 에이전트 통합 관제 시스템 · 김수만">
+  <meta property="og:description" content="모든 AI 작업이 task에서 시작해 PR로 끝나도록 맥락 주입, 작업 격리, 권한 통제를 설계한 개인 프로젝트.">
+  <meta property="og:image" content="https://suman-kim.github.io/og-image.png">
+  <meta property="og:locale" content="ko_KR">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230B0C0E'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='monospace' font-weight='500' font-size='21' letter-spacing='-1' fill='%237EE787'%3EKSM%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    // 다른 페이지와 같은 테마 저장값(pf-theme)을 쓰고, 없으면 라이트
+    (function () {
+      var t = 'light';
+      try { t = localStorage.getItem('pf-theme') || 'light'; } catch (e) {}
+      document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+    })();
+  </script>
+  <style>
+    :root, :root[data-theme="light"] {
+      --bg:#FFFFFF; --panel:#FFFFFF; --chip:#F4F5F7; --line:#EBECEE; --line2:#DFE1E4;
+      --fg:#0B0D10; --fg2:#3D434A; --fg3:#525960; --accent:#0B6B34; --accent-fg:#FFFFFF;
+      --sel:#D2ECDC; --shadow:0 1px 2px rgba(11,13,16,.04), 0 4px 16px rgba(11,13,16,.04);
+      --video:#F4F5F7;
+    }
+    :root[data-theme="dark"] {
+      --bg:#0B0C0E; --panel:#111317; --chip:#161A1F; --line:#1C2026; --line2:#232830;
+      --fg:#E7E9EC; --fg2:#9AA3AD; --fg3:#8A929C; --accent:#7EE787; --accent-fg:#0B0C0E;
+      --sel:#1F3D28; --shadow:none; --video:#0E1013;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0; background:var(--bg); color:var(--fg);
+      font-family:'IBM Plex Sans KR', system-ui, sans-serif; font-weight:300;
+      -webkit-font-smoothing:antialiased; line-height:1.6; word-break:keep-all; overflow-wrap:break-word;
+    }
+    ::selection { background:var(--sel); }
+    a { color:var(--accent); text-decoration:none; }
+    .mono { font-family:'JetBrains Mono', monospace; }
+    .wrap { max-width:1120px; margin:0 auto; padding:0 clamp(16px,5vw,48px); }
+
+    /* 상단 바 */
+    .top { position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); }
+    .top .wrap { display:flex; align-items:center; justify-content:space-between; gap:12px; height:56px; }
+    .top a.back { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--fg3); }
+    .top a.back:hover { color:var(--accent); }
+    .top .right { display:flex; align-items:center; gap:16px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+    .top .right a { color:var(--fg3); }
+    .top .right a:hover { color:var(--accent); }
+    button.theme {
+      font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--fg);
+      background:var(--panel); border:1px solid var(--line2); border-radius:999px; padding:6px 14px; cursor:pointer;
+    }
+    button.theme:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* 히어로 */
+    .hero { padding:clamp(48px,9vw,104px) 0 clamp(40px,6vw,64px); border-bottom:1px solid var(--line); }
+    .eyebrow { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.12em; margin-bottom:20px; }
+    h1 { font-size:clamp(32px,5.6vw,56px); font-weight:300; line-height:1.15; letter-spacing:-.025em; margin:0 0 24px; text-wrap:balance; }
+    .lead { font-size:clamp(16px,1.6vw,18px); line-height:1.8; color:var(--fg2); max-width:720px; margin:0 0 32px; text-wrap:pretty; }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg2); background:var(--chip); border:1px solid var(--line2); border-radius:999px; padding:5px 12px; }
+    .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); border-top:1px solid var(--line); margin-top:48px; }
+    .facts div { padding:20px 20px 0 0; }
+    .facts dt { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--fg3); margin-bottom:8px; }
+    .facts dd { margin:0; font-size:16px; color:var(--fg); }
+
+    /* 공통 섹션 */
+    section.block { padding:clamp(48px,7vw,88px) 0; border-bottom:1px solid var(--line); }
+    .label { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:.14em; margin-bottom:14px; }
+    h2 { font-size:clamp(24px,3.2vw,32px); font-weight:400; letter-spacing:-.02em; margin:0 0 16px; }
+    .sub { font-size:15px; line-height:1.85; color:var(--fg2); max-width:720px; margin:0 0 36px; text-wrap:pretty; }
+
+    /* 흐름 */
+    .flow { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; counter-reset:step; }
+    .flow li { list-style:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:18px 16px; position:relative; }
+    .flow li .n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); margin-bottom:8px; display:block; }
+    .flow li b { display:block; font-weight:500; font-size:15px; margin-bottom:6px; }
+    .flow li span.d { font-size:13px; line-height:1.65; color:var(--fg3); }
+    .flow { padding:0; margin:0; }
+
+    /* 기능 목차 */
+    .toc { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 8px; padding:0; }
+    .toc a { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--fg2); border:1px solid var(--line2); border-radius:999px; padding:6px 12px; background:var(--panel); }
+    .toc a:hover { color:var(--accent); border-color:var(--accent); }
+
+    /* 기능 */
+    .feature { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:clamp(24px,4vw,56px); align-items:start; padding:clamp(40px,6vw,64px) 0; border-top:1px solid var(--line); scroll-margin-top:72px; }
+    .feature:first-of-type { border-top:0; }
+    .feature .num { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--fg3); margin-bottom:10px; }
+    .feature h3 { font-size:clamp(20px,2.4vw,24px); font-weight:400; letter-spacing:-.015em; margin:0 0 12px; }
+    .feature .one { font-size:15px; line-height:1.8; color:var(--fg2); margin:0 0 20px; text-wrap:pretty; }
+    .feature ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+    .feature li { font-size:14px; line-height:1.7; color:var(--fg); padding-left:20px; position:relative; }
+    .feature li::before { content:'›'; position:absolute; left:0; top:0; color:var(--accent); font-family:'JetBrains Mono',monospace; }
+    .feature li code, .sub code { font-family:'JetBrains Mono',monospace; font-size:12px; background:var(--chip); border:1px solid var(--line); border-radius:4px; padding:1px 5px; }
+
+    /* 영상 */
+    .video { position:relative; aspect-ratio:16/9; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--video); }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .video button.play { all:unset; position:absolute; inset:0; cursor:pointer; background-size:cover; background-position:center; }
+    .video button.play::after {
+      content:''; position:absolute; left:50%; top:50%; width:68px; height:48px; transform:translate(-50%,-50%);
+      border-radius:12px; background:rgba(11,12,14,.78) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z' fill='%23fff'/%3E%3C/svg%3E") center/26px no-repeat;
+      transition:background-color .2s ease;
+    }
+    .video button.play:hover::after, .video button.play:focus-visible::after { background-color:#0B6B34; }
+    .video button.play:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+    .video .empty { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--fg3); text-align:center; padding:16px; }
+    .video .empty .mono { font-size:12px; letter-spacing:.08em; }
+    .video .empty span:last-child { font-size:13px; }
+    .caption { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg3); margin-top:10px; }
+
+    /* 설계 결정 · 운영 카드 */
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:24px 22px; }
+    .card b { display:block; font-weight:500; font-size:16px; margin-bottom:10px; }
+    .card p { margin:0; font-size:14px; line-height:1.75; color:var(--fg2); }
+
+    footer { padding:48px 0 64px; }
+    footer .wrap { display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+    footer a { color:var(--fg3); }
+    footer a:hover { color:var(--accent); }
+
+    @media (max-width: 900px) {
+      .feature { grid-template-columns:minmax(0,1fr); }
+      .flow { grid-template-columns:minmax(0,1fr); }
+    }
+    @media (max-width: 520px) {
+      .top .right a.gh { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="index.html#work">← 김수만</a>
+    <div class="right">
+      <button class="theme" type="button" id="themeBtn">다크 모드</button>
+      <a class="gh" href="https://github.com/suman-kim">GitHub ↗</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">PERSONAL PROJECT · 2026</div>
+      <h1>AI 에이전트 통합 관제 시스템</h1>
+      <p class="lead">혼자 여러 앱을 개발·운영하면서, 여러 개의 Claude Code 세션을 하나의 개발팀처럼 움직이도록 맥북에 상주하며 관제하는 시스템입니다. 모든 AI 작업은 task에서 시작해 PR로 끝납니다.</p>
+      <div class="chips">
+        <span class="chip">TypeScript</span><span class="chip">NestJS</span><span class="chip">PostgreSQL</span><span class="chip">TypeORM</span>
+        <span class="chip">pg-boss</span><span class="chip">MCP</span><span class="chip">WebSocket</span><span class="chip">git worktree</span><span class="chip">launchd</span>
+      </div>
+      <dl class="facts">
+        <div><dt>Role</dt><dd>1인 개발 · 기획부터 운영까지</dd></div>
+        <div><dt>Runtime</dt><dd>맥북 로컬 상주 서버</dd></div>
+        <div><dt>Interface</dt><dd>hook · MCP · REST · 대시보드</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="why">
+    <div class="wrap">
+      <div class="label">01 / 왜 만들었나</div>
+      <h2>문제는 도구가 아니라 관리였습니다</h2>
+      <p class="sub">앱이 늘어나자 세션마다 하던 일을 다시 설명해야 했고, 한 번 지적한 실수를 다른 세션이 반복했습니다. 누가 어디까지 했는지, 비용은 얼마인지도 알 수 없었고, 에이전트가 task 없이 코드를 고치거나 main에 바로 반영하는 일도 생겼습니다. 그래서 목표를 하나로 정했습니다. <b style="font-weight:500; color:var(--fg);">모든 AI 세션은 맥락을 받아 시작하고, 모든 작업은 task에서 시작해 PR로 끝난다.</b></p>
+      <ol class="flow">
+        <li><span class="n">01</span><b>task</b><span class="d">작업은 항상 task에서 시작</span></li>
+        <li><span class="n">02</span><b>맥락 주입</b><span class="d">진행 task와 과거 실수를 세션에 전달</span></li>
+        <li><span class="n">03</span><b>격리 실행</b><span class="d">worktree에서 허용된 도구로만 작업</span></li>
+        <li><span class="n">04</span><b>검사</b><span class="d">판정과 사전 검사를 통과해야 다음 단계</span></li>
+        <li><span class="n">05</span><b>PR</b><span class="d">push와 PR은 시스템이, 머지는 사람이</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="features">
+    <div class="wrap">
+      <div class="label">02 / 기능</div>
+      <h2>기능과 시연</h2>
+      <p class="sub">각 기능이 어떤 문제를 풀었는지와 실제로 동작하는 모습을 함께 담았습니다.</p>
+      <nav class="toc" aria-label="기능 목록">
+        <a href="#f-context">맥락 주입</a><a href="#f-guard">task 가드</a><a href="#f-runner">task → PR</a>
+        <a href="#f-ideas">기획 승인</a><a href="#f-bootstrap">새 앱 시작</a><a href="#f-dashboard">대시보드</a><a href="#f-rules">규칙 관리</a>
+      </nav>
+
+      <!--
+        시연 영상: 각 기능의 data-youtube에 유튜브 주소를 넣으면 된다.
+        watch?v=, youtu.be/, shorts/, embed/ 형식 모두 된다. 비워 두면 "시연 영상 준비 중"이 보인다.
+      -->
+
+      <article class="feature" id="f-context">
+        <div>
+          <div class="num">F1</div>
+          <h3>세션 맥락 주입과 실수 학습</h3>
+          <p class="one">세션을 열 때마다 하던 설명을 시스템이 대신합니다. 지적받은 실수는 다음 세션부터 바로 반영됩니다.</p>
+          <ul>
+            <li>세션이 시작되면 hook이 현재 앱, 이 세션의 task, 열린 task, 이 앱의 실수 기록을 맥락 블록으로 주입</li>
+            <li>세션은 MCP 도구로 task 상태 변경, 실수 기록, 기획 명세·인수인계 문서 저장, 버그 등록을 직접 수행</li>
+            <li>명령과 도구 사용, 종료가 자동으로 기록되고 비밀값은 가려서 저장</li>
+            <li>맥락 블록은 8,000자 상한 안에서 우선순위대로 구성</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="세션 맥락 주입 시연"></div>
+          <div class="caption">새 세션에 맥락 블록이 들어가는 모습</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-guard">
+        <div>
+          <div class="num">F2</div>
+          <h3>task 강제 가드</h3>
+          <p class="one">규칙 문서에 적어 두는 것만으로는 지켜지지 않아서, task 없이는 코드를 고칠 수 없게 시스템으로 막았습니다.</p>
+          <ul>
+            <li>직접 연 세션은 진행 중 task가 연결되기 전까지 파일 수정과 셸 실행을 차단, 읽기는 허용</li>
+            <li>세션이 task를 <code>doing</code>으로 바꾸는 순간을 감지해 세션과 task를 자동 연결, <code>review</code>로 넘기면 해제</li>
+            <li>등록되지 않은 프로젝트 폴더도 차단해 관리 밖의 작업을 방지</li>
+            <li>관제 시스템이 꺼져 있으면 가드도 열어, 관리 도구 때문에 개발이 멈추지 않도록 설계</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="task 가드 시연"></div>
+          <div class="caption">task 없이 수정 시도 → 차단 → task 연결 후 진행</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-runner">
+        <div>
+          <div class="num">F3</div>
+          <h3>task 하나로 PR까지 자동 실행</h3>
+          <p class="one">task를 실행하면 격리된 작업 공간에서 에이전트가 일하고, 검사를 통과한 결과만 PR로 올라옵니다.</p>
+          <ul>
+            <li>task마다 git worktree와 전용 브랜치를 만들어 원본 저장소와 격리</li>
+            <li>에이전트 실행 로그를 WebSocket으로 대시보드에 실시간 전송</li>
+            <li>에이전트에게 push 권한을 주지 않고, 사전 검사를 통과하면 시스템이 직접 push하고 PR 생성</li>
+            <li>에이전트가 질문으로 끝나면 대기, 답하면 같은 세션으로 이어서 실행</li>
+            <li>동시 실행 수와 허용 도구를 설정으로 제한, PR이 머지되면 task 자동 완료</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="task 자동 실행 시연"></div>
+          <div class="caption">실행 → 실시간 로그 → 질문에 답변 → PR 생성</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-ideas">
+        <div>
+          <div class="num">F4</div>
+          <h3>기획 생성과 승인</h3>
+          <p class="one">앱마다 다음에 할 일을 제안받고, 사람은 승인·수정·반려만 결정합니다.</p>
+          <ul>
+            <li>앱의 방향성 메모, 열린 task, 최근 기획과 반려 사유를 입력으로 기획을 생성</li>
+            <li>기획 단계의 에이전트는 읽기 도구만 사용</li>
+            <li>승인하면 예상 task와 기획 명세가 자동으로 만들어지고, 수정 요청은 새 버전으로 이어짐</li>
+            <li>앱별 주기를 정해 자동 생성할 수 있고, 사용량이 높으면 건너뜀</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="기획 승인 시연"></div>
+          <div class="caption">기획 생성 → 검토 → 승인 → task 생성</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-bootstrap">
+        <div>
+          <div class="num">F5</div>
+          <h3>새 앱 기획에서 첫 PR까지</h3>
+          <p class="one">저장소도 없는 새 앱을 구상하고, 승인하면 프로젝트 시작부터 첫 구현까지 이어집니다.</p>
+          <ul>
+            <li>기존 앱의 스택을 참고하고 비슷한 서비스와 시장을 웹에서 조사해 새 앱 기획을 제안</li>
+            <li>승인하면 폴더 생성과 초기 문서 커밋, GitHub private 저장소 생성</li>
+            <li>백그라운드 Claude 세션이 기획을 읽고 첫 task를 구현해 PR까지 진행</li>
+            <li>중간에 실패하면 끝난 단계는 건너뛰고 이어서 재시도</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="새 앱 시작 시연"></div>
+          <div class="caption">새 앱 기획 승인 → 저장소 생성 → 첫 PR</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-dashboard">
+        <div>
+          <div class="num">F6</div>
+          <h3>통합 대시보드</h3>
+          <p class="one">여러 앱의 상태와 할 일, 배포, 히스토리를 한 화면에서 봅니다.</p>
+          <ul>
+            <li>앱마다 진행 상태를 색으로 표시하고, 개발 단계(기획 → 설계 → 개발 → 테스트 → 배포 → 운영)를 관리</li>
+            <li>task를 기능·버그·잡무, AI 담당·내 할 일로 나눠 관리</li>
+            <li>GitHub 배포와 Actions 결과를 5분마다 수집하고, 스토어 제출 같은 수동 배포도 기록</li>
+            <li>task·실행·기획·배포가 앱별 히스토리로 쌓이고, 저장소의 문서와 디자인 파일을 탭으로 열람</li>
+            <li>실행마다 비용을 기록해 앱별·월별로 집계</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="대시보드 시연"></div>
+          <div class="caption">앱 개요, task 보드, 배포 기록, 비용</div>
+        </div>
+      </article>
+
+      <article class="feature" id="f-rules">
+        <div>
+          <div class="num">F7</div>
+          <h3>규칙 관리</h3>
+          <p class="one">모든 세션이 따라야 할 작업 규칙을 대시보드에서 고치면, 다음 세션부터 바로 적용됩니다.</p>
+          <ul>
+            <li>전역 규칙과 앱별 규칙을 나눠 편집</li>
+            <li>저장하면 Claude Code 규칙 파일을 원자적으로 다시 써서 새 세션부터 적용</li>
+            <li>"코드를 바꾸기 전에 task부터 갱신", "main에 직접 push 금지" 같은 규칙을 한곳에서 관리</li>
+          </ul>
+        </div>
+        <div>
+          <div class="video" data-youtube="" data-title="규칙 관리 시연"></div>
+          <div class="caption">규칙 편집 → 새 세션에 적용</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="design">
+    <div class="wrap">
+      <div class="label">03 / 설계</div>
+      <h2>설계 결정</h2>
+      <p class="sub">Claude 세션, 대시보드, 실행기가 서로 다른 입구로 들어오지만 규칙은 한 곳에만 둡니다.</p>
+      <div class="grid">
+        <div class="card"><b>입구는 얇게, 규칙은 한 곳에</b><p>hook, MCP, REST, runner는 입구 역할만 하고, 상태 전이와 검증은 도메인 모듈에만 두었습니다. 어느 경로로 들어와도 같은 규칙이 적용됩니다.</p></div>
+        <div class="card"><b>Redis 없이 Postgres 하나로</b><p>큐, 재시도, 동시 실행 제한, cron을 pg-boss로 처리했습니다. 맥북 한 대에 상주하는 서비스라 움직이는 부품을 줄이는 것이 곧 안정성이었습니다.</p></div>
+        <div class="card"><b>실행기를 갈아 끼울 수 있게</b><p>지금은 claude CLI를 자식 프로세스로 띄워 stream-json을 파싱합니다. 실행기를 인터페이스 뒤에 두어 Agent SDK로 바꿔도 나머지는 그대로입니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ops">
+    <div class="wrap">
+      <div class="label">04 / 운영</div>
+      <h2>매일 쓰는 서비스로 운영</h2>
+      <p class="sub">개발 도구라도 매일 의존하는 서비스라서, 꺼지거나 데이터를 잃지 않는 것을 기능만큼 중요하게 다뤘습니다.</p>
+      <div class="grid">
+        <div class="card"><b>상주 실행</b><p>launchd로 로그인 시 자동 기동하고, 죽으면 재시작합니다. DB가 준비될 때까지 기다렸다가 시작합니다.</p></div>
+        <div class="card"><b>자동 백업</b><p>하루 한 번 pg_dump를 뜨고 14일간 보관합니다.</p></div>
+        <div class="card"><b>보안</b><p>로컬 주소에만 바인딩하고 모든 요청에 토큰을 요구합니다. 대시보드 로그인은 연속 실패 시 잠급니다.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html#work">← 다른 프로젝트 보기</a>
+    <span><a href="mailto:zzsdsdsd@gmail.com">zzsdsdsd@gmail.com</a> · <a href="https://github.com/suman-kim">GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+  // 테마 전환 (다른 페이지와 같은 pf-theme 값 공유)
+  (function () {
+    var btn = document.getElementById('themeBtn');
+    function label() {
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '라이트 모드' : '다크 모드';
+    }
+    label();
+    btn.addEventListener('click', function () {
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('pf-theme', next); } catch (e) {}
+      label();
+    });
+  })();
+
+  // 유튜브 영상: 처음에는 썸네일만 보여 주고, 누르면 플레이어를 띄운다
+  (function () {
+    function youtubeId(url) {
+      var m = String(url).match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : (/^[A-Za-z0-9_-]{11}$/.test(url) ? url : null);
+    }
+    document.querySelectorAll('.video').forEach(function (box) {
+      var id = youtubeId(box.getAttribute('data-youtube') || '');
+      var title = box.getAttribute('data-title') || '시연 영상';
+      if (!id) {
+        box.innerHTML = '<div class="empty"><span class="mono">COMING SOON</span><span>시연 영상 준비 중</span></div>';
+        return;
+      }
+      var btn = document.createElement('button');
+      btn.className = 'play';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', title + ' 재생');
+      btn.style.backgroundImage = 'url("https://i.ytimg.com/vi/' + id + '/hqdefault.jpg")';
+      btn.addEventListener('click', function () {
+        var f = document.createElement('iframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+        f.title = title;
+        f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        f.allowFullscreen = true;
+        box.replaceChildren(f);
+      });
+      box.replaceChildren(btn);
+    });
+  })();
+</script>
+</body>
+</html>
