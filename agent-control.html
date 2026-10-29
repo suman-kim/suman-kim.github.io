@@ -30,11 +30,13 @@
       --fg:#0B0D10; --fg2:#3D434A; --fg3:#525960; --accent:#0B6B34; --accent-fg:#FFFFFF;
       --sel:#D2ECDC; --shadow:0 1px 2px rgba(11,13,16,.04), 0 4px 16px rgba(11,13,16,.04);
       --video:#F4F5F7;
+      --c-person:#B45309; --c-session:#7C3AED; --c-hook:#0E7490; --c-server:#0B6B34; --c-runner:#1D4ED8; --c-github:#4B5563; --c-fail:#B42318; --arrow:#A3A9B0;
     }
     :root[data-theme="dark"] {
       --bg:#0B0C0E; --panel:#111317; --chip:#161A1F; --line:#1C2026; --line2:#232830;
       --fg:#E7E9EC; --fg2:#9AA3AD; --fg3:#8A929C; --accent:#7EE787; --accent-fg:#0B0C0E;
       --sel:#1F3D28; --shadow:none; --video:#0E1013;
+      --c-person:#F0B45A; --c-session:#B79CFF; --c-hook:#5FD4E8; --c-server:#7EE787; --c-runner:#79A8FF; --c-github:#AAB2BC; --c-fail:#FF8A80; --arrow:#4A525C;
     }
     * { box-sizing:border-box; }
     html { scroll-behavior:smooth; }
@@ -80,13 +82,83 @@
     h2 { font-size:clamp(24px,3.2vw,32px); font-weight:400; letter-spacing:-.02em; margin:0 0 16px; }
     .sub { font-size:15px; line-height:1.85; color:var(--fg2); max-width:720px; margin:0 0 36px; text-wrap:pretty; }
 
-    /* 흐름 */
-    .flow { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; counter-reset:step; }
-    .flow li { list-style:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); padding:18px 16px; position:relative; }
-    .flow li .n { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); margin-bottom:8px; display:block; }
-    .flow li b { display:block; font-weight:500; font-size:15px; margin-bottom:6px; }
-    .flow li span.d { font-size:13px; line-height:1.65; color:var(--fg3); }
-    .flow { padding:0; margin:0; }
+    /* 왜 만들었나 */
+    .problems .tag { display:block; font-size:11px; color:var(--accent); margin-bottom:10px; }
+    h3.h3 { font-size:clamp(18px,2.2vw,21px); font-weight:400; letter-spacing:-.01em; margin:56px 0 20px; }
+    .principles { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .principles li { display:flex; gap:16px; align-items:flex-start; border-top:2px solid var(--accent); padding-top:18px; }
+    .principles .n { font-size:12px; color:var(--accent); padding-top:3px; }
+    .principles b { display:block; font-weight:500; font-size:16px; margin-bottom:8px; }
+    .principles p { margin:0; font-size:14px; line-height:1.75; color:var(--fg2); }
+
+    /* 워크플로우 */
+    .wf-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .tabs { display:flex; flex-wrap:wrap; gap:6px; }
+    .tabs button, button.play {
+      font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--fg2); background:var(--panel);
+      border:1px solid var(--line2); border-radius:999px; padding:7px 14px; cursor:pointer;
+    }
+    .tabs button:hover, button.play:hover { color:var(--accent); border-color:var(--accent); }
+    .tabs button[aria-selected="true"] { background:var(--fg); border-color:var(--fg); color:var(--bg); }
+    .tabs button:focus-visible, button.play:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+    button.play { color:var(--accent); border-color:var(--accent); }
+    .legend { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:28px; }
+
+    .who {
+      display:inline-block; font-size:11.5px; font-weight:500; line-height:1.4; white-space:nowrap;
+      color:var(--c, var(--fg3)); border:1px solid var(--c, var(--line2)); border-radius:999px; padding:2px 9px;
+      background:color-mix(in srgb, var(--c, var(--fg3)) 10%, transparent);
+    }
+    [data-a="person"]  { --c:var(--c-person); }
+    [data-a="session"] { --c:var(--c-session); }
+    [data-a="hook"]    { --c:var(--c-hook); }
+    [data-a="server"]  { --c:var(--c-server); }
+    [data-a="runner"]  { --c:var(--c-runner); }
+    [data-a="github"]  { --c:var(--c-github); }
+
+    .wf .node {
+      background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--c); border-radius:10px;
+      box-shadow:var(--shadow); padding:14px 16px; transition:opacity .25s ease, box-shadow .25s ease, transform .25s ease;
+    }
+    .wf .node b { display:block; font-weight:500; font-size:14px; }
+    .wf .node p { margin:6px 0 0; font-size:13px; line-height:1.7; color:var(--fg2); }
+    .wf .nh { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+    .wf .nh::before { content:counter(step, decimal-leading-zero); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--fg3); }
+
+    /* 전체 구조 */
+    .arch { display:grid; grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr); align-items:stretch; }
+    .arch .col { display:flex; flex-direction:column; gap:10px; }
+    .arch .col-h { font-size:11px; letter-spacing:.08em; color:var(--fg3); margin-bottom:2px; }
+    .arch .node { flex:1; }
+    .arch .arr { position:relative; }
+    .arch .arr::before { content:''; position:absolute; top:50%; left:6px; right:8px; border-top:2px solid var(--arrow); }
+    .arch .arr::after { content:''; position:absolute; top:calc(50% - 4px); right:4px; border:5px solid transparent; border-left:7px solid var(--arrow); border-right:0; }
+
+    /* 단계 흐름 */
+    .steps { list-style:none; margin:0; padding:0; counter-reset:step; }
+    .steps.narrow { max-width:760px; }
+    .steps > li { counter-increment:step; position:relative; }
+    .steps > li + li { margin-top:30px; }
+    .steps > li + li::before { content:''; position:absolute; left:26px; top:-26px; height:20px; border-left:2px solid var(--arrow); }
+    .steps > li + li::after { content:''; position:absolute; left:22px; top:-9px; border:5px solid transparent; border-top:6px solid var(--arrow); border-bottom:0; }
+    .lanes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(16px,2.4vw,28px); align-items:start; }
+    .lane-h { font-size:14px; font-weight:500; margin:0 0 14px; color:var(--fg); }
+
+    .branches { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:8px; margin-top:12px; }
+    .br { --k:var(--c-server); border:1px dashed var(--line2); border-top:2px solid var(--k); border-radius:8px; padding:10px 12px; background:var(--chip); }
+    .br[data-k="ask"] { --k:var(--c-person); }
+    .br[data-k="fail"] { --k:var(--c-fail); }
+    .br .bl { display:block; font-size:12px; font-weight:500; color:var(--k); margin-bottom:6px; }
+    .br ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+    .br li { font-size:12.5px; line-height:1.6; color:var(--fg2); padding-left:14px; position:relative; }
+    .br li::before { content:'→'; position:absolute; left:0; color:var(--fg3); font-size:11px; }
+    .br li.loop { color:var(--k); }
+
+    /* 단계별로 보기 */
+    .wf.playing .node { opacity:.28; }
+    .wf.playing .node.on { opacity:1; box-shadow:0 0 0 2px var(--c), var(--shadow); transform:translateY(-1px); }
+    .wf.playing .node.done { opacity:.7; }
+    @media (prefers-reduced-motion: reduce) { .wf .node { transition:none; } }
 
     /* 기능 목차 */
     .toc { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 8px; padding:0; }
@@ -133,7 +205,11 @@
 
     @media (max-width: 900px) {
       .feature { grid-template-columns:minmax(0,1fr); }
-      .flow { grid-template-columns:minmax(0,1fr); }
+      .lanes { grid-template-columns:minmax(0,1fr); gap:40px; }
+      .arch { grid-template-columns:minmax(0,1fr); }
+      .arch .arr { height:34px; }
+      .arch .arr::before { top:6px; bottom:10px; left:50%; right:auto; border-top:0; border-left:2px solid var(--arrow); }
+      .arch .arr::after { top:auto; bottom:4px; right:auto; left:calc(50% - 4px); border:5px solid transparent; border-top:7px solid var(--arrow); border-bottom:0; }
     }
     @media (max-width: 520px) {
       .top .right a.gh { display:none; }
@@ -157,15 +233,16 @@
     <div class="wrap">
       <div class="eyebrow">PERSONAL PROJECT · 2026</div>
       <h1>AI 에이전트 통합 관제 시스템</h1>
-      <p class="lead">혼자 여러 앱을 개발·운영하면서, 여러 개의 Claude Code 세션을 하나의 개발팀처럼 움직이도록 맥북에 상주하며 관제하는 시스템입니다. 모든 AI 작업은 task에서 시작해 PR로 끝납니다.</p>
+      <p class="lead">Claude Code 하나로 여러 앱을 혼자 개발하면서, AI에게 일을 맡기는 것보다 맡긴 일을 관리하는 쪽이 더 어렵다는 걸 알게 됐습니다. 그래서 맥북에 상주하는 관제 서버를 만들었습니다. 모든 세션에 진행 중인 task와 과거 실수를 알려 주고, task 없는 수정은 막고, task 하나를 격리된 환경에서 PR까지 실행합니다. 사람은 승인하고, 질문에 답하고, 머지하는 일만 합니다.</p>
       <div class="chips">
         <span class="chip">TypeScript</span><span class="chip">NestJS</span><span class="chip">PostgreSQL</span><span class="chip">TypeORM</span>
-        <span class="chip">pg-boss</span><span class="chip">MCP</span><span class="chip">WebSocket</span><span class="chip">git worktree</span><span class="chip">launchd</span>
+        <span class="chip">pg-boss</span><span class="chip">MCP</span><span class="chip">WebSocket</span><span class="chip">React</span><span class="chip">git worktree</span><span class="chip">launchd</span>
       </div>
       <dl class="facts">
-        <div><dt>Role</dt><dd>1인 개발 · 기획부터 운영까지</dd></div>
-        <div><dt>Runtime</dt><dd>맥북 로컬 상주 서버</dd></div>
-        <div><dt>Interface</dt><dd>hook · MCP · REST · 대시보드</dd></div>
+        <div><dt>Role</dt><dd>1인 개발 · 설계부터 운영까지</dd></div>
+        <div><dt>Period</dt><dd>2026.10 ~ 진행 중</dd></div>
+        <div><dt>Runtime</dt><dd>맥북 상주 서버 + 웹 대시보드</dd></div>
+        <div><dt>Interface</dt><dd>hook · MCP 도구 12개 · REST · WebSocket</dd></div>
       </dl>
     </div>
   </section>
@@ -173,21 +250,167 @@
   <section class="block" id="why">
     <div class="wrap">
       <div class="label">01 / 왜 만들었나</div>
-      <h2>문제는 도구가 아니라 관리였습니다</h2>
-      <p class="sub">앱이 늘어나자 세션마다 하던 일을 다시 설명해야 했고, 한 번 지적한 실수를 다른 세션이 반복했습니다. 누가 어디까지 했는지, 비용은 얼마인지도 알 수 없었고, 에이전트가 task 없이 코드를 고치거나 main에 바로 반영하는 일도 생겼습니다. 그래서 목표를 하나로 정했습니다. <b style="font-weight:500; color:var(--fg);">모든 AI 세션은 맥락을 받아 시작하고, 모든 작업은 task에서 시작해 PR로 끝난다.</b></p>
-      <ol class="flow">
-        <li><span class="n">01</span><b>task</b><span class="d">작업은 항상 task에서 시작</span></li>
-        <li><span class="n">02</span><b>맥락 주입</b><span class="d">진행 task와 과거 실수를 세션에 전달</span></li>
-        <li><span class="n">03</span><b>격리 실행</b><span class="d">worktree에서 허용된 도구로만 작업</span></li>
-        <li><span class="n">04</span><b>검사</b><span class="d">판정과 사전 검사를 통과해야 다음 단계</span></li>
-        <li><span class="n">05</span><b>PR</b><span class="d">push와 PR은 시스템이, 머지는 사람이</span></li>
+      <h2>AI에게 맡기는 건 쉬웠고, 관리하는 건 어려웠습니다</h2>
+      <p class="sub">소셜 앱, 구인 앱, 게임 통계 서비스까지 여러 앱을 혼자 Claude Code로 개발하고 있었습니다. 코드는 빠르게 나왔지만, 앱과 저장소가 늘어날수록 같은 문제가 반복됐습니다.</p>
+      <div class="grid problems">
+        <div class="card"><span class="mono tag">01</span><b>흩어진 task</b><p>task가 저장소마다 Task Master 파일로 따로 있었습니다. 한 앱에만 270개가 쌓였고, 앱을 오가면 전체 진행 상황이 보이지 않았습니다.</p></div>
+        <div class="card"><span class="mono tag">02</span><b>매번 끊기는 맥락</b><p>새 세션을 열 때마다 지금 하던 일을 다시 설명해야 했습니다. 한 번 지적한 실수도 다음 세션에는 남지 않아 또 반복됐습니다.</p></div>
+        <div class="card"><span class="mono tag">03</span><b>지켜지지 않는 규칙</b><p>"task부터 갱신", "main에 직접 push 금지" 같은 규칙을 파일로 적어 둬도 지침일 뿐이라, 에이전트가 어길 수 있었습니다.</p></div>
+        <div class="card"><span class="mono tag">04</span><b>여기저기 흩어진 상태</b><p>어느 세션이 답을 기다리는지는 터미널에서, PR은 GitHub에서, 배포는 Railway에서 따로 봐야 했습니다. 비용은 알 수도 없었습니다.</p></div>
+      </div>
+      <h3 class="h3">그래서 세 가지 원칙을 세웠습니다</h3>
+      <ol class="principles">
+        <li><span class="mono n">01</span><div><b>기준은 한 곳에</b><p>task, 기획, 실수 기록, 실행, 배포를 하나의 DB에 모았습니다. 저장소에 흩어져 있던 task 파일은 한 번 가져온 뒤 더 이상 쓰지 않습니다.</p></div></li>
+        <li><span class="mono n">02</span><div><b>지침이 아니라 강제로</b><p>꼭 지켜야 하는 규칙은 문서가 아니라 hook으로 막았습니다. task 없이는 코드를 고칠 수 없고, push와 PR은 에이전트가 아니라 시스템이 합니다.</p></div></li>
+        <li><span class="mono n">03</span><div><b>사람은 결정만</b><p>실행, 기록, 배포 추적은 시스템이 맡고, 사람은 기획 승인, 질문에 대한 답변, PR 머지만 합니다.</p></div></li>
       </ol>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="wrap">
+      <div class="label">02 / 동작 방식</div>
+      <h2>내부에서는 이렇게 움직입니다</h2>
+      <p class="sub">세션, hook, 관제 서버, runner, GitHub가 각자 맡은 일을 주고받습니다. 탭을 골라 흐름을 보고, "단계별로 보기"를 누르면 순서대로 따라갈 수 있습니다.</p>
+
+      <div class="wf-bar">
+        <div class="tabs" role="tablist" aria-label="워크플로우">
+          <button type="button" role="tab" id="t-arch" aria-controls="p-arch" aria-selected="true">전체 구조</button>
+          <button type="button" role="tab" id="t-session" aria-controls="p-session" aria-selected="false" tabindex="-1">세션 연결 · 가드</button>
+          <button type="button" role="tab" id="t-run" aria-controls="p-run" aria-selected="false" tabindex="-1">task 실행</button>
+          <button type="button" role="tab" id="t-idea" aria-controls="p-idea" aria-selected="false" tabindex="-1">기획 · 새 앱</button>
+        </div>
+        <button type="button" class="play" id="wfPlay">▶ 단계별로 보기</button>
+      </div>
+      <div class="legend" aria-label="역할">
+        <span class="who" data-a="person">사람</span><span class="who" data-a="session">Claude 세션</span><span class="who" data-a="hook">hook</span>
+        <span class="who" data-a="server">관제 서버</span><span class="who" data-a="runner">runner</span><span class="who" data-a="github">GitHub</span>
+      </div>
+
+      <!-- 전체 구조 -->
+      <div class="wf" role="tabpanel" id="p-arch" aria-labelledby="t-arch">
+        <div class="arch">
+          <div class="col">
+            <div class="col-h mono">들어오는 곳</div>
+            <div class="node" data-a="session"><b>Claude Code 세션</b><p>터미널이나 백그라운드에서 직접 연 세션</p></div>
+            <div class="node" data-a="runner"><b>시스템이 띄운 에이전트</b><p>task 실행, 기획 생성, 새 앱 시작</p></div>
+            <div class="node" data-a="person"><b>웹 대시보드</b><p>승인, 답변, 실행, 설정</p></div>
+            <div class="node" data-a="github"><b>GitHub</b><p>배포 기록, Actions 결과, PR 머지</p></div>
+          </div>
+          <div class="arr" aria-hidden="true"></div>
+          <div class="col">
+            <div class="col-h mono">입구 · 얇게</div>
+            <div class="node" data-a="hook"><b>hook API</b><p>세션 시작, 도구 사용 전후를 받아 맥락을 주고 가드를 판정</p></div>
+            <div class="node" data-a="server"><b>MCP 서버</b><p>세션이 쓰는 도구 12개: task, 명세, 실수, 버그, 배포 기록</p></div>
+            <div class="node" data-a="server"><b>REST · WebSocket</b><p>대시보드 조회와 실행 로그 실시간 전송</p></div>
+            <div class="node" data-a="server"><b>주기 작업</b><p>5분마다 GitHub 가져오기, 기획 자동 생성</p></div>
+          </div>
+          <div class="arr" aria-hidden="true"></div>
+          <div class="col">
+            <div class="col-h mono">도메인 모듈 · 규칙은 여기만</div>
+            <div class="node" data-a="server"><b>앱 · 저장소</b><p>작업 폴더로 앱 판별, 앱 하나에 저장소 여러 개</p></div>
+            <div class="node" data-a="server"><b>task · 상태 전이</b><p>허용된 전이만 통과, 어느 입구로 와도 같은 규칙</p></div>
+            <div class="node" data-a="server"><b>세션 · 실수 · 명세</b><p>세션 기록, 맥락 조립, 인수인계 문서</p></div>
+            <div class="node" data-a="server"><b>실행 · 기획 · 배포</b><p>run과 비용, 기획 버전, 배포와 히스토리</p></div>
+          </div>
+          <div class="arr" aria-hidden="true"></div>
+          <div class="col">
+            <div class="col-h mono">저장 · 실행</div>
+            <div class="node" data-a="server"><b>PostgreSQL</b><p>task, 기획, 실행 로그, 히스토리를 한 곳에</p></div>
+            <div class="node" data-a="runner"><b>pg-boss 큐</b><p>실행 대기열, 재시도, 동시 실행 제한, cron</p></div>
+            <div class="node" data-a="runner"><b>git worktree</b><p>task마다 격리된 작업 공간과 전용 브랜치</p></div>
+            <div class="node" data-a="github"><b>gh CLI</b><p>push와 PR 생성은 시스템만</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 세션 연결 · 가드 -->
+      <div class="wf" role="tabpanel" id="p-session" aria-labelledby="t-session" hidden>
+        <div class="lanes">
+          <div class="lane">
+            <h4 class="lane-h">A. 세션이 시작될 때</h4>
+            <ol class="steps">
+              <li class="node" data-a="session"><div class="nh"><span class="who">Claude 세션</span><b>세션 시작</b></div><p>터미널이든 백그라운드든 모든 세션이 같은 경로를 탑니다.</p></li>
+              <li class="node" data-a="hook"><div class="nh"><span class="who">hook</span><b>세션 정보 전달</b></div><p>작업 폴더와 세션 ID를 관제 서버로 보냅니다.</p></li>
+              <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>앱 판별 · task 연결</b></div><p>작업 폴더로 어느 앱인지 찾고, 이 세션에 연결된 task를 확인합니다.</p></li>
+              <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>맥락 블록 조립</b></div><p>앱 → 이 세션의 task → 열린 task → 실수 기록 순서로, 8,000자 안에서 중요한 것부터 담습니다.</p></li>
+              <li class="node" data-a="session"><div class="nh"><span class="who">Claude 세션</span><b>맥락을 알고 시작</b></div><p>다시 설명하지 않아도 하던 일과 피해야 할 실수를 압니다.</p></li>
+            </ol>
+          </div>
+          <div class="lane">
+            <h4 class="lane-h">B. 코드를 고치기 직전</h4>
+            <ol class="steps">
+              <li class="node" data-a="session"><div class="nh"><span class="who">Claude 세션</span><b>수정 · 셸 실행 시도</b></div><p>파일 수정과 Bash만 검사합니다. 읽기는 언제나 허용합니다.</p></li>
+              <li class="node" data-a="hook"><div class="nh"><span class="who">hook</span><b>실행 전에 확인 요청</b></div><p>도구를 실행하기 전에 관제 서버에 통과 여부를 묻습니다.</p></li>
+              <li class="node decide" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>가드 판정</b></div>
+                <div class="branches">
+                  <div class="br" data-k="ok"><span class="bl">통과</span><ul><li>진행 중 task가 연결된 세션</li><li>시스템이 띄운 세션</li><li>관제 서버가 꺼져 있을 때</li></ul></div>
+                  <div class="br" data-k="fail"><span class="bl">차단</span><ul><li>진행 중 task 없음</li><li>등록되지 않은 프로젝트 폴더</li><li>막힌 이유와 푸는 방법을 세션에 안내</li></ul></div>
+                </div>
+              </li>
+            </ol>
+          </div>
+          <div class="lane">
+            <h4 class="lane-h">C. 도구를 쓴 직후</h4>
+            <ol class="steps">
+              <li class="node" data-a="hook"><div class="nh"><span class="who">hook</span><b>사용 기록 전달</b></div><p>명령과 도구 사용이 자동으로 쌓입니다. 토큰과 키는 가려서 저장합니다.</p></li>
+              <li class="node decide" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>task 상태 변경이었나?</b></div><p>응답이 아니라 DB의 실제 상태를 보고 판단해, 거부된 전이는 무시합니다.</p>
+                <div class="branches">
+                  <div class="br" data-k="ok"><span class="bl">진행 중 · 답변 대기</span><ul><li>세션과 task 연결</li><li>수정이 풀림</li></ul></div>
+                  <div class="br" data-k="ask"><span class="bl">리뷰 · 완료</span><ul><li>연결 해제</li><li>다음 일은 새 task로</li></ul></div>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- task 실행 -->
+      <div class="wf" role="tabpanel" id="p-run" aria-labelledby="t-run" hidden>
+        <ol class="steps narrow">
+          <li class="node" data-a="person"><div class="nh"><span class="who">사람</span><b>task 실행</b></div><p>대시보드에서 실행을 누르거나 API를 한 번 호출합니다.</p></li>
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>실행 대기열에 등록</b></div><p>pg-boss 큐가 동시에 2개까지 꺼냅니다. 맥북 CPU와 디스크를 지키기 위한 제한입니다.</p></li>
+          <li class="node" data-a="runner"><div class="nh"><span class="who">runner</span><b>격리된 작업 공간 준비</b></div><p>task마다 git worktree와 전용 브랜치를 만들고, 앱별 준비 명령(의존성 설치 등)을 실행합니다.</p></li>
+          <li class="node" data-a="runner" id="run-exec"><div class="nh"><span class="who">runner</span><b>Claude 실행</b></div><p>task 설명, 기획 명세, 완료 조건을 담아 에이전트를 실행합니다. 앱별로 허용한 도구만 쓰고, push 권한은 없습니다.</p></li>
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>로그 저장 · 실시간 전송</b></div><p>출력 이벤트를 DB에 남기고 WebSocket으로 대시보드에 바로 보여 줍니다. 원본도 그대로 보관합니다.</p></li>
+          <li class="node decide" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>결과 판정</b></div><p>에이전트의 마지막 구조화된 출력으로 어떻게 끝났는지 가립니다.</p>
+            <div class="branches">
+              <div class="br" data-k="ok"><span class="bl">완료</span><ul><li>커밋 확인</li><li>사전 검사, 실패하면 PR을 만들지 않음</li><li>시스템이 push하고 PR 생성</li><li>task를 리뷰로</li></ul></div>
+              <div class="br" data-k="ask"><span class="bl">질문</span><ul><li>task를 답변 대기로</li><li>사람이 대시보드에서 답변</li><li class="loop">같은 세션으로 이어서 실행 ↺ 4단계</li></ul></div>
+              <div class="br" data-k="fail"><span class="bl">실패</span><ul><li>오류, 사용량 한도, 중지를 구분해 기록</li><li>사유를 대시보드에 표시</li><li>다시 실행해 완료하면 실패 표시 정리</li></ul></div>
+            </div>
+          </li>
+          <li class="node" data-a="person"><div class="nh"><span class="who">사람</span><b>PR 리뷰 · 머지</b></div><p>머지는 언제나 사람이 합니다.</p></li>
+          <li class="node" data-a="github"><div class="nh"><span class="who">GitHub</span><b>머지 감지</b></div><p>5분마다 GitHub를 확인해 머지된 PR을 찾습니다.</p></li>
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>task 완료 · 정리</b></div><p>task를 완료로 바꾸고 worktree를 지웁니다. 실행 비용은 앱별·월별로 합산됩니다.</p></li>
+        </ol>
+      </div>
+
+      <!-- 기획 · 새 앱 -->
+      <div class="wf" role="tabpanel" id="p-idea" aria-labelledby="t-idea" hidden>
+        <ol class="steps narrow">
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>기획 생성 시작</b></div><p>앱별 주기에 맞춰 자동으로, 또는 즉시 시작합니다. 구독 사용량이 80%를 넘으면 건너뜁니다.</p></li>
+          <li class="node" data-a="runner"><div class="nh"><span class="who">runner</span><b>읽기 전용 에이전트가 기획 작성</b></div><p>앱 방향성 메모, 열린 task, 이전 반려 사유를 읽고 정해진 형식으로 기획을 냅니다. 코드는 읽기만 하고, 새 앱 기획은 비슷한 서비스와 시장도 웹에서 조사합니다.</p></li>
+          <li class="node decide" data-a="person"><div class="nh"><span class="who">사람</span><b>검토</b></div>
+            <div class="branches">
+              <div class="br" data-k="ok"><span class="bl">승인</span><ul><li>task와 기획 명세 생성</li><li>기존 앱이면 task 실행 흐름으로</li></ul></div>
+              <div class="br" data-k="ask"><span class="bl">수정 요청</span><ul><li class="loop">요청을 더해 새 버전 작성 ↺ 2단계</li></ul></div>
+              <div class="br" data-k="fail"><span class="bl">반려</span><ul><li>사유를 저장해 다음 기획에 반영</li></ul></div>
+            </div>
+          </li>
+          <li class="node" data-a="runner"><div class="nh"><span class="who">runner</span><b>새 앱이면: 프로젝트 만들기</b></div><p>폴더를 만들고 git을 시작한 뒤, README와 기획 문서로 첫 커밋을 합니다.</p></li>
+          <li class="node" data-a="github"><div class="nh"><span class="who">GitHub</span><b>비공개 저장소 생성</b></div><p>같은 이름의 저장소가 있으면 덮어쓰지 않고 멈춥니다.</p></li>
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>작업 폴더 신뢰 등록</b></div><p>방금 만든 폴더만 Claude Code 신뢰 목록에 올려, 백그라운드 세션이 시작될 수 있게 합니다.</p></li>
+          <li class="node" data-a="session"><div class="nh"><span class="who">Claude 세션</span><b>백그라운드 세션 시작</b></div><p>기획 읽기 → UI 시안 → 첫 task 구현 → PR 순서로 진행합니다. 원격으로 이어 볼 수 있습니다.</p></li>
+          <li class="node" data-a="server"><div class="nh"><span class="who">관제 서버</span><b>실패하면 이어서 재시도</b></div><p>끝난 단계는 건너뛰고 실패한 단계부터 다시 합니다. 세션을 못 띄우면 runner가 첫 task를 대신 실행합니다.</p></li>
+        </ol>
+      </div>
     </div>
   </section>
 
   <section class="block" id="features">
     <div class="wrap">
-      <div class="label">02 / 기능</div>
+      <div class="label">03 / 기능</div>
       <h2>기능과 시연</h2>
       <p class="sub">각 기능이 어떤 문제를 풀었는지와 실제로 동작하는 모습을 함께 담았습니다.</p>
       <nav class="toc" aria-label="기능 목록">
@@ -331,7 +554,7 @@
 
   <section class="block" id="design">
     <div class="wrap">
-      <div class="label">03 / 설계</div>
+      <div class="label">04 / 설계</div>
       <h2>설계 결정</h2>
       <p class="sub">Claude 세션, 대시보드, 실행기가 서로 다른 입구로 들어오지만 규칙은 한 곳에만 둡니다.</p>
       <div class="grid">
@@ -344,7 +567,7 @@
 
   <section class="block" id="ops">
     <div class="wrap">
-      <div class="label">04 / 운영</div>
+      <div class="label">05 / 운영</div>
       <h2>매일 쓰는 서비스로 운영</h2>
       <p class="sub">개발 도구라도 매일 의존하는 서비스라서, 꺼지거나 데이터를 잃지 않는 것을 기능만큼 중요하게 다뤘습니다.</p>
       <div class="grid">
@@ -376,6 +599,64 @@
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('pf-theme', next); } catch (e) {}
       label();
+    });
+  })();
+
+  // 워크플로우 탭과 단계별로 보기
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('#how [role="tab"]'));
+    var playBtn = document.getElementById('wfPlay');
+    var timer = null;
+
+    function activePanel() {
+      var t = tabs.filter(function (b) { return b.getAttribute('aria-selected') === 'true'; })[0];
+      return document.getElementById(t.getAttribute('aria-controls'));
+    }
+    function stop() {
+      clearTimeout(timer); timer = null;
+      document.querySelectorAll('#how .wf').forEach(function (p) {
+        p.classList.remove('playing');
+        p.querySelectorAll('.node').forEach(function (n) { n.classList.remove('on', 'done'); });
+      });
+      playBtn.textContent = '▶ 단계별로 보기';
+    }
+    function select(tab, focus) {
+      stop();
+      tabs.forEach(function (b) {
+        var on = b === tab;
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+        b.tabIndex = on ? 0 : -1;
+        document.getElementById(b.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (focus) tab.focus();
+    }
+    tabs.forEach(function (b, i) {
+      b.addEventListener('click', function () { select(b); });
+      b.addEventListener('keydown', function (e) {
+        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
+        if (j === null) return;
+        e.preventDefault();
+        select(tabs[(j + tabs.length) % tabs.length], true);
+      });
+    });
+
+    playBtn.addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      var panel = activePanel();
+      var nodes = Array.prototype.slice.call(panel.querySelectorAll('.node'));
+      var i = 0;
+      panel.classList.add('playing');
+      playBtn.textContent = '■ 멈추기';
+      (function step() {
+        nodes.forEach(function (n, k) { n.classList.toggle('on', k === i); n.classList.toggle('done', k < i); });
+        var cur = nodes[i];
+        var r = cur.getBoundingClientRect();
+        if (r.top < 80 || r.bottom > window.innerHeight - 40) cur.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        i += 1;
+        timer = setTimeout(i < nodes.length ? step : function () {
+          stop();
+        }, i < nodes.length ? 1400 : 2200);
+      })();
     });
   })();
 
