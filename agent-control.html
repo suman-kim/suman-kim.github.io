@@ -47,10 +47,10 @@
       --m: clamp(16px, 2.6vw, 40px);
       --gap: clamp(12px, 1.6vw, 24px);
       --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-      --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-      --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-      --step-head: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
-      --step-display: clamp(2.75rem, 1.4rem + 4.4vw, 5.25rem);
+      --step-body: clamp(1rem, 0.97rem + 0.1vw, 1.0625rem);
+      --step-lead: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem);
+      --step-head: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
+      --step-display: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
       --ease-out: cubic-bezier(.16,1,.3,1);
       --r: 8px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* taste-skill-ignore: pre/code 전용 */
@@ -165,7 +165,7 @@
     .why-head { grid-column:1 / span 8; }
     .statement {
       grid-column:1 / span 10; margin-top:clamp(28px,3vw,48px);
-      font-size:clamp(1.5rem, 1rem + 1.4vw, 2.25rem); line-height:1.3; font-weight:600; letter-spacing:-0.025em;
+      font-size:var(--step-head); line-height:1.35; font-weight:600; letter-spacing:-0.025em;
     }
     .thumb {
       display:inline-flex; align-items:center; height:2.1em; vertical-align:0.28em; margin:0 0.14em; padding:0 0.42em;
@@ -342,7 +342,7 @@
     .ops-text .lead { margin-top:18px; max-width:34em; }
     .figs { margin:clamp(36px,3.6vw,56px) 0 0; display:flex; flex-direction:column; gap:28px; }
     .figs div { display:grid; grid-template-columns:132px minmax(0,1fr); gap:24px; align-items:baseline; }
-    .figs dt { text-align:right; font-size:clamp(1.5rem, 1.2rem + 0.8vw, 2rem); font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .figs dt { text-align:right; font-size:var(--step-head); font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; white-space:nowrap; }
     .figs dd { margin:0; max-width:40ch; }
     .ops-fig { grid-column:9 / span 4; margin-top:calc(var(--step-head) * 2.6); }
 
@@ -397,13 +397,13 @@
       .ops-text, .ops-fig { grid-column:1 / -1; }
       .ops-fig { margin-top:48px; }
       .figs div { grid-template-columns:88px minmax(0,1fr); gap:16px; }
-      .figs dt { font-size:1.5rem; }
+      .figs dt { font-size:1.25rem; }
     }
     @media (max-width: 560px) {
       .apps { grid-template-columns:minmax(0,1fr); }
       .apps .side { flex-direction:row; flex-wrap:wrap; }
       .arch { grid-template-columns:minmax(0,1fr); }
-      .statement { font-size:1.5rem; }
+      .statement { font-size:1.25rem; }
       .apps .side a .c { display:none; }
       .sess .hide-s { display:none; }
     }

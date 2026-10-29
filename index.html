@@ -51,11 +51,11 @@
       --m: clamp(16px, 2.6vw, 40px);
       --gap: clamp(12px, 1.6vw, 24px);
       --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-      --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-      --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-      --step-head: clamp(2rem, 1.2rem + 2.4vw, 3rem);
-      --step-title: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
-      --step-display: clamp(2.5rem, 1.2rem + 3.9vw, 4.5rem);
+      --step-body: clamp(1rem, 0.97rem + 0.1vw, 1.0625rem);
+      --step-lead: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem);
+      --step-head: clamp(1.75rem, 1.3rem + 1.3vw, 2.25rem);
+      --step-title: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --step-display: clamp(2.25rem, 1.3rem + 2.8vw, 3.5rem);
       --ease-out: cubic-bezier(.16,1,.3,1);
       --r: 8px;
     }
@@ -139,18 +139,26 @@
     .hero-meta { margin-top:28px; font-size:var(--step-small); color:var(--hero-muted); }
     .hero-note { font-size:var(--step-small); color:var(--hero-muted); max-width:36em; }
 
-    /* 이벤트 모니터 */
-    .mon { width:100%; }
-    .mon ol { list-style:none; margin:0; padding:0; }
-    .mon li { /* taste-skill-ignore: data-ui 조각의 행 구분 */ display:grid; grid-template-columns:74px minmax(0,1fr) auto; gap:12px; align-items:start; padding:11px 16px; border-top:1px solid var(--ui-border); cursor:pointer; transition:background-color .25s ease; }
-    .mon li:first-child { border-top:0; }
-    .mon li:hover, .mon li:focus-visible { background:var(--ui-soft); outline:none; }
-    .mon .t { color:var(--ui-muted); font-variant-numeric:tabular-nums; font-size:13px; padding-top:1px; }
-    .mon .sys { display:block; font-weight:600; }
-    .mon .ev { display:block; color:var(--ui-muted); font-size:13px; }
-    .mon li.new { animation:row-in .7s var(--ease-out); }
-    .mon .foot-row { /* taste-skill-ignore: data-ui 조각 */ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 16px; background:var(--ui-soft); border-top:1px solid var(--ui-border); }
-    @keyframes row-in { from { background:color-mix(in srgb, var(--ui-chart) 14%, var(--ui-bg)); transform:translateY(-6px); opacity:.2; } to { background:transparent; transform:none; opacity:1; } }
+    /* 프로젝트 화면 슬라이드 */
+    .show { width:100%; }
+    .show-stage { position:relative; aspect-ratio:16/9; overflow:hidden; background:#0b0e12; }
+    .slide { position:absolute; inset:0; opacity:0; transition:opacity .9s ease; display:block; }
+    .slide.on { opacity:1; z-index:1; }
+    .slide img { width:100%; height:100%; object-fit:cover; object-position:top left; display:block; transform:scale(1.04); transition:transform 6s linear; }
+    .slide.on img { transform:scale(1); }
+    .slide:focus-visible { outline:3px solid var(--hero-ink); outline-offset:-3px; }
+    .show-bar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px 20px; margin-top:16px; }
+    .show-cap b { display:block; font-size:var(--step-lead); font-weight:700; letter-spacing:-0.02em; color:var(--hero-ink); }
+    .show-cap span { display:block; margin-top:2px; font-size:var(--step-small); color:var(--hero-muted); }
+    .show-ctl { display:flex; align-items:center; gap:6px; }
+    .show-ctl .arrow { width:44px; height:44px; display:grid; place-items:center; background:var(--hero-l); color:var(--hero-ink); border:0; border-radius:0; cursor:pointer; transition:background-color .18s ease, transform .18s var(--ease-out); }
+    .show-ctl .arrow:hover { background:#000; }
+    .show-ctl .arrow:active { transform:scale(.94); }
+    .show-ctl .arrow svg { width:20px; height:20px; }
+    .dots { display:flex; gap:2px; }
+    .dots button { width:28px; height:44px; display:grid; place-items:center; background:none; border:0; padding:0; cursor:pointer; }
+    .dots button::before { content:''; width:8px; height:8px; border-radius:50%; background:var(--hero-muted); opacity:.5; transition:opacity .2s ease, width .3s var(--ease-out); }
+    .dots button[aria-current="true"]::before { opacity:1; width:22px; border-radius:4px; background:var(--hero-ink); }
 
     /* ---------- 숫자 띠 ---------- */
     .figs { background:var(--surface); display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:var(--gap); padding:clamp(32px,4vw,56px) var(--m); }
@@ -191,10 +199,9 @@
     .mini .deny b { color:var(--ui-bad); } .mini .allow b { color:var(--ui-ok); }
     .mini code { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-size:13px; background:var(--ui-soft); padding:1px 6px; border-radius:4px; } /* taste-skill-ignore: 실제 코드 */
 
-    .others { margin-top:clamp(72px,8vw,128px); }
-    .others h3 { font-size:var(--step-lead); margin-bottom:20px; }
     .other { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,6fr) minmax(0,3fr); gap:var(--gap); padding:clamp(20px,2.2vw,28px) clamp(16px,2vw,28px); background:var(--surface); }
-    .other:nth-child(even) { background:var(--field); }
+    div.other:nth-of-type(even) { background:var(--field); }
+    .feature + .other, .sec-head + .other { margin-top:clamp(56px,7vw,112px); }
     .other + .other { margin-top:4px; }
     .other .name b { display:block; font-size:var(--step-lead); letter-spacing:-0.02em; line-height:1.25; }
     .other .name span { display:block; margin-top:6px; font-size:var(--step-small); color:var(--muted); }
@@ -268,7 +275,7 @@
     }
     @media (max-width: 900px) {
       .hero { grid-template-columns:1fr; }
-      .hero-r { padding-top:24px; position:static; }
+      .hero-r { padding-top:24px; padding-bottom:72px; position:static; }
       .toggles { top:28px; }
       .topbar { padding-right:150px; }
       .figs { grid-template-columns:repeat(2, minmax(0,1fr)); row-gap:28px; }
@@ -280,11 +287,11 @@
       .other { grid-template-columns:minmax(0,1fr); gap:10px; }
       .other .side { grid-column:auto; }
       .edu, .cert { grid-column:1 / -1; }
+      .stack { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); column-gap:var(--gap); }
     }
     @media (max-width: 560px) {
-      .mon li { grid-template-columns:58px minmax(0,1fr); }
-      .mon li .pill { grid-column:2; justify-self:start; }
       .edu li { grid-template-columns:minmax(0,1fr); gap:2px; }
+      .stack { grid-template-columns:minmax(0,1fr); }
     }
   </style>
 </head>
@@ -321,18 +328,22 @@
       <button type="button" id="langBtn" aria-label="Switch to English">EN</button>
       <button type="button" id="themeBtn">다크 모드</button>
     </div>
-    <div class="mon" data-ui id="mon">
-      <div class="ui-head">
-        <span class="ui-title" data-en="Events my systems handle">제가 만든 시스템이 처리하는 이벤트</span>
-        <span class="pill live" id="monState" data-en="Live">실시간</span>
+    <div class="show" id="show" role="region" aria-roledescription="carousel" aria-label="프로젝트 화면" data-en-label="Project screens">
+      <div class="show-stage">
+        <a class="slide on" href="#p-onepass"><img src="assets/onepass.jpg" width="1200" height="674" alt="ONEPASS PRO 관리자 대시보드" data-en-alt="ONEPASS PRO admin dashboard"></a>
+        <a class="slide" href="#p-ischool" tabindex="-1" aria-hidden="true"><img src="assets/ischool.jpg" width="1200" height="674" alt="아이스쿨 운행 관제 화면" data-en-alt="iSchool operations dashboard"></a>
+        <a class="slide" href="#p-cyphers" tabindex="-1" aria-hidden="true"><img src="assets/cyphers-meta.jpg" width="1200" height="629" alt="사이퍼즈 메타 첫 화면" data-en-alt="Cyphers Meta home"></a>
       </div>
-      <ol id="monList" aria-live="off"></ol>
-      <div class="foot-row">
-        <span class="ui-sub" data-en="Click a row to jump to that project">행을 누르면 해당 프로젝트로 이동합니다</span>
-        <button type="button" class="ui-btn" id="monPause" data-en="Pause">일시정지</button>
+      <div class="show-bar">
+        <p class="show-cap" aria-live="polite"><b id="capName">ONEPASS PRO</b><span id="capDesc">얼굴 인식 출입통제·근태관리 솔루션</span></p>
+        <div class="show-ctl">
+          <button type="button" class="arrow" id="showPrev" aria-label="이전 화면" data-en-label="Previous screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
+          <span class="dots" id="showDots"></span>
+          <button type="button" class="arrow" id="showNext" aria-label="다음 화면" data-en-label="Next screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
+        </div>
       </div>
     </div>
-    <p class="hero-note hero-fade late" data-en="A replay of the kinds of events these projects handled in production: face-recognition entries, bus boarding checks, payment retries and more.">실제 프로젝트에서 다뤘던 이벤트 종류를 재현한 화면입니다. 얼굴 인식 출입, 통학버스 승하차, 결제 재시도 같은 일들이 이런 순서로 들어왔습니다.</p>
+    <p class="hero-note hero-fade late" data-en="Real screens from the services. Click a screen to read about that project.">실제 서비스 화면입니다. 화면을 누르면 해당 프로젝트 설명으로 이동합니다.</p>
   </div>
 </header>
 
@@ -397,7 +408,6 @@
         <figcaption data-en="Admin dashboard: live access log, attendance stats and door status">관리자 대시보드. 실시간 출입 기록, 근태 통계, 출입문 상태</figcaption>
       </figure>
     </article>
-
     <article class="grid feature" id="p-ischool">
       <div class="f-text">
         <h3 data-rise data-en="iSchool">아이스쿨</h3>
@@ -416,7 +426,29 @@
         <figcaption data-en="Operations dashboard for administrators">관리자용 운행 관제 화면</figcaption>
       </figure>
     </article>
-
+    <div class="other" id="p-aslan">
+      <div class="name"><b data-en="ASLAN">아슬란 (ASLAN)</b><span data-en="2021–2025 · Professional · Focus H&amp;S">2021–2025 · 실무 · 포커스에이치엔에스</span></div>
+      <div>
+        <p data-en="A unified CCTV/NVR control web app combining live streaming, recording management and event alerts.">CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합했습니다.</p>
+        <ul>
+          <li data-en="Unified multi-channel live streaming with event alerting">다중 채널 실시간 스트리밍과 이벤트 알림 통합</li>
+          <li data-en="Designed recording retrieval and management">녹화 파일 조회·관리 기능 설계</li>
+          <li data-en="Owned both the Next.js console and the NestJS server">Next.js 관제 화면과 NestJS 서버 전 구간 담당</li>
+        </ul>
+      </div>
+      <div class="side"><span>NestJS · PostgreSQL · Redis · WebSocket · Next.js</span></div>
+    </div>
+    <div class="other" id="p-shelter">
+      <div class="name"><b data-en="Smart Shelter">스마트쉘터</b><span data-en="2021–2025 · Professional · Focus H&amp;S">2021–2025 · 실무 · 포커스에이치엔에스</span></div>
+      <div>
+        <p data-en="An IoT smart-farm system managing temperature/humidity sensors, automated watering and environment monitoring.">IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리합니다.</p>
+        <ul>
+          <li data-en="Ingested sensor data over MQTT into a live dashboard">MQTT로 센서 데이터를 수집해 대시보드에 반영</li>
+          <li data-en="Implemented threshold-based automatic watering control">임계값 기반 자동 급수 제어 로직 구현</li>
+        </ul>
+      </div>
+      <div class="side"><span>NestJS · MySQL · MQTT · React</span></div>
+    </div>
     <article class="grid feature" id="p-agent">
       <div class="f-text">
         <h3 data-rise data-en="AI agent control system">AI 에이전트 통합 관제 시스템</h3>
@@ -442,7 +474,17 @@
         <figcaption data-en="The guard that this very page was built under">이 페이지도 이 가드 아래에서 task를 만들어 가며 작업했습니다.</figcaption>
       </figure>
     </article>
-
+    <div class="other" id="p-todayalba">
+      <div class="name"><b data-en="Today Alba">오늘알바</b><span data-en="2025–2026 · Personal">2025–2026 · 개인 프로젝트</span></div>
+      <div>
+        <p data-en="A short-term job matching platform: clean architecture, WebSocket chat and Kakao Map integration, deployed on Railway.">단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포했습니다.</p>
+        <ul>
+          <li data-en="Separated domain and infrastructure layers with clean architecture">클린 아키텍처로 도메인·인프라 계층 분리</li>
+          <li data-en="Built WebSocket chat and Kakao Map based location search">WebSocket 채팅과 카카오맵 기반 위치 검색 구현</li>
+        </ul>
+      </div>
+      <div class="side"><span>NestJS · React Native · PostgreSQL · WebSocket</span></div>
+    </div>
     <article class="grid feature" id="p-cyphers">
       <div class="f-text">
         <h3 data-rise data-en="Cyphers Meta">사이퍼즈 메타</h3>
@@ -462,93 +504,48 @@
         <figcaption data-en="cyphers-meta.co.kr home: 13,058 collected matches at the time of capture">cyphers-meta.co.kr 첫 화면. 캡처 당시 수집 매치 13,058건</figcaption>
       </figure>
     </article>
-
-    <div class="others" aria-labelledby="others-h">
-      <h3 id="others-h" data-rise data-en="More projects">그 밖의 프로젝트</h3>
-
-      <div class="other" id="p-aslan">
-        <div class="name"><b data-en="ASLAN">아슬란 (ASLAN)</b><span data-en="2021–2025 · Professional · Focus H&amp;S">2021–2025 · 실무 · 포커스에이치엔에스</span></div>
-        <div>
-          <p data-en="A unified CCTV/NVR control web app combining live streaming, recording management and event alerts.">CCTV·NVR 통합 관제 웹. 실시간 영상 스트리밍, 녹화 파일 관리, 이벤트 알림을 하나의 관제 솔루션으로 통합했습니다.</p>
-          <ul>
-            <li data-en="Unified multi-channel live streaming with event alerting">다중 채널 실시간 스트리밍과 이벤트 알림 통합</li>
-            <li data-en="Designed recording retrieval and management">녹화 파일 조회·관리 기능 설계</li>
-            <li data-en="Owned both the Next.js console and the NestJS server">Next.js 관제 화면과 NestJS 서버 전 구간 담당</li>
-          </ul>
-        </div>
-        <div class="side"><span>NestJS · PostgreSQL · Redis · WebSocket · Next.js</span></div>
+    <div class="other" id="p-asset">
+      <div class="name"><b data-en="Equipment asset management">설비 자산관리 서비스</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
+      <div>
+        <p data-en="A Spring Boot backend built on hexagonal architecture and TDD, covering assignment, maintenance and disposal domains.">헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현했습니다.</p>
+        <ul>
+          <li data-en="Split domain from JPA infrastructure via ports and adapters">포트·어댑터 구조로 도메인과 JPA 인프라 분리</li>
+          <li data-en="Verified domain rules test-first">테스트 우선으로 도메인 규칙을 검증</li>
+        </ul>
       </div>
-
-      <div class="other" id="p-shelter">
-        <div class="name"><b data-en="Smart Shelter">스마트쉘터</b><span data-en="2021–2025 · Professional · Focus H&amp;S">2021–2025 · 실무 · 포커스에이치엔에스</span></div>
-        <div>
-          <p data-en="An IoT smart-farm system managing temperature/humidity sensors, automated watering and environment monitoring.">IoT 연동 스마트팜 시스템. 온습도 센서, 자동 급수, 환경 모니터링을 통합 관리합니다.</p>
-          <ul>
-            <li data-en="Ingested sensor data over MQTT into a live dashboard">MQTT로 센서 데이터를 수집해 대시보드에 반영</li>
-            <li data-en="Implemented threshold-based automatic watering control">임계값 기반 자동 급수 제어 로직 구현</li>
-          </ul>
-        </div>
-        <div class="side"><span>NestJS · MySQL · MQTT · React</span></div>
+      <div class="side"><span>Java · Spring Boot · JPA · Hexagonal · TDD</span></div>
+    </div>
+    <div class="other" id="p-trade">
+      <div class="name"><b data-en="Automated trading system">주식 자동매매 시스템</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
+      <div>
+        <p data-en="A strategy-driven trading system that separates market data collection from execution, making strategies swappable and backtestable.">전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리해 전략 교체와 백테스트가 쉽도록 설계했습니다.</p>
+        <ul>
+          <li data-en="Made trading logic swappable with the strategy pattern">전략 패턴으로 매매 로직을 교체 가능하게 구성</li>
+          <li data-en="Separated the market-data pipeline from the execution engine">시세 수집 파이프라인과 실행 엔진 분리</li>
+        </ul>
       </div>
-
-      <div class="other" id="p-todayalba">
-        <div class="name"><b data-en="Today Alba">오늘알바</b><span data-en="2025–2026 · Personal">2025–2026 · 개인 프로젝트</span></div>
-        <div>
-          <p data-en="A short-term job matching platform: clean architecture, WebSocket chat and Kakao Map integration, deployed on Railway.">단기 일자리 매칭 플랫폼. 클린 아키텍처 기반 설계에 WebSocket 채팅, 카카오맵 연동을 더해 Railway에 배포했습니다.</p>
-          <ul>
-            <li data-en="Separated domain and infrastructure layers with clean architecture">클린 아키텍처로 도메인·인프라 계층 분리</li>
-            <li data-en="Built WebSocket chat and Kakao Map based location search">WebSocket 채팅과 카카오맵 기반 위치 검색 구현</li>
-          </ul>
-        </div>
-        <div class="side"><span>NestJS · React Native · PostgreSQL · WebSocket</span></div>
+      <div class="side"><span data-en="TypeScript · NestJS · Strategy pattern · Automation">TypeScript · NestJS · 전략 패턴 · 자동화</span><a class="link" href="https://github.com/suman-kim/auto-trade-server">GitHub ↗</a></div>
+    </div>
+    <div class="other" id="p-challenge">
+      <div class="name"><b data-en="30-day challenge app">30일 챌린지 앱</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
+      <div>
+        <p data-en="A habit-forming 30-day challenge platform with daily check-ins, badges and rankings, built on clean architecture.">습관 형성을 돕는 30일 챌린지 플랫폼. 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반으로 설계 중입니다.</p>
+        <ul>
+          <li data-en="Designed the check-in, badge and ranking domains">일일 체크인·뱃지·랭킹 도메인 설계</li>
+        </ul>
       </div>
-
-      <div class="other" id="p-asset">
-        <div class="name"><b data-en="Equipment asset management">설비 자산관리 서비스</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
-        <div>
-          <p data-en="A Spring Boot backend built on hexagonal architecture and TDD, covering assignment, maintenance and disposal domains.">헥사고날·클린 아키텍처와 TDD 기반 Spring Boot 백엔드. 배정·정비·폐기 도메인을 JPA 인프라와 REST로 구현했습니다.</p>
-          <ul>
-            <li data-en="Split domain from JPA infrastructure via ports and adapters">포트·어댑터 구조로 도메인과 JPA 인프라 분리</li>
-            <li data-en="Verified domain rules test-first">테스트 우선으로 도메인 규칙을 검증</li>
-          </ul>
-        </div>
-        <div class="side"><span>Java · Spring Boot · JPA · Hexagonal · TDD</span></div>
+      <div class="side"><span>NestJS · TypeORM · MySQL · React Native</span><a class="link" href="https://github.com/suman-kim/challenge-app-backend">GitHub ↗</a></div>
+    </div>
+    <div class="other" id="p-news">
+      <div class="name"><b data-en="News keyword subscription">뉴스 키워드 구독 서비스</b><span data-en="2024 · Personal">2024 · 개인 프로젝트</span></div>
+      <div>
+        <p data-en="A keyword-subscription news feed built with DDD, clean architecture and TDD, tuned with Redis caching.">구독 키워드 기반 뉴스 피드 서비스. DDD·클린 아키텍처·TDD로 설계하고 Redis 캐싱으로 성능을 튜닝했습니다.</p>
+        <ul>
+          <li data-en="Split subscription and feed domains with DDD">DDD로 구독·피드 도메인을 분리</li>
+          <li data-en="Improved feed read performance with Redis caching">Redis 캐싱으로 피드 조회 성능 개선</li>
+        </ul>
       </div>
-
-      <div class="other" id="p-trade">
-        <div class="name"><b data-en="Automated trading system">주식 자동매매 시스템</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
-        <div>
-          <p data-en="A strategy-driven trading system that separates market data collection from execution, making strategies swappable and backtestable.">전략 기반 자동 트레이딩 시스템. 시세 수집과 매매 전략 실행을 분리해 전략 교체와 백테스트가 쉽도록 설계했습니다.</p>
-          <ul>
-            <li data-en="Made trading logic swappable with the strategy pattern">전략 패턴으로 매매 로직을 교체 가능하게 구성</li>
-            <li data-en="Separated the market-data pipeline from the execution engine">시세 수집 파이프라인과 실행 엔진 분리</li>
-          </ul>
-        </div>
-        <div class="side"><span data-en="TypeScript · NestJS · Strategy pattern · Automation">TypeScript · NestJS · 전략 패턴 · 자동화</span><a class="link" href="https://github.com/suman-kim/auto-trade-server">GitHub ↗</a></div>
-      </div>
-
-      <div class="other" id="p-challenge">
-        <div class="name"><b data-en="30-day challenge app">30일 챌린지 앱</b><span data-en="2025 · Personal">2025 · 개인 프로젝트</span></div>
-        <div>
-          <p data-en="A habit-forming 30-day challenge platform with daily check-ins, badges and rankings, built on clean architecture.">습관 형성을 돕는 30일 챌린지 플랫폼. 일일 체크인·뱃지·랭킹 시스템을 클린 아키텍처 기반으로 설계 중입니다.</p>
-          <ul>
-            <li data-en="Designed the check-in, badge and ranking domains">일일 체크인·뱃지·랭킹 도메인 설계</li>
-          </ul>
-        </div>
-        <div class="side"><span>NestJS · TypeORM · MySQL · React Native</span><a class="link" href="https://github.com/suman-kim/challenge-app-backend">GitHub ↗</a></div>
-      </div>
-
-      <div class="other" id="p-news">
-        <div class="name"><b data-en="News keyword subscription">뉴스 키워드 구독 서비스</b><span data-en="2024 · Personal">2024 · 개인 프로젝트</span></div>
-        <div>
-          <p data-en="A keyword-subscription news feed built with DDD, clean architecture and TDD, tuned with Redis caching.">구독 키워드 기반 뉴스 피드 서비스. DDD·클린 아키텍처·TDD로 설계하고 Redis 캐싱으로 성능을 튜닝했습니다.</p>
-          <ul>
-            <li data-en="Split subscription and feed domains with DDD">DDD로 구독·피드 도메인을 분리</li>
-            <li data-en="Improved feed read performance with Redis caching">Redis 캐싱으로 피드 조회 성능 개선</li>
-          </ul>
-        </div>
-        <div class="side"><span>Java · Spring Boot · Next.js · MySQL · Redis</span><a class="link" href="https://github.com/suman-kim/newsfeed">GitHub ↗</a></div>
-      </div>
+      <div class="side"><span>Java · Spring Boot · Next.js · MySQL · Redis</span><a class="link" href="https://github.com/suman-kim/newsfeed">GitHub ↗</a></div>
     </div>
   </section>
 
@@ -653,7 +650,7 @@
     langBtn.setAttribute('aria-label', l === 'en' ? '한국어로 보기' : 'Switch to English');
     try { localStorage.setItem('pf-lang', l); } catch (e) {}
     themeLabel();
-    renderMon();
+    caption();
   }
   langBtn.addEventListener('click', function () { setLang(lang === 'en' ? 'ko' : 'en'); });
   themeBtn.addEventListener('click', function () {
@@ -663,60 +660,59 @@
     themeLabel();
   });
 
-  // 이벤트 모니터: 프로젝트에서 다뤘던 이벤트 종류를 순서대로 재생한다
-  var EVENTS = [
-    { to:'p-onepass', sys:['ONEPASS PRO','ONEPASS PRO'], ev:['얼굴 인식 출입 · 1층 메인 출입문','Face entry · 1F main door'], st:['통과','Passed'], k:'ok' },
-    { to:'p-ischool', sys:['아이스쿨','iSchool'], ev:['12호차 승차 체크 → 학부모 알림 발송','Bus 12 boarding check → parent notified'], st:['발송','Sent'], k:'ok' },
-    { to:'p-career', sys:['결제','Payments'], ev:['Google Play 영수증 검증 · 재시도 1회 후 성공','Google Play receipt · succeeded after 1 retry'], st:['성공','OK'], k:'ok' },
-    { to:'p-shelter', sys:['스마트쉘터','Smart Shelter'], ev:['온도 31.2℃ 임계값 초과 → 환기 시작','31.2℃ over threshold → ventilation on'], st:['제어','Control'], k:'wait' },
-    { to:'p-aslan', sys:['아슬란','ASLAN'], ev:['CH-07 움직임 감지 → 녹화 시작','CH-07 motion → recording started'], st:['녹화','Recording'], k:'live' },
-    { to:'p-ischool', sys:['아이스쿨','iSchool'], ev:['7호차 GPS 위치 갱신','Bus 7 GPS position updated'], st:['갱신','Updated'], k:'live' },
-    { to:'p-cyphers', sys:['사이퍼즈 메타','Cyphers Meta'], ev:['상위 랭커 매치 수집 배치 완료','Top-ranker match batch finished'], st:['완료','Done'], k:'ok' },
-    { to:'p-agent', sys:['관제 시스템','Control system'], ev:['task 없는 세션의 Edit 시도','Edit from a session without a task'], st:['차단','Blocked'], k:'bad' },
-    { to:'p-onepass', sys:['ONEPASS PRO','ONEPASS PRO'], ev:['누락 이벤트 2건 단말기 로그와 대조해 복구','2 missed events recovered from terminal log'], st:['복구','Recovered'], k:'ok' },
-    { to:'p-career', sys:['결제','Payments'], ev:['Xsolla 응답 지연 · Circuit Breaker 열림','Xsolla slow · circuit breaker opened'], st:['보호','Guarded'], k:'wait' },
-    { to:'p-onepass', sys:['ONEPASS PRO','ONEPASS PRO'], ev:['익일 퇴근 규칙 → 전날 퇴근으로 기록','Next-day rule → recorded as yesterday’s exit'], st:['판정','Judged'], k:'ok' },
-    { to:'p-todayalba', sys:['오늘알바','Today Alba'], ev:['채팅 메시지 전달 · WebSocket','Chat message delivered · WebSocket'], st:['전달','Delivered'], k:'live' }
+  // 프로젝트 화면 슬라이드: 5초마다 넘기고, 마우스를 올리거나 포커스가 있으면 멈춘다
+  var SLIDES = [
+    { name:['ONEPASS PRO','ONEPASS PRO'], desc:['얼굴 인식 출입통제·근태관리 솔루션','Face-recognition access control & attendance'] },
+    { name:['아이스쿨','iSchool'], desc:['GPS 기반 안심 통학버스 솔루션','GPS-based safe school-bus service'] },
+    { name:['사이퍼즈 메타','Cyphers Meta'], desc:['운영 중인 게임 전적·통계 서비스','Live game stats service'] }
   ];
-  var monList = document.getElementById('monList');
-  var monPause = document.getElementById('monPause');
-  var monState = document.getElementById('monState');
-  var shown = [], next = 0, timer = null, paused = reduce;
-  var clock = new Date(); clock.setHours(9, 14, 2, 0);
-  function stamp() { clock = new Date(clock.getTime() + (3 + Math.floor(Math.random() * 9)) * 1000); return clock.toTimeString().slice(0, 8); }
-  function renderMon(animateFirst) {
+  var show = document.getElementById('show');
+  var slides = Array.prototype.slice.call(show.querySelectorAll('.slide'));
+  var dotsBox = document.getElementById('showDots');
+  var capName = document.getElementById('capName'), capDesc = document.getElementById('capDesc');
+  var cur = 0, hold = false, timer = null;
+  var dots = SLIDES.map(function (_, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.addEventListener('click', function () { goTo(i); restart(); });
+    dotsBox.appendChild(b);
+    return b;
+  });
+  function caption() {
     var L = lang === 'en' ? 1 : 0;
-    monList.innerHTML = '';
-    shown.forEach(function (s, i) {
-      var e = EVENTS[s.i];
-      var li = document.createElement('li');
-      li.tabIndex = 0;
-      li.setAttribute('role', 'link');
-      li.dataset.to = e.to === 'p-career' ? 'career' : e.to;
-      li.innerHTML = '<span class="t">' + s.t + '</span><span><span class="sys">' + e.sys[L] + '</span><span class="ev">' + e.ev[L] + '</span></span><span class="pill ' + e.k + '">' + e.st[L] + '</span>';
-      if (animateFirst && i === 0 && !reduce) li.classList.add('new');
-      monList.appendChild(li);
+    capName.textContent = SLIDES[cur].name[L];
+    capDesc.textContent = SLIDES[cur].desc[L];
+    dots.forEach(function (b, i) {
+      b.setAttribute('aria-current', i === cur ? 'true' : 'false');
+      b.setAttribute('aria-label', (lang === 'en' ? 'Screen ' : '화면 ') + (i + 1) + ' · ' + SLIDES[i].name[L]);
     });
-    monPause.textContent = paused ? (lang === 'en' ? 'Resume' : '다시 재생') : (lang === 'en' ? 'Pause' : '일시정지');
-    monState.textContent = paused ? (lang === 'en' ? 'Paused' : '멈춤') : (lang === 'en' ? 'Live' : '실시간');
-    monState.className = 'pill ' + (paused ? '' : 'live');
   }
-  function push() {
-    shown.unshift({ i: next, t: stamp() });
-    next = (next + 1) % EVENTS.length;
-    if (shown.length > 7) shown.pop();
-    renderMon(true);
+  function goTo(i) {
+    cur = (i + slides.length) % slides.length;
+    slides.forEach(function (sl, k) {
+      var on = k === cur;
+      sl.classList.toggle('on', on);
+      sl.tabIndex = on ? 0 : -1;
+      if (on) sl.removeAttribute('aria-hidden'); else sl.setAttribute('aria-hidden', 'true');
+    });
+    caption();
   }
-  for (var k = 0; k < 7; k++) push();
-  function loop() { timer = setTimeout(function () { if (!paused && !document.hidden) push(); loop(); }, 2200); }
-  loop();
-  monPause.addEventListener('click', function () { paused = !paused; renderMon(false); });
-  function go(li) {
-    var t = document.getElementById(li.dataset.to);
-    if (t) t.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  function restart() {
+    clearInterval(timer);
+    if (reduce) return;
+    timer = setInterval(function () { if (!hold && !document.hidden) goTo(cur + 1); }, 5000);
   }
-  monList.addEventListener('click', function (e) { var li = e.target.closest('li'); if (li) go(li); });
-  monList.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { var li = e.target.closest('li'); if (li) { e.preventDefault(); go(li); } } });
+  document.getElementById('showPrev').addEventListener('click', function () { goTo(cur - 1); restart(); });
+  document.getElementById('showNext').addEventListener('click', function () { goTo(cur + 1); restart(); });
+  show.addEventListener('mouseenter', function () { hold = true; });
+  show.addEventListener('mouseleave', function () { hold = false; });
+  show.addEventListener('focusin', function () { hold = true; });
+  show.addEventListener('focusout', function () { hold = false; });
+  show.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { goTo(cur + 1); restart(); }
+    if (e.key === 'ArrowLeft') { goTo(cur - 1); restart(); }
+  });
+  goTo(0); restart();
 
   setLang(lang);
 
