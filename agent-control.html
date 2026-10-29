@@ -12,7 +12,7 @@
   <meta property="og:description" content="Claude Code로 개인 앱 여러 개를 개발하면서 만든 로컬 관제 서버입니다.">
   <meta property="og:image" content="https://suman-kim.github.io/og-image.png">
   <meta property="og:locale" content="ko_KR">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314181d'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23e7eaee'%3EKSM%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314181d'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23f8f9fb'%3EKSM%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <script>
     // 다른 페이지와 같은 테마 저장값(pf-theme)을 쓰고, 없으면 라이트
@@ -26,7 +26,7 @@
   <style>
     /* ---------- 토큰 ---------- */
     :root, :root[data-theme="light"] {
-      --bg:#e7eaee; --surface:#dde2e8; --field:#d1d7df;
+      --bg:#f8f9fb; --surface:#eef1f5; --field:#e3e7ed;
       --ink:#1b2129; --muted:#515b67; --accent:#0b7a57; --accent-ink:#ffffff;
       --hero-l:#14181d; --hero-r:#1f252d; --hero-ink:#eef1f5; --hero-muted:#b4bdc7;
       /* 화면 조각 (제품 UI) */
@@ -36,9 +36,9 @@
       --a-person:#9a5800; --a-session:#1d5fbf; --a-hook:#0e7490; --a-server:#0b7a57; --a-runner:#b0245e; --a-github:#48525e;
     }
     :root[data-theme="dark"] {
-      --bg:#111419; --surface:#191e25; --field:#222832;
+      --bg:#171b21; --surface:#1f242c; --field:#29303a;
       --ink:#e8ecf1; --muted:#a6b0bc; --accent:#45c49a; --accent-ink:#061a13;
-      --hero-l:#0b0e12; --hero-r:#171c23; --hero-ink:#eef1f5; --hero-muted:#a9b3be;
+      --hero-l:#12161c; --hero-r:#1c2129; --hero-ink:#eef1f5; --hero-muted:#a9b3be;
       --ui-bg:#1d232b; --ui-soft:#252c35; --ui-border:#343c47; --ui-ink:#eef2f6; --ui-muted:#a3adb9;
       --ui-chart:#78a6ff; --ui-ok:#5fd38d; --ui-bad:#ff8a80; --ui-wait:#f0b45a; --ui-primary:#eef2f6; --ui-primary-ink:#141920;
       --a-person:#f0b45a; --a-session:#78a6ff; --a-hook:#5fd4e8; --a-server:#45c49a; --a-runner:#ff86b4; --a-github:#bcc5cf;
@@ -47,10 +47,10 @@
       --m: clamp(16px, 2.6vw, 40px);
       --gap: clamp(12px, 1.6vw, 24px);
       --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-      --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-      --step-lead: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-      --step-head: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
-      --step-display: clamp(2.75rem, 1.4rem + 4.4vw, 5.25rem);
+      --step-body: clamp(1rem, 0.97rem + 0.1vw, 1.0625rem);
+      --step-lead: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem);
+      --step-head: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
+      --step-display: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
       --ease-out: cubic-bezier(.16,1,.3,1);
       --r: 8px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* taste-skill-ignore: pre/code 전용 */
@@ -165,16 +165,8 @@
     .why-head { grid-column:1 / span 8; }
     .statement {
       grid-column:1 / span 10; margin-top:clamp(28px,3vw,48px);
-      font-size:clamp(1.5rem, 1rem + 1.4vw, 2.25rem); line-height:1.3; font-weight:600; letter-spacing:-0.025em;
+      font-size:var(--step-head); line-height:1.35; font-weight:600; letter-spacing:-0.025em;
     }
-    .thumb {
-      display:inline-flex; align-items:center; height:2.1em; vertical-align:0.28em; margin:0 0.14em; padding:0 0.42em;
-      border-radius:0.16em; font-size:max(13px, 0.5em); line-height:1; font-weight:600; letter-spacing:0; white-space:nowrap;
-      background:var(--ui-bg); color:var(--ui-ink);
-    }
-    .thumb.t-chat { font-family:inherit; }
-    .thumb i { font-style:normal; display:inline-block; width:.6em; height:.6em; border-radius:50%; margin-right:.45em; background:var(--ui-chart); }
-    .thumb.t-term { background:#141920; color:#eef2f6; }
     .why-split { margin-top:clamp(56px,6vw,96px); row-gap:40px; }
     .problems { grid-column:1 / span 6; }
     .principles { grid-column:7 / span 6; background:var(--surface); padding:clamp(24px,2.6vw,40px); align-self:start; }
@@ -276,7 +268,8 @@
     .f-text li { padding-left:20px; position:relative; }
     .f-text li::before { content:''; position:absolute; left:2px; top:0.62em; width:8px; height:8px; background:var(--accent); }
     .f-video { margin-top:24px; }
-    .f-fig { grid-column:6 / span 7; }
+    .f-fig { grid-column:6 / span 7; justify-self:stretch; width:100%; min-width:0; margin:0; }
+    .f-fig > [data-ui], .f-fig > .player { width:100%; }
     .f-fig.w-6 { grid-column:6 / span 6; }
     .f-fig.w-5 { grid-column:6 / span 5; }
     .f-fig figcaption { margin-top:10px; font-size:var(--step-small); color:var(--muted); }
@@ -342,7 +335,7 @@
     .ops-text .lead { margin-top:18px; max-width:34em; }
     .figs { margin:clamp(36px,3.6vw,56px) 0 0; display:flex; flex-direction:column; gap:28px; }
     .figs div { display:grid; grid-template-columns:132px minmax(0,1fr); gap:24px; align-items:baseline; }
-    .figs dt { text-align:right; font-size:clamp(1.5rem, 1.2rem + 0.8vw, 2rem); font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .figs dt { text-align:right; font-size:var(--step-head); font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; white-space:nowrap; }
     .figs dd { margin:0; max-width:40ch; }
     .ops-fig { grid-column:9 / span 4; margin-top:calc(var(--step-head) * 2.6); }
 
@@ -376,6 +369,7 @@
       .mark { position:absolute; top:24px; left:var(--m); z-index:2; }
       .theme-link { top:24px; }
       .hero-l .mark-slot { display:none; }
+      .hero-note { display:none; }
       .why-head, .statement, .problems, .principles { grid-column:1 / -1; }
       .pin-steps { grid-column:1 / -1; order:2; }
       .pin-stage { grid-column:1 / -1; order:1; position:relative; top:auto; height:auto; padding:12px; margin:0 calc(var(--m) * -1); }
@@ -397,13 +391,13 @@
       .ops-text, .ops-fig { grid-column:1 / -1; }
       .ops-fig { margin-top:48px; }
       .figs div { grid-template-columns:88px minmax(0,1fr); gap:16px; }
-      .figs dt { font-size:1.5rem; }
+      .figs dt { font-size:1.25rem; }
     }
     @media (max-width: 560px) {
       .apps { grid-template-columns:minmax(0,1fr); }
       .apps .side { flex-direction:row; flex-wrap:wrap; }
       .arch { grid-template-columns:minmax(0,1fr); }
-      .statement { font-size:1.5rem; }
+      .statement { font-size:1.25rem; }
       .apps .side a .c { display:none; }
       .sess .hide-s { display:none; }
     }
@@ -419,7 +413,7 @@
         <span class="line"><span data-line style="--i:0">AI 에이전트</span></span>
         <span class="line"><span data-line style="--i:1">통합 관제 시스템</span></span>
       </h1>
-      <p class="hero-copy hero-fade">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 맥북에 항상 떠 있으면서 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
+      <p class="hero-copy hero-fade">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
       <div class="hero-act hero-fade late">
         <a class="btn btn-light" href="#how">동작 방식 보기</a>
         <span class="hero-meta">개인 프로젝트 · 2026년 10월부터 · NestJS, PostgreSQL, React</span>
@@ -444,7 +438,7 @@
         <button type="button" class="ui-btn primary" id="gSend">Claude에게 보내기</button>
       </div>
     </div>
-    <p class="hero-note hero-fade late">위 창은 직접 눌러 볼 수 있습니다. task를 연결하지 않고 보내면 막히고, 연결한 뒤 보내면 이 페이지 테마가 실제로 바뀝니다.</p>
+    <p class="hero-note hero-fade late">task를 연결하고 보내면 이 페이지 테마가 실제로 바뀝니다.</p>
   </div>
 </header>
 
@@ -452,7 +446,7 @@
   <section class="sec wrap" id="why" aria-labelledby="why-h">
     <div class="grid">
       <h2 class="why-head" id="why-h" data-rise>만든 이유</h2>
-      <p class="statement" data-rise style="--d:1">앱 세 개<span class="thumb" aria-hidden="true">LK · CM · HR</span>를 번갈아 개발하다 보니, task<span class="thumb" aria-hidden="true">LK-57</span>가 어디까지 갔는지와 어제 세션<span class="thumb t-term" aria-hidden="true">$ claude</span>에서 한 일을 매번 다시 찾고 있었습니다.</p>
+      <p class="statement" data-rise style="--d:1">앱 여러 개를 번갈아 개발하다 보니, task가 어디까지 갔는지와 어제 세션에서 한 일을 매번 다시 찾고 있었습니다.</p>
     </div>
     <div class="grid why-split">
       <div class="problems">
@@ -524,7 +518,7 @@
     <div class="flows-head">
       <div>
         <h2 id="flows-h" data-rise>전체 흐름도</h2>
-        <p>세션, hook, 서버, runner, GitHub 사이에서 일이 어떤 순서로 넘어가는지 정리했습니다. 탭을 바꿔 가며 보거나 ‘단계별로 재생’을 눌러 보세요.</p>
+        <p>세션, hook, 서버, runner, GitHub 사이에서 일이 넘어가는 순서입니다.</p>
       </div>
       <button type="button" class="btn btn-accent" id="wfPlay">단계별로 재생</button>
     </div>
@@ -660,7 +654,6 @@
   <section class="sec wrap" id="features" aria-labelledby="feat-h">
     <div class="feat-head">
       <h2 id="feat-h" data-rise>주요 기능</h2>
-      <p>오른쪽 화면은 실제 대시보드와 세션 화면을 같은 구성으로 옮겨 그린 것입니다. 시연 영상은 준비되는 대로 붙이고 있습니다.</p>
     </div>
 
     <!--
@@ -671,7 +664,7 @@
     <article class="grid feature" id="f-context">
       <div class="f-text">
         <h3 data-rise>세션 시작 시 맥락 전달</h3>
-        <p class="one">새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다. 덕분에 어디까지 했는지 설명할 일이 거의 없어졌습니다.</p>
+        <p class="one">새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다.</p>
         <ul>
           <li>넣는 순서는 앱 정보, 이 세션의 task, 열린 task, 실수 기록 순이고 8,000자를 넘으면 뒤에서부터 자릅니다.</li>
           <li>세션은 MCP 도구로 task 상태를 바꾸고, 실수나 인수인계 문서, 버그를 직접 기록합니다.</li>
@@ -690,7 +683,6 @@
 <span class="k">실수 기록</span> 리뷰로 넘긴 task를 다시 진행 중으로
           바꾸려 함 → 새 task를 만들어 진행</code></pre>
         </div>
-        <figcaption>새 세션이 받은 맥락 블록</figcaption>
       </figure>
     </article>
 
@@ -720,7 +712,6 @@
             </tbody>
           </table>
         </div>
-        <figcaption>판정 대상은 수정과 셸 실행뿐입니다. 맨 위 창에서 직접 해 볼 수 있습니다.</figcaption>
       </figure>
     </article>
 
@@ -749,14 +740,13 @@
             </tbody>
           </table>
         </div>
-        <figcaption>테스트용 앱에서 처음 돌려 본 실행 네 번입니다. 구독으로 돌려서 금액은 API 요금으로 환산한 값입니다.</figcaption>
       </figure>
     </article>
 
     <article class="grid feature" id="f-sessions">
       <div class="f-text">
         <h3 data-rise>세션 모니터링</h3>
-        <p class="one">터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다. 세션이 여러 개 떠 있을 때 어느 쪽이 제 답을 기다리는지 터미널을 뒤질 필요가 없어졌습니다.</p>
+        <p class="one">터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다.</p>
         <ul>
           <li>상태는 hook 기록으로 추정합니다. 작업 중, 입력 대기, 30분 넘게 소식 없음, 종료 네 가지입니다.</li>
           <li>세션마다 연결된 task, 누가 시작했는지, 마지막 메시지와 도구를 보여 줍니다.</li>
@@ -776,7 +766,6 @@
             </tbody>
           </table>
         </div>
-        <figcaption>상태는 마지막 hook 기록을 보고 추정한 값입니다.</figcaption>
       </figure>
     </article>
 
@@ -786,8 +775,8 @@
         <p class="one">앱마다 개발 단계, 배포 기록, 버그, 제가 직접 해야 할 일, 작업 히스토리, 비용을 한 페이지에 모았습니다.</p>
         <ul>
           <li>사이드바의 앱 이름 옆 점 색으로 가장 급한 상태를 보여 줍니다. 배포가 실패했거나 심각한 버그가 있으면 빨강, 답변 대기면 주황 식입니다.</li>
-          <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다. 처음 연동했을 때는 90건을 가져오는 데 48초가 걸렸습니다.</li>
-          <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다. 하루알바는 97일째라 이 알림이 떠 있습니다.</li>
+          <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다.</li>
+          <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다.</li>
           <li>스토어 제출처럼 제가 직접 해야 하는 일은 세션이 ‘내 할 일’로 따로 등록합니다.</li>
         </ul>
       </div>
@@ -815,7 +804,6 @@
             <div class="signal"><b>하루알바</b> · 97일째 조용합니다. 계속할까요, 멈춤으로 둘까요?</div>
           </div>
         </div>
-        <figcaption>배포 기록은 GitHub Actions와 Railway가 남긴 기록에서 가져옵니다.</figcaption>
       </figure>
     </article>
 
@@ -847,7 +835,6 @@
             <button type="button" class="ui-btn secondary" tabindex="-1">반려</button>
           </div>
         </div>
-        <figcaption>이 기획을 승인하자 TH-2, TH-3이 만들어졌고 바로 실행할 수 있었습니다.</figcaption>
       </figure>
     </article>
 
@@ -872,7 +859,6 @@
             <li class="cur"><span class="ck" aria-hidden="true"></span><span>백그라운드 세션 시작<span class="d">기획 읽기 → UI 시안 → 첫 task</span></span></li>
           </ol>
         </div>
-        <figcaption>벌금통 앱은 이 과정으로 만들어졌습니다.</figcaption>
       </figure>
     </article>
   </section>
@@ -918,7 +904,7 @@
     <div class="grid ops">
       <div class="ops-text">
         <h2 id="ops-h" data-rise>운영</h2>
-        <p class="lead">개발 도구이긴 하지만 매일 켜 두고 쓰기 때문에, 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고 죽으면 다시 띄웁니다. DB가 Docker 안에 있어서 DB 포트가 열릴 때까지 기다렸다가 시작하고, 실행 중에는 맥북이 잠들지 않게 막아 둡니다.</p>
+        <p class="lead">매일 켜 두고 쓰는 서버라 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고, 죽으면 다시 띄웁니다.</p>
         <dl class="figs">
           <div><dt>5분</dt><dd>GitHub에서 배포, Actions 결과, 머지된 PR을 가져오는 주기</dd></div>
           <div><dt>14일</dt><dd>하루 한 번 pg_dump로 백업하고, 백업을 보관하는 기간</dd></div>
