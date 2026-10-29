@@ -167,8 +167,9 @@
     .f-text li::before, .other li::before { content:''; position:absolute; left:2px; top:0.62em; width:8px; height:8px; background:var(--accent); }
     .f-tech { margin-top:18px; font-size:var(--step-small); color:var(--muted); }
     .f-go { margin-top:22px; }
-    .f-fig { grid-column:6 / span 7; margin:0; background:var(--surface); padding:clamp(14px,2vw,28px); }
+    .f-fig { grid-column:6 / span 7; justify-self:stretch; width:100%; min-width:0; margin:0; background:var(--surface); padding:clamp(14px,2vw,28px); }
     .f-fig img { display:block; width:100%; height:auto; }
+    .f-fig > [data-ui] { width:100%; }
     .f-fig figcaption { margin-top:10px; font-size:var(--step-small); color:var(--muted); }
     .mini .g-row { display:flex; gap:10px; padding:10px 16px; }
     .mini .g-row + .g-row { padding-top:0; }

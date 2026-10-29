@@ -167,14 +167,6 @@
       grid-column:1 / span 10; margin-top:clamp(28px,3vw,48px);
       font-size:var(--step-head); line-height:1.35; font-weight:600; letter-spacing:-0.025em;
     }
-    .thumb {
-      display:inline-flex; align-items:center; height:2.1em; vertical-align:0.28em; margin:0 0.14em; padding:0 0.42em;
-      border-radius:0.16em; font-size:max(13px, 0.5em); line-height:1; font-weight:600; letter-spacing:0; white-space:nowrap;
-      background:var(--ui-bg); color:var(--ui-ink);
-    }
-    .thumb.t-chat { font-family:inherit; }
-    .thumb i { font-style:normal; display:inline-block; width:.6em; height:.6em; border-radius:50%; margin-right:.45em; background:var(--ui-chart); }
-    .thumb.t-term { background:#141920; color:#eef2f6; }
     .why-split { margin-top:clamp(56px,6vw,96px); row-gap:40px; }
     .problems { grid-column:1 / span 6; }
     .principles { grid-column:7 / span 6; background:var(--surface); padding:clamp(24px,2.6vw,40px); align-self:start; }
@@ -276,7 +268,8 @@
     .f-text li { padding-left:20px; position:relative; }
     .f-text li::before { content:''; position:absolute; left:2px; top:0.62em; width:8px; height:8px; background:var(--accent); }
     .f-video { margin-top:24px; }
-    .f-fig { grid-column:6 / span 7; }
+    .f-fig { grid-column:6 / span 7; justify-self:stretch; width:100%; min-width:0; margin:0; }
+    .f-fig > [data-ui], .f-fig > .player { width:100%; }
     .f-fig.w-6 { grid-column:6 / span 6; }
     .f-fig.w-5 { grid-column:6 / span 5; }
     .f-fig figcaption { margin-top:10px; font-size:var(--step-small); color:var(--muted); }
@@ -453,7 +446,7 @@
   <section class="sec wrap" id="why" aria-labelledby="why-h">
     <div class="grid">
       <h2 class="why-head" id="why-h" data-rise>만든 이유</h2>
-      <p class="statement" data-rise style="--d:1">앱 세 개<span class="thumb" aria-hidden="true">LK · CM · HR</span>를 번갈아 개발하다 보니, task<span class="thumb" aria-hidden="true">LK-57</span>가 어디까지 갔는지와 어제 세션<span class="thumb t-term" aria-hidden="true">$ claude</span>에서 한 일을 매번 다시 찾고 있었습니다.</p>
+      <p class="statement" data-rise style="--d:1">앱 여러 개를 번갈아 개발하다 보니, task가 어디까지 갔는지와 어제 세션에서 한 일을 매번 다시 찾고 있었습니다.</p>
     </div>
     <div class="grid why-split">
       <div class="problems">
