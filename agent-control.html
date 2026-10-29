@@ -346,28 +346,6 @@
     .figs dd { margin:0; max-width:40ch; }
     .ops-fig { grid-column:9 / span 4; margin-top:calc(var(--step-head) * 2.6); }
 
-    /* ---------- 푸터 ---------- */
-    .foot { margin-top:clamp(120px,14vw,220px); padding:10px; display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:8px; }
-    .tile { background:var(--surface); padding:22px; min-height:220px; display:flex; flex-direction:column; justify-content:space-between; gap:20px; }
-    .t-state { grid-column:1 / span 4; }
-    .t-state p { font-size:var(--step-lead); font-weight:600; letter-spacing:-0.02em; line-height:1.35; }
-    .t-nav { grid-column:5 / span 3; }
-    .t-nav ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
-    .t-nav a { text-decoration:none; }
-    .t-nav a:hover { text-decoration:underline; text-underline-offset:4px; }
-    .t-time { grid-column:8 / span 2; }
-    .t-time b { display:block; font-size:var(--step-lead); font-variant-numeric:tabular-nums; }
-    .t-mail { grid-column:10 / span 3; }
-    .t-mail a { font-size:var(--step-lead); font-weight:600; letter-spacing:-0.02em; text-decoration:none; word-break:break-all; }
-    .t-mail a:hover { text-decoration:underline; text-underline-offset:5px; }
-    .t-word { grid-column:1 / span 8; min-height:320px; background:var(--ink); color:var(--bg); justify-content:center; align-items:center; }
-    .t-word span { font-size:clamp(3rem, 9vw, 9rem); font-weight:800; letter-spacing:-0.05em; line-height:1; }
-    .t-go { grid-column:9 / span 4; min-height:320px; background:var(--accent); color:var(--accent-ink); text-decoration:none; transition:filter .2s ease; }
-    .t-go:hover { filter:brightness(1.08); }
-    .t-go:hover svg { transform:translate(4px,-4px); }
-    .t-go span { font-size:var(--step-head); font-weight:700; letter-spacing:-0.03em; line-height:1.15; }
-    .t-go svg { align-self:flex-end; width:64px; height:64px; transition:transform .25s var(--ease-out); }
-
     /* ---------- 등장 ---------- */
     @media (prefers-reduced-motion: no-preference) {
       .js .lines [data-line] { transform:translateY(105%); animation:line-up 900ms var(--ease-out) forwards; animation-delay:calc(var(--i) * 110ms + 150ms); }
@@ -420,15 +398,6 @@
       .ops-fig { margin-top:48px; }
       .figs div { grid-template-columns:88px minmax(0,1fr); gap:16px; }
       .figs dt { font-size:1.5rem; }
-      .foot { grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; padding:6px; }
-      .t-word { grid-column:1 / -1; order:1; min-height:160px; }
-      .t-go { grid-column:1 / -1; order:2; min-height:160px; }
-      .t-nav { grid-column:1 / span 1; order:3; }
-      .t-mail { grid-column:2 / span 1; order:4; }
-      .t-time { grid-column:1 / span 1; order:5; }
-      .t-state { grid-column:2 / span 1; order:6; }
-      .tile { padding:20px; min-height:180px; }
-      .t-word span { font-size:16vw; }
     }
     @media (max-width: 560px) {
       .apps { grid-template-columns:minmax(0,1fr); }
@@ -437,7 +406,6 @@
       .statement { font-size:1.5rem; }
       .apps .side a .c { display:none; }
       .sess .hide-s { display:none; }
-      .t-mail a { font-size:var(--step-body); }
     }
   </style>
 </head>
@@ -946,7 +914,7 @@
     </div>
   </section>
 
-  <section class="sec wrap" id="ops" aria-labelledby="ops-h">
+  <section class="sec wrap" id="ops" aria-labelledby="ops-h" style="padding-bottom:clamp(96px,10vw,160px)">
     <div class="grid ops">
       <div class="ops-text">
         <h2 id="ops-h" data-rise>운영</h2>
@@ -975,35 +943,6 @@
     </div>
   </section>
 </main>
-
-<footer class="foot" aria-label="마무리">
-  <div class="tile t-state">
-    <p>이 페이지도 이 시스템에 task(PO-1~PO-9)를 만들어 가며 작업했습니다.</p>
-    <span class="small muted">© 2026 김수만</span>
-  </div>
-  <div class="tile t-nav">
-    <ul>
-      <li><a href="#why">만든 이유</a></li>
-      <li><a href="#how">동작 방식</a></li>
-      <li><a href="#features">주요 기능</a></li>
-      <li><a href="#design">설계</a></li>
-      <li><a href="https://github.com/suman-kim">GitHub</a></li>
-    </ul>
-  </div>
-  <div class="tile t-time">
-    <span class="small muted">맥북이 있는 곳</span>
-    <div><span>서울</span><b id="clock">--:--</b></div>
-  </div>
-  <div class="tile t-mail">
-    <span class="small muted">연락</span>
-    <a href="mailto:zzsdsdsd@gmail.com">zzsdsdsd@gmail.com</a>
-  </div>
-  <div class="tile t-word" aria-hidden="true"><span>관제 시스템</span></div>
-  <a class="tile t-go" href="index.html#work">
-    <span>다른 프로젝트 보기</span>
-    <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 50 L50 14 M22 14 H50 V42" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/></svg>
-  </a>
-</footer>
 
 <script>
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1211,17 +1150,6 @@
       });
       text.appendChild(btn);
     });
-  })();
-
-  // 푸터 시계: 서울 시간
-  (function () {
-    var el = document.getElementById('clock');
-    function tick() {
-      try {
-        el.textContent = new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' }).format(new Date());
-      } catch (e) { el.textContent = ''; }
-    }
-    tick(); setInterval(tick, 30000);
   })();
 </script>
 </body>
