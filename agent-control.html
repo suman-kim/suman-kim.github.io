@@ -1,1142 +1,1000 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI 에이전트 통합 관제 시스템 · 김수만</title>
-  <meta name="description" content="Claude Code로 개인 앱 여러 개를 개발하면서 만든 로컬 관제 서버. 세션 맥락 전달, task 없는 수정 차단, task 자동 실행과 PR 생성, 세션 모니터링.">
-  <meta name="author" content="김수만">
-  <link rel="canonical" href="https://suman-kim.github.io/agent-control.html">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="AI 에이전트 통합 관제 시스템 · 김수만">
-  <meta property="og:description" content="Claude Code로 개인 앱 여러 개를 개발하면서 만든 로컬 관제 서버입니다.">
-  <meta property="og:image" content="https://suman-kim.github.io/og-image.png">
-  <meta property="og:locale" content="ko_KR">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314181d'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23f8f9fb'%3EKSM%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-  <script>
-    // 다른 페이지와 같은 테마 저장값(pf-theme)을 쓰고, 없으면 라이트
-    (function () {
-      var t = 'light';
-      try { t = localStorage.getItem('pf-theme') || 'light'; } catch (e) {}
-      document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
-      document.documentElement.classList.add('js');
-    })();
-  </script>
-  <style>
-    /* ---------- 토큰 ---------- */
-    :root, :root[data-theme="light"] {
-      --bg:#f8f9fb; --surface:#eef1f5; --field:#e3e7ed;
-      --ink:#1b2129; --muted:#515b67; --accent:#0b7a57; --accent-ink:#ffffff;
-      --hero-l:#14181d; --hero-r:#1f252d; --hero-ink:#eef1f5; --hero-muted:#b4bdc7;
-      /* 화면 조각 (제품 UI) */
-      --ui-bg:#ffffff; --ui-soft:#f1f3f6; --ui-border:#dde2e8; --ui-ink:#141920; --ui-muted:#5d6773;
-      --ui-chart:#1d5fbf; --ui-ok:#157a3c; --ui-bad:#b42318; --ui-wait:#9a5800; --ui-primary:#141920; --ui-primary-ink:#ffffff;
-      /* 흐름도 역할 */
-      --a-person:#9a5800; --a-session:#1d5fbf; --a-hook:#0e7490; --a-server:#0b7a57; --a-runner:#b0245e; --a-github:#48525e;
-    }
-    :root[data-theme="dark"] {
-      --bg:#171b21; --surface:#1f242c; --field:#29303a;
-      --ink:#e8ecf1; --muted:#a6b0bc; --accent:#45c49a; --accent-ink:#061a13;
-      --hero-l:#12161c; --hero-r:#1c2129; --hero-ink:#eef1f5; --hero-muted:#a9b3be;
-      --ui-bg:#1d232b; --ui-soft:#252c35; --ui-border:#343c47; --ui-ink:#eef2f6; --ui-muted:#a3adb9;
-      --ui-chart:#78a6ff; --ui-ok:#5fd38d; --ui-bad:#ff8a80; --ui-wait:#f0b45a; --ui-primary:#eef2f6; --ui-primary-ink:#141920;
-      --a-person:#f0b45a; --a-session:#78a6ff; --a-hook:#5fd4e8; --a-server:#45c49a; --a-runner:#ff86b4; --a-github:#bcc5cf;
-    }
-    :root {
-      --m: clamp(16px, 2.6vw, 40px);
-      --gap: clamp(12px, 1.6vw, 24px);
-      --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-      --step-body: clamp(1rem, 0.97rem + 0.1vw, 1.0625rem);
-      --step-lead: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem);
-      --step-head: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
-      --step-display: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
-      --ease-out: cubic-bezier(.16,1,.3,1);
-      --r: 8px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* taste-skill-ignore: pre/code 전용 */
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 에이전트 통합 관제 시스템 · 김수만</title>
+<meta name="description" content="Claude Code 세션 여러 개를 task 기준으로 묶어 관리하고, task를 PR까지 자동으로 진행하는 로컬 관제 서버 케이스 스터디.">
+<meta name="theme-color" content="#0A0B0E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23141416'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='monospace' font-size='24' font-weight='700' fill='%23F5F5F7'%3ESK%3C/text%3E%3Ccircle cx='52' cy='12' r='6' fill='%237D8CFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;display=swap">
+<style>html{scroll-behavior:smooth}
+body{margin:0}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+.i-sun{display:none}.root.dark .i-sun{display:block}.root.dark .i-moon{display:none}
+section{scroll-margin-top:72px}
 
-    /* ---------- 바탕 ---------- */
-    *, *::before, *::after { box-sizing:border-box; }
-    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
-    body {
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family:'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      font-size:var(--step-body); line-height:1.6; word-break:keep-all; overflow-wrap:break-word;
-      -webkit-font-smoothing:antialiased;
-    }
-    ::selection { background:var(--accent); color:var(--accent-ink); }
-    a { color:inherit; }
-    :focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
-    h1, h2, h3, h4 { margin:0; font-weight:700; letter-spacing:-0.03em; line-height:1.12; text-wrap:balance; }
-    h2 { font-size:var(--step-head); }
-    h3 { font-size:var(--step-lead); letter-spacing:-0.02em; line-height:1.25; }
-    p { margin:0; }
-    .wrap { padding-left:var(--m); padding-right:var(--m); }
-    .grid { display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); column-gap:var(--gap); }
-    .muted { color:var(--muted); }
-    .small { font-size:var(--step-small); }
-    section.sec { padding-top:clamp(96px, 12vw, 200px); }
-    [hidden] { display:none !important; }
-    .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+/* ---------- theme ---------- */
+.root{--bg:#F5F5F7;--card:#FFFFFF;--line:#E5E5EA;--ink:#141416;--muted:#5A5B62;--soft:#EFEFF2;--accent:#2B47E8;--on-accent:#FFFFFF;--accent-soft:#E6EAFF;--hot:#FF7A3D;--panel:#121317;--panel-2:#1A1C21;--panel-line:#2A2D35;--panel-ink:#ECEDF0;--panel-muted:#9396A0;--glow:#7D8CFF;--on-glow:#0C0D10;
+  min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+.root.dark{color-scheme:dark;--bg:#0C0D10;--card:#15161A;--line:#26282E;--ink:#ECEDF0;--muted:#A0A3AC;--soft:#1D1F24;--accent:#7D8CFF;--on-accent:#0C0D10;--accent-soft:#1F2547;--panel:#0E0F12;--panel-2:#17191E;--panel-line:#272A31}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--ink)}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.sec{padding-top:104px}
+.lbl{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:20px;height:1px;background:currentColor}
+.h2{font-size:clamp(30px,3.6vw,44px);line-height:1.2;letter-spacing:-.035em;font-weight:740;margin:12px 0 0}
+.lead{margin:12px 0 0;color:var(--muted);font-size:17px;max-width:560px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+.row-b{display:flex;justify-content:space-between;align-items:center;gap:12px}
 
-    .btn {
-      display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:0 22px;
-      font:inherit; font-size:var(--step-small); font-weight:600; letter-spacing:-0.01em;
-      border:0; border-radius:0; cursor:pointer; text-decoration:none;
-      transition:transform .18s var(--ease-out), background-color .18s ease, color .18s ease;
-    }
-    .btn:active { transform:translateY(1px) scale(.98); }
-    .btn-light { background:var(--hero-ink); color:#14181d; }
-    .btn-light:hover { background:#ffffff; }
-    .btn-accent { background:var(--accent); color:var(--accent-ink); }
-    .btn-accent:hover { filter:brightness(1.08); }
-    .btn-plain { background:var(--field); color:var(--ink); }
-    .btn-plain:hover { background:var(--ink); color:var(--bg); }
+/* ---------- nav (fixed, inverts over any background) ---------- */
+.nav{position:fixed;left:0;right:0;top:0;z-index:50;color:#FFFFFF;border-bottom:1px solid transparent;transition:background-color .3s,color .3s,border-color .3s}
+.nav.solid{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);color:var(--ink);border-bottom-color:var(--line)}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;font-weight:720;letter-spacing:-.02em;font-size:17px;min-height:44px}
+.brand:hover{color:inherit}
+.logo{width:32px;height:32px;border-radius:10px;border:1.5px solid currentColor;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:12px;font-weight:600}
+.nav-links{display:flex;gap:2px}
+.nl{color:inherit;font-size:14.5px;font-weight:550;padding:10px 12px;border-radius:10px}
+.nl:hover{color:inherit;text-decoration:underline;text-underline-offset:6px}
+.nav-act{display:flex;align-items:center;gap:8px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;padding:0}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:99px;border:1px solid currentColor;color:inherit;font-weight:650;font-size:14px}
+.nav-cta:hover{color:#0A0B0E;background:#FFFFFF;border-color:#FFFFFF}
+.nav.solid .nav-cta:hover{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 
-    /* ---------- 화면 조각 (data-ui) ---------- */
-    [data-ui] {
-      background:var(--ui-bg); color:var(--ui-ink); border:1px solid var(--ui-border); border-radius:var(--r);
-      font-size:14px; line-height:1.5; letter-spacing:-0.005em; overflow:hidden;
-    }
-    [data-ui] .ui-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--ui-border); }
-    [data-ui] .ui-title { font-weight:600; font-size:14px; }
-    [data-ui] .ui-sub { color:var(--ui-muted); font-size:13px; }
-    [data-ui] .pill { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--ui-soft); color:var(--ui-ink); white-space:nowrap; }
-    [data-ui] .pill::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--ui-muted); }
-    [data-ui] .pill.ok::before { background:var(--ui-ok); }
-    [data-ui] .pill.bad::before { background:var(--ui-bad); }
-    [data-ui] .pill.wait::before { background:var(--ui-wait); }
-    [data-ui] .pill.live::before { background:var(--ui-chart); }
-    [data-ui] code, [data-ui] pre { font-family:var(--mono); font-size:13px; } /* taste-skill-ignore: 실제 코드 */
-    [data-ui] .ui-btn { font:inherit; font-size:13px; font-weight:600; border-radius:6px; padding:7px 14px; border:0; cursor:pointer; transition:transform .15s var(--ease-out), opacity .15s; }
-    [data-ui] .ui-btn:active { transform:scale(.97); }
-    [data-ui] .ui-btn.primary { background:var(--ui-primary); color:var(--ui-primary-ink); }
-    [data-ui] .ui-btn.secondary { background:var(--ui-soft); color:var(--ui-ink); border-radius:999px; }
-    [data-ui] .ui-btn:hover { opacity:.86; }
-    [data-ui] table { width:100%; border-collapse:collapse; }
-    [data-ui] th { text-align:left; font-weight:500; font-size:13px; color:var(--ui-muted); padding:10px 16px 8px; }
-    [data-ui] td { padding:11px 16px; border-top:1px solid var(--ui-border); vertical-align:top; }
-    [data-ui] .num { font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
-    [data-ui] .id { font-variant-numeric:tabular-nums; font-weight:600; color:var(--ui-muted); }
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 22px;border-radius:14px;font-weight:650;font-size:15.5px;border:1px solid transparent;white-space:nowrap;transition:background-color .2s,border-color .2s,color .2s}
+.btn-light{background:#FFFFFF;color:#0C0D10}
+.btn-light:hover{background:var(--glow);color:#0C0D10}
+.btn-ghost{color:#FFFFFF;border-color:rgba(255,255,255,.4)}
+.btn-ghost:hover{color:#FFFFFF;border-color:#FFFFFF}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px}
 
-    /* ---------- 히어로 ---------- */
-    .hero { display:grid; grid-template-columns:1fr 1fr; min-height:max(680px, 100svh); }
-    .hero-l { background:var(--hero-l); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:space-between; padding:clamp(24px,2.8vw,40px) var(--m) clamp(32px,4vw,56px); }
-    .hero-r { background:var(--hero-r); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; padding:clamp(72px,8vw,96px) var(--m) clamp(32px,4vw,56px); position:relative; }
-    .mark { display:inline-flex; gap:10px; align-items:center; font-size:var(--step-small); font-weight:600; text-decoration:none; color:var(--hero-ink); }
-    .mark b { display:inline-grid; place-items:center; width:34px; height:34px; background:var(--hero-ink); color:#14181d; font-size:13px; letter-spacing:-0.02em; }
-    .mark:hover span { text-decoration:underline; text-underline-offset:4px; }
-    .theme-link { position:absolute; top:clamp(24px,2.8vw,40px); right:var(--m); background:none; border:0; padding:6px 0; font:inherit; font-size:var(--step-small); color:var(--hero-ink); cursor:pointer; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px; }
-    .theme-link:hover { color:#ffffff; text-decoration-thickness:2px; }
-    .hero h1 { font-size:var(--step-display); line-height:0.98; letter-spacing:-0.045em; }
-    .lines .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
-    .lines [data-line] { display:block; }
-    .hero-copy { margin-top:clamp(24px,2.6vw,40px); max-width:34em; font-size:var(--step-body); color:var(--hero-ink); }
-    .hero-act { margin-top:32px; display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; }
-    .hero-meta { font-size:var(--step-small); color:var(--hero-muted); }
-    .hero-note { font-size:var(--step-small); color:var(--hero-muted); max-width:36em; text-align:left; width:min(100%, 560px); }
+/* ---------- bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;grid-auto-flow:dense}
+.c2{grid-column:span 2}
+.c4{grid-column:1/-1}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;overflow:hidden}
+.lift:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.stat{display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:196px}
+.num{font-size:clamp(48px,5vw,68px);font-weight:780;letter-spacing:-.055em;line-height:1;display:flex;align-items:flex-start;padding:4px 0 2px}
+.plus{font-size:.5em;color:var(--accent);margin-left:3px;line-height:1.1}
+.stat-cap{font-size:15px;color:var(--muted);line-height:1.5}
+.stat-cap b{display:block;color:var(--ink);font-size:16px;font-weight:650}
+.shipped{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.ship-left{flex:0 0 220px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.ship-grid{flex:1 1 480px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ship{display:flex;flex-direction:column;gap:12px;background:var(--soft);border-radius:16px;padding:8px 8px 16px;color:var(--ink)}
+.ship:hover{color:var(--ink);background:var(--accent-soft)}
+.ship-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}
+.ship-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px}
+.ship b{font-size:17px;font-weight:740;letter-spacing:-.02em}
+.ship small{display:block;padding:0 8px;font-size:13.5px;line-height:1.55;color:var(--muted)}
+.gh{display:flex;flex-direction:column;justify-content:space-between;gap:18px;color:var(--ink);min-height:196px}
+.gh:hover{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+.gh:hover .lbl,.gh:hover .gh-sub{color:var(--on-accent)}
+.gh-title{font-size:28px;font-weight:760;letter-spacing:-.03em;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.gh-arr{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center}
+.gh-sub{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted);display:block;margin-top:6px}
 
-    /* 가드 시연 조각 */
-    .guard { width:min(100%, 560px); }
-    .guard .g-body { padding:18px 16px 6px; min-height:252px; display:flex; flex-direction:column; gap:10px; }
-    .guard .g-row { display:flex; gap:10px; align-items:flex-start; }
-    .guard .g-who { flex:0 0 64px; font-size:13px; font-weight:600; color:var(--ui-muted); padding-top:2px; }
-    .guard .g-text { flex:1; min-width:0; }
-    .guard .g-user .g-text { background:var(--ui-soft); border-radius:6px; padding:8px 12px; }
-    .guard .g-tool .g-text code { background:var(--ui-soft); padding:2px 6px; border-radius:4px; }
-    .guard .g-result .g-text { border-radius:6px; padding:10px 12px; }
-    .guard .g-result.deny .g-text { background:color-mix(in srgb, var(--ui-bad) 10%, var(--ui-bg)); color:var(--ui-ink); }
-    .guard .g-result.allow .g-text { background:color-mix(in srgb, var(--ui-ok) 12%, var(--ui-bg)); color:var(--ui-ink); }
-    .guard .g-result b { font-weight:700; }
-    .guard .g-result.deny b { color:var(--ui-bad); }
-    .guard .g-result.allow b { color:var(--ui-ok); }
-    .guard .g-foot { /* taste-skill-ignore: data-ui 조각 */ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-top:1px solid var(--ui-border); background:var(--ui-soft); }
-    .switch { display:inline-flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:500; min-height:44px; }
-    .switch input { appearance:none; -webkit-appearance:none; width:38px; height:22px; border-radius:999px; background:var(--ui-border); position:relative; margin:0; cursor:pointer; transition:background-color .2s ease; flex:0 0 auto; }
-    .switch input::after { content:''; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:var(--ui-bg); transition:transform .2s var(--ease-out); box-shadow:0 1px 2px rgba(0,0,0,.25); } /* taste-skill-ignore: 스위치 손잡이 */
-    .switch input:checked { background:var(--ui-ok); }
-    .switch input:checked::after { transform:translateX(16px); }
-    .switch input:focus-visible { outline:3px solid var(--ui-chart); outline-offset:2px; }
-    .js .guard .g-step { opacity:0; transform:translateY(6px); }
-    .guard .g-step.show { opacity:1; transform:none; transition:opacity .3s ease, transform .35s var(--ease-out); }
+/* projects */
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}
+.tab{height:44px;padding:0 16px;border-radius:12px;border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tab span{font-family:'Geist Mono',monospace;font-size:12px;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.pc{padding:10px;display:flex;flex-direction:column}
+.vis{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10;flex:0 0 auto;background:var(--soft)}
+.pc.c1 .vis{aspect-ratio:16/11}
+.pc.feature{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;align-items:center}
+.pc.feature .pbody{padding:24px 28px}
+.pc.feature.flip .vis{order:2}
+.vis.photo::after{content:"";position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);pointer-events:none}
+.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+.vis-dark{background-color:var(--panel);color:var(--panel-ink)}
+.vis-soft{background-color:var(--soft);background-image:radial-gradient(color-mix(in srgb,var(--ink) 12%,transparent) 1px,transparent 1.4px);background-size:16px 16px}
+.pbody{padding:20px 16px 12px;display:flex;flex-direction:column;gap:12px;flex:1 1 auto}
+.pmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.period{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted)}
+.badge{font-size:12.5px;font-weight:600;color:var(--muted);padding:3px 10px;border-radius:99px;background:var(--soft)}
+.badge.on{color:var(--accent);background:var(--accent-soft)}
+.pt{font-size:24px;line-height:1.3;font-weight:740;letter-spacing:-.03em;margin:0}
+.pd{margin:0;color:var(--muted);font-size:15.5px;line-height:1.7}
+.pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.pts li{display:flex;gap:10px;font-size:14.5px;line-height:1.6}
+.pts li::before{content:"";flex:0 0 6px;height:6px;margin-top:9px;border-radius:1.5px;background:var(--accent);transform:rotate(45deg)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);padding:4px 10px;border-radius:8px;border:1px solid var(--line);line-height:1.5}
+.more{display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--ink);margin-top:auto;min-height:44px;align-self:flex-start}
+.more:hover{color:var(--accent)}
 
-    /* ---------- 왜 만들었나 ---------- */
-    .why-head { grid-column:1 / span 8; }
-    .statement {
-      grid-column:1 / span 10; margin-top:clamp(28px,3vw,48px);
-      font-size:var(--step-head); line-height:1.35; font-weight:600; letter-spacing:-0.025em;
-    }
-    .why-split { margin-top:clamp(56px,6vw,96px); row-gap:40px; }
-    .problems { grid-column:1 / span 6; }
-    .principles { grid-column:7 / span 6; background:var(--surface); padding:clamp(24px,2.6vw,40px); align-self:start; }
-    .why-split h3 { margin-bottom:clamp(20px,2vw,28px); }
-    .plist { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:clamp(22px,2.2vw,30px); }
-    .plist b { display:block; font-weight:700; font-size:var(--step-body); margin-bottom:6px; }
-    .plist p { color:var(--ink); }
-    .plist .fig { font-variant-numeric:tabular-nums; font-weight:700; }
 
-    /* ---------- 동작 방식: 고정 조각 ---------- */
-    .pin { margin-top:clamp(40px,4vw,64px); align-items:start; }
-    .pin-steps { grid-column:1 / span 5; }
-    .pin-step { min-height:72vh; display:flex; flex-direction:column; justify-content:center; padding-right:clamp(0px,2vw,24px); }
-    .pin-step:first-child { min-height:56vh; justify-content:flex-start; padding-top:8vh; }
-    .pin-step p.big { font-size:var(--step-head); font-weight:700; letter-spacing:-0.03em; line-height:1.18; color:var(--muted); transition:color .3s ease; }
-    .pin-step.on p.big { color:var(--ink); }
-    .pin-step p.sub { margin-top:14px; max-width:30em; }
-    .pin-stage { grid-column:6 / span 7; position:sticky; top:12vh; height:76vh; display:flex; align-items:center; background:var(--surface); padding:clamp(16px,2.4vw,40px); }
-    .run { width:100%; }
-    .run .bar { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; padding:12px 16px 0; }
-    .run .bar span { font-size:13px; color:var(--ui-muted); padding-top:8px; position:relative; }
-    .run .bar span::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; border-radius:2px; background:var(--ui-soft); }
-    .run .bar span.done::before { background:var(--ui-ink); }
-    .run .bar span.cur::before { background:var(--ui-chart); }
-    .run .bar span.cur { color:var(--ui-ink); font-weight:600; }
-    .run .meta { display:flex; flex-wrap:wrap; gap:4px 18px; padding:12px 16px; color:var(--ui-muted); font-size:13px; }
-    .run .meta code { color:var(--ui-ink); }
-    .run pre { margin:0; padding:14px 16px; background:#12161b; color:#e3e8ee; min-height:198px; max-height:236px; overflow:hidden; line-height:1.7; white-space:pre-wrap; word-break:break-all; }
-    .run pre .c { color:#8a95a2; }
-    .run pre .g { color:#7fd6a0; }
-    .run pre .y { color:#f2c27a; }
-    .run pre .b { color:#9cc2ff; }
-    .run .act { padding:14px 16px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; min-height:66px; }
-    .run .answer { flex:1; min-width:220px; background:var(--ui-soft); border-radius:6px; padding:8px 12px; color:var(--ui-ink); }
-    .run [data-s] { display:none; }
-    .run[data-state="1"] [data-s~="1"], .run[data-state="2"] [data-s~="2"], .run[data-state="3"] [data-s~="3"], .run[data-state="4"] [data-s~="4"] { display:revert; }
-    .run pre [data-s] { display:none; }
-    .run[data-state="1"] pre [data-s~="1"], .run[data-state="2"] pre [data-s~="2"], .run[data-state="3"] pre [data-s~="3"], .run[data-state="4"] pre [data-s~="4"] { display:block; }
-    .js .run pre .ln { opacity:0; transform:translateX(-6px); }
-    .run pre .ln { display:block; }
-    .run pre .ln.show { opacity:1; transform:none; transition:opacity .25s ease, transform .3s var(--ease-out); }
+/* mini cards */
+.mini{display:flex;flex-direction:column;gap:12px;padding:24px 24px 14px}
+.mini-ic{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.mini .pt{font-size:19px}
+.mini .pd{font-size:14.5px}
+.ph{color:var(--accent)}
 
-    /* ---------- 흐름도 ---------- */
-    .flows-head { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:20px 32px; }
-    .flows-head p { max-width:34em; margin-top:16px; }
-    .wf-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:clamp(28px,3vw,44px); }
-    .tabs { display:flex; flex-wrap:wrap; gap:6px; }
-    .tabs button {
-      font:inherit; font-size:var(--step-small); font-weight:600; min-height:44px; padding:0 18px;
-      background:var(--surface); color:var(--ink); border:0; border-radius:0; cursor:pointer;
-      transition:background-color .18s ease, color .18s ease, transform .18s var(--ease-out);
-    }
-    .tabs button:hover { background:var(--field); }
-    .tabs button:active { transform:scale(.97); }
-    .tabs button[aria-selected="true"] { background:var(--ink); color:var(--bg); }
-    .legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:16px; font-size:var(--step-small); color:var(--ink); }
-    .legend span::before, .who::before { content:''; display:inline-block; width:9px; height:9px; margin-right:7px; background:var(--c); vertical-align:0.02em; }
-    [data-a="person"] { --c:var(--a-person); } [data-a="session"] { --c:var(--a-session); } [data-a="hook"] { --c:var(--a-hook); }
-    [data-a="server"] { --c:var(--a-server); } [data-a="runner"] { --c:var(--a-runner); } [data-a="github"] { --c:var(--a-github); }
+/* stack + steps */
+.stack-card{display:flex;flex-direction:column;gap:18px;min-height:196px}
+.stack-card h3{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
+.sk{display:flex;flex-wrap:wrap;gap:8px}
+.sk span{font-size:14px;font-weight:600;padding:7px 12px;border-radius:10px;background:var(--soft);color:var(--ink)}
+.sub-head{display:flex;align-items:center;gap:12px;margin:56px 0 16px}
+.sub-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
+.sub-head::after{content:"";flex:1;height:1px;background:var(--line)}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.step{display:flex;flex-direction:column;gap:14px}
+.step-ic{width:48px;height:48px;border-radius:14px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.step h4{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
+.step p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.75}
 
-    .wf { margin-top:28px; background:var(--surface); padding:clamp(18px,2.4vw,36px); color:var(--ink); font-size:var(--step-small); }
-    .wf .node { background:var(--bg); border-left:5px solid var(--c); padding:14px 16px; transition:opacity .25s ease, transform .25s var(--ease-out), background-color .25s ease; }
-    .wf .node b { display:block; font-weight:700; font-size:var(--step-small); letter-spacing:-0.01em; }
-    .wf .node p { margin-top:4px; font-size:var(--step-small); line-height:1.6; color:var(--ink); }
-    .wf .who { display:block; font-size:var(--step-small); font-weight:600; color:var(--muted); margin-bottom:4px; }
-    .arch { display:grid; grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr) 22px minmax(0,1fr) 22px minmax(0,1fr); }
-    .arch .col { display:flex; flex-direction:column; gap:8px; }
-    .arch .col-h { font-size:var(--step-body); font-weight:700; margin-bottom:4px; }
-    .arch .node { flex:1; }
-    .arch .arr { display:grid; place-items:center; }
-    .arch .arr::before { content:''; border:7px solid transparent; border-left:9px solid var(--muted); border-right:0; }
-    .steps { list-style:none; margin:0; padding:0; }
-    .steps > li + li { margin-top:22px; position:relative; }
-    .steps > li + li::before { content:''; position:absolute; top:-17px; left:18px; border:6px solid transparent; border-top:8px solid var(--muted); border-bottom:0; }
-    .steps.narrow { max-width:760px; }
-    .lanes { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:clamp(16px,2.4vw,32px); align-items:start; }
-    .lane-h { font-size:var(--step-body); font-weight:700; margin-bottom:12px; }
-    .branches { display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:8px; margin-top:10px; }
-    .br { background:var(--surface); padding:10px 12px; border-top:4px solid var(--k, var(--a-server)); }
-    .br[data-k="ask"] { --k:var(--a-person); }
-    .br[data-k="fail"] { --k:var(--ui-bad); }
-    .br .bl { display:block; font-size:var(--step-small); font-weight:700; margin-bottom:4px; }
-    .br ul { list-style:none; margin:0; padding:0; }
-    .br li { font-size:var(--step-small); line-height:1.55; padding-left:14px; position:relative; }
-    .br li + li { margin-top:3px; }
-    .br li::before { content:'→'; position:absolute; left:0; color:var(--muted); font-size:13px; }
-    .wf.playing .node { opacity:.32; }
-    .wf.playing .node.done { opacity:.72; }
-    .wf.playing .node.on { opacity:1; transform:translateX(4px); }
+/* career */
+.timeline{position:relative;display:flex;flex-direction:column;gap:16px}
+.timeline::before{content:"";position:absolute;left:215px;top:20px;bottom:20px;width:1px;background:var(--line)}
+.tl-item{display:grid;grid-template-columns:200px 32px minmax(0,1fr);align-items:start}
+.tl-when{font-family:'Geist Mono',monospace;font-size:14px;color:var(--muted);padding-top:30px}
+.tl-dot{width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);margin:35px auto 0;position:relative;z-index:1}
+.tl-item:first-child .tl-dot{background:var(--accent)}
+.tl-card{padding:30px;display:flex;flex-direction:column;gap:14px}
+.tl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.tl-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
+.tl-role{font-size:14.5px;color:var(--muted);font-weight:550}
+.tl-card p{margin:0;font-size:16px;line-height:1.8}
 
-    /* ---------- 기능 ---------- */
-    .feat-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px 40px; }
-    .feat-head p { max-width:32em; }
-    .feature { margin-top:clamp(64px,8vw,128px); align-items:start; }
-    .feature:first-of-type { margin-top:clamp(40px,4vw,64px); }
-    .f-text { grid-column:1 / span 5; padding-right:clamp(0px,1.6vw,24px); }
-    .f-text .one { margin-top:14px; }
-    .f-text ul { list-style:none; margin:20px 0 0; padding:0; display:flex; flex-direction:column; gap:10px; }
-    .f-text li { padding-left:20px; position:relative; }
-    .f-text li::before { content:''; position:absolute; left:2px; top:0.62em; width:8px; height:8px; background:var(--accent); }
-    .f-video { margin-top:24px; }
-    .f-fig { grid-column:6 / span 7; justify-self:stretch; width:100%; min-width:0; margin:0; }
-    .f-fig > [data-ui], .f-fig > .player { width:100%; }
-    .f-fig.w-6 { grid-column:6 / span 6; }
-    .f-fig.w-5 { grid-column:6 / span 5; }
-    .f-fig figcaption { margin-top:10px; font-size:var(--step-small); color:var(--muted); }
-    .player { position:relative; aspect-ratio:16/9; background:#000; }
-    .player iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+/* education */
+.edu{padding:30px}
+.edu h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:18px;font-weight:720}
+.edu h3 svg{color:var(--accent)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:15px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li b{display:block;font-size:16px;font-weight:650;line-height:1.5}
+.li small{display:block;font-size:14px;color:var(--muted);margin-top:2px}
+.yr{font-family:'Geist Mono',monospace;font-size:13px;color:var(--muted);white-space:nowrap;padding-top:2px}
+.yr.new{color:var(--accent);font-weight:600}
 
-    /* 기능 조각 공통 */
-    .ctx pre { margin:0; padding:16px; background:#12161b; color:#e3e8ee; line-height:1.75; white-space:pre-wrap; }
-    .ctx pre .k { color:#8a95a2; }
-    .ctx pre .h { color:#f2c27a; }
-    .ctx pre .g { color:#7fd6a0; }
-    .rule-res { font-weight:600; }
-    .rule-res.ok { color:var(--ui-ok); }
-    .rule-res.bad { color:var(--ui-bad); }
-    .sess td .last { display:block; color:var(--ui-muted); font-size:13px; margin-top:2px; }
-    .apps { display:grid; grid-template-columns:200px 1fr; }
-    .apps .side { background:var(--ui-soft); padding:12px 8px; display:flex; flex-direction:column; gap:2px; }
-    .apps .side a { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
-    .apps .side a.cur { background:var(--ui-bg); font-weight:600; }
-    .apps .side a i { width:8px; height:8px; border-radius:50%; background:var(--ui-muted); flex:0 0 auto; }
-    .apps .side a i.ok { background:var(--ui-ok); } .apps .side a i.live { background:var(--ui-chart); } .apps .side a i.wait { background:var(--ui-wait); } .apps .side a i.quiet { background:#b1b9c3; }
-    .apps .side a .c { margin-left:auto; color:var(--ui-muted); font-size:13px; }
-    .apps .main { padding:16px; display:flex; flex-direction:column; gap:14px; }
-    .stage-bar { display:grid; grid-template-columns:repeat(6, 1fr); gap:4px; }
-    .stage-bar span { height:6px; border-radius:3px; background:var(--ui-soft); }
-    .stage-bar span.d { background:var(--ui-ink); } .stage-bar span.c { background:var(--ui-chart); }
-    .stage-lbl { display:flex; justify-content:space-between; font-size:13px; color:var(--ui-muted); margin-top:6px; }
-    .signal { background:var(--ui-soft); border-radius:6px; padding:10px 12px; }
-    .signal b { font-weight:600; }
-    .deploys td { font-size:13px; }
-    .idea .body { padding:16px; display:flex; flex-direction:column; gap:12px; }
-    .idea .tasks { display:flex; flex-direction:column; gap:6px; }
-    .idea .tasks div { display:flex; gap:10px; background:var(--ui-soft); border-radius:6px; padding:8px 12px; }
-    .idea .idea-act { /* taste-skill-ignore: data-ui 조각 */ display:flex; flex-wrap:wrap; gap:8px; padding:14px 16px; border-top:1px solid var(--ui-border); }
-    .boot ol { list-style:none; margin:0; padding:8px 0; }
-    .boot li { display:flex; gap:12px; align-items:flex-start; padding:10px 16px; }
-    .boot li .ck { flex:0 0 20px; height:20px; border-radius:50%; background:var(--ui-ok); position:relative; }
-    .boot li .ck::after { content:''; position:absolute; left:7px; top:4px; width:5px; height:9px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
-    .boot li.cur .ck::after { left:5px; top:9px; width:10px; height:2px; border:0; background:#fff; transform:none; }
-    .boot li.cur .ck { background:var(--ui-chart); }
-    .boot li .d { color:var(--ui-muted); font-size:13px; display:block; }
+/* contact */
+.cta{background:var(--accent);border-color:var(--accent);color:var(--on-accent);padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;gap:30px;border-radius:32px}
+.cta .eyebrow{color:var(--on-accent)}
+.cta-h{margin:0;font-size:clamp(32px,4.6vw,60px);line-height:1.18;letter-spacing:-.045em;font-weight:780;max-width:820px}
+.btn-inv{background:var(--on-accent);color:var(--accent)}
+.btn-inv:hover{background:var(--on-accent);color:var(--accent)}
+.btn-line{color:var(--on-accent);border-color:color-mix(in srgb,var(--on-accent) 45%,transparent)}
+.btn-line:hover{color:var(--on-accent);border-color:var(--on-accent)}
+.foot{max-width:1200px;margin:0 auto;padding:44px 24px 52px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.foot a{color:var(--muted);display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.foot a:hover{color:var(--ink)}
+.credit{display:block;margin-top:6px;font-size:12px;opacity:.75}
 
-    /* ---------- 설계 ---------- */
-    .dec { margin-top:clamp(40px,4vw,56px); display:grid; grid-template-columns:170px minmax(0,1fr); gap:clamp(20px,3vw,40px); align-items:start; }
-    .dtabs { display:flex; flex-direction:column; gap:6px; }
-    .dtabs button { font:inherit; text-align:left; min-height:64px; padding:10px 16px; background:var(--surface); color:var(--ink); border:0; border-radius:0; cursor:pointer; transition:background-color .18s ease, transform .18s var(--ease-out); }
-    .dtabs button b { display:block; font-size:var(--step-body); }
-    .dtabs button span { font-size:var(--step-small); color:var(--muted); }
-    .dtabs button:hover { background:var(--field); }
-    .dtabs button:active { transform:scale(.98); }
-    .dtabs button[aria-selected="true"] { background:var(--ink); color:var(--bg); }
-    .dtabs button[aria-selected="true"] span { color:var(--bg); opacity:.8; }
-    .dlist { display:flex; flex-direction:column; gap:4px; }
-    .drow { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.6fr); gap:20px; padding:18px 22px; background:var(--surface); }
-    .drow:nth-child(even) { background:var(--field); }
-    .drow .pick { font-weight:700; }
-    .drow .alt { color:var(--muted); }
-    .dcols { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.6fr); gap:20px; padding:0 22px 10px; font-size:var(--step-small); color:var(--muted); font-weight:600; }
 
-    /* ---------- 운영 ---------- */
-    .ops { align-items:start; }
-    .ops-text { grid-column:2 / span 6; }
-    .ops-text .lead { margin-top:18px; max-width:34em; }
-    .figs { margin:clamp(36px,3.6vw,56px) 0 0; display:flex; flex-direction:column; gap:28px; }
-    .figs div { display:grid; grid-template-columns:132px minmax(0,1fr); gap:24px; align-items:baseline; }
-    .figs dt { text-align:right; font-size:var(--step-head); font-weight:700; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; white-space:nowrap; }
-    .figs dd { margin:0; max-width:40ch; }
-    .ops-fig { grid-column:9 / span 4; margin-top:calc(var(--step-head) * 2.6); }
+/* ---------- detail hero ---------- */
+.dhero{position:relative;background:#0A0B0E;color:#FFFFFF;padding:152px 0 0;overflow:hidden;isolation:isolate}
+.dhero::before{content:"";position:absolute;inset:-20% -10% auto;height:620px;background:radial-gradient(60% 60% at 70% 30%,rgba(125,140,255,.22),transparent 70%);z-index:-1}
+.crumb{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.crumb a{color:inherit;display:inline-flex;align-items:center;gap:6px;min-height:32px}
+.crumb a:hover{color:#FFFFFF}
+.crumb i{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.6}
+.dh-title{margin:18px 0 0;font-size:clamp(44px,6.6vw,96px);line-height:1.04;letter-spacing:-.055em;font-weight:800}
+.dh-title .acc{color:var(--glow)}
+.dh-sub{max-width:760px;margin:24px 0 0;font-size:18.5px;line-height:1.8;color:rgba(255,255,255,.78)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:40px}
+.facts.f3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fact{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px 18px;background:rgba(255,255,255,.035)}
+.fact small{display:block;font-family:'Geist Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.fact b{display:block;margin-top:6px;font-size:16.5px;font-weight:680;letter-spacing:-.01em}
+.dh-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px}
+.dhero .tag{color:rgba(255,255,255,.78);border-color:rgba(255,255,255,.2)}
+.shot-frame{margin-top:56px;border-radius:24px 24px 0 0;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-bottom:0;background:#15161A;box-shadow:0 -24px 90px -30px rgba(125,140,255,.35)}
+.shot-frame img{display:block;width:100%;height:auto}
+.cap{display:flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cap::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+.dhero .cap{color:rgba(255,255,255,.55);padding:14px 4px 0}
 
-    /* ---------- 등장 ---------- */
-    @media (prefers-reduced-motion: no-preference) {
-      .js .lines [data-line] { transform:translateY(105%); animation:line-up 900ms var(--ease-out) forwards; animation-delay:calc(var(--i) * 110ms + 150ms); }
-      .js .hero-fade { opacity:0; transform:translateY(16px); animation:fade-up 700ms var(--ease-out) 520ms forwards; }
-      .js .hero-fade.late { animation-delay:700ms; }
-    }
-    /* 섹션 등장은 넓은 화면에서만. 휴대폰은 긴 페이지라 내용을 바로 보여 준다 */
-    @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-      .js [data-rise] { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .8s var(--ease-out); transition-delay:calc(var(--d, 0) * 80ms); }
-      .js [data-rise].in { opacity:1; transform:none; }
-    }
-    @keyframes line-up { to { transform:none; } }
-    @keyframes fade-up { to { opacity:1; transform:none; } }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior:auto; }
-      *, *::before, *::after { transition-duration:0s !important; animation-duration:0s !important; }
-    }
+/* ---------- content blocks ---------- */
+.prose p{margin:0 0 14px;font-size:17px;line-height:1.85}
+.prose p:last-child{margin-bottom:0}
+.prose b{font-weight:700}
+.prose .hl{color:var(--accent);font-weight:700}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.big-q{margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.5;letter-spacing:-.025em;font-weight:700}
+.note{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);color:var(--ink);border-radius:16px;padding:16px 18px;font-size:15.5px;line-height:1.75}
+.note svg{color:var(--accent);margin-top:3px}
+.hd4{margin:0;font-size:15px;font-weight:720;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.hd4::before{content:"";width:16px;height:2px;border-radius:2px;background:var(--accent)}
+.ol{margin:0;padding:0;list-style:none;counter-reset:ol;display:flex;flex-direction:column;gap:10px}
+.ol li{counter-increment:ol;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:15.5px;line-height:1.7}
+.ol li::before{content:counter(ol);width:26px;height:26px;border-radius:8px;background:var(--soft);color:var(--ink);font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;display:grid;place-items:center}
 
-    /* ---------- 좁은 화면 ---------- */
-    @media (max-width: 1100px) {
-      .lanes { grid-template-columns:minmax(0,1fr); }
-      .apps { grid-template-columns:150px 1fr; }
-    }
-    @media (max-width: 900px) {
-      .hero { grid-template-columns:1fr; }
-      .hero-r { order:-1; min-height:58svh; padding-top:72px; }
-      .hero-l { gap:48px; }
-      .mark { position:absolute; top:24px; left:var(--m); z-index:2; }
-      .theme-link { top:24px; }
-      .hero-l .mark-slot { display:none; }
-      .hero-note { display:none; }
-      .why-head, .statement, .problems, .principles { grid-column:1 / -1; }
-      .pin-steps { grid-column:1 / -1; order:2; }
-      .pin-stage { grid-column:1 / -1; order:1; position:relative; top:auto; height:auto; padding:12px; margin:0 calc(var(--m) * -1); }
-      .run pre { min-height:150px; max-height:none; }
-      .run .meta { display:none; }
-      .pin-steps { margin-top:12px; }
-      .pin-step, .pin-step:first-child { min-height:0; padding:28px 0 0; }
-      .pin-step p.big { color:var(--ink); }
-      .arch { grid-template-columns:repeat(2, minmax(0,1fr)); gap:28px 16px; }
-      .arch .arr { display:none; }
-      .f-text, .f-fig, .f-fig.w-6, .f-fig.w-5 { grid-column:1 / -1; }
-      .f-fig { margin-top:28px; }
-      .dec { grid-template-columns:minmax(0,1fr); }
-      .dtabs { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); }
-      .dtabs button { min-height:56px; }
-      .drow, .dcols { grid-template-columns:minmax(0,1fr); gap:6px; }
-      .dcols { display:none; }
-      .drow .alt::before { content:'대안 · '; }
-      .ops-text, .ops-fig { grid-column:1 / -1; }
-      .ops-fig { margin-top:48px; }
-      .figs div { grid-template-columns:88px minmax(0,1fr); gap:16px; }
-      .figs dt { font-size:1.25rem; }
-    }
-    @media (max-width: 560px) {
-      .apps { grid-template-columns:minmax(0,1fr); }
-      .apps .side { flex-direction:row; flex-wrap:wrap; }
-      .arch { grid-template-columns:minmax(0,1fr); }
-      .statement { font-size:1.25rem; }
-      .apps .side a .c { display:none; }
-      .sess .hide-s { display:none; }
-    }
-  </style>
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.feat{display:flex;flex-direction:column;gap:12px;min-height:188px}
+.feat h3{margin:0;font-size:18.5px;font-weight:730;letter-spacing:-.02em}
+.feat p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+.f-ic{width:44px;height:44px;border-radius:13px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+
+/* architecture */
+.arch-card{padding:clamp(20px,3vw,36px);display:flex;flex-direction:column;gap:22px}
+.zone{position:relative;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:22px;padding:34px 18px 18px}
+.zone-l{position:absolute;top:-12px;left:18px;background:var(--card);padding:0 10px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--accent);font-weight:600}
+.flow{display:flex;align-items:stretch;gap:0}
+.node{flex:1 1 0;min-width:0;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.node b{font-size:17.5px;font-weight:740;letter-spacing:-.02em}
+.node small{color:var(--muted);font-size:14px;line-height:1.55}
+.node.core{background:var(--panel);border-color:var(--panel-line);color:var(--panel-ink)}
+.node.core small{color:var(--panel-muted)}
+.node.core .lbl{color:var(--panel-muted)}
+.node .dbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.node .dbs span{font-family:'Geist Mono',monospace;font-size:12px;padding:3px 9px;border-radius:8px;background:color-mix(in srgb,var(--glow) 22%,transparent);color:inherit}
+.node .warn{font-size:12.5px;font-weight:650;color:var(--hot)}
+.edge{flex:0 0 112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 6px;text-align:center;font-family:'Geist Mono',monospace;font-size:11.5px;line-height:1.4;color:var(--muted)}
+.edge svg{color:var(--accent)}
+.flow>.node.solo{align-self:center}
+.arch-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted)}
+
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;counter-reset:pp}
+.pstep{counter-increment:pp;display:flex;flex-direction:column;gap:10px;min-height:170px;padding:20px}
+.pstep::before{content:"0" counter(pp);font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;color:var(--accent)}
+.pstep b{font-size:17px;font-weight:730;letter-spacing:-.02em}
+.pstep small{font-size:14px;color:var(--muted);line-height:1.6}
+.pstep:not(:last-child)::after{content:"";position:absolute;right:-12px;top:30px;width:12px;height:2px;background:var(--accent);opacity:.5}
+.pstep{overflow:visible}
+
+/* problem solving */
+.prob{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);padding:clamp(22px,3vw,40px)}
+.prob.flip .prob-vis{order:-1}
+.prob-text{display:flex;flex-direction:column;gap:18px}
+.prob-no{font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;color:var(--accent);letter-spacing:.06em}
+.prob h3{margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.35;letter-spacing:-.03em;font-weight:760}
+.prob h3 span{display:block;font-size:.62em;font-weight:650;color:var(--muted);letter-spacing:-.01em;margin-bottom:6px}
+.prob-vis{display:flex;flex-direction:column;gap:10px;align-self:start;position:sticky;top:96px}
+.frame{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--soft)}
+.frame img{display:block;width:100%;height:auto}
+
+/* mock UI panels */
+.mock{border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden;font-size:14px}
+.mock-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.mock-h b{font-size:14.5px;font-weight:720}
+.mock-h small{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+.mock-f{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.mt{width:100%;border-collapse:collapse}
+.mt th{font-weight:600;font-size:12.5px;color:var(--muted);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+.mt td{padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.mt tr:last-child td{border-bottom:0}
+.mt .m{font-family:'Geist Mono',monospace;font-size:12.5px;white-space:nowrap}
+.mt .r{text-align:right}
+.mt tr.hl td{background:color-mix(in srgb,var(--hot) 9%,transparent)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;padding:3px 9px;border-radius:99px;white-space:nowrap;background:var(--soft);color:var(--muted)}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.ok{background:color-mix(in srgb,#22B45E 14%,transparent);color:#169A4C}
+.chip.bad{background:color-mix(in srgb,var(--hot) 15%,transparent);color:#D9561C}
+.chip.info{background:var(--accent-soft);color:var(--accent)}
+.chip.wait{background:color-mix(in srgb,#E8A10C 16%,transparent);color:#B57A00}
+.root.dark .chip.ok{color:#4ED68A}.root.dark .chip.bad{color:#FF9A6B}.root.dark .chip.wait{color:#F2C14E}
+.ex{font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+.mgr{display:flex;flex-direction:column;gap:10px;padding:16px}
+.mgr-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.mgr-row span{font-size:14px;font-weight:600}
+.mgr-row small{display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-top:2px}
+.mbtns{display:flex;gap:6px}
+.mb{font-size:12.5px;font-weight:650;padding:6px 11px;border-radius:9px;border:1px solid var(--line);color:var(--ink);background:var(--card);white-space:nowrap}
+.mb.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.mb.dang{color:#D9561C;border-color:color-mix(in srgb,var(--hot) 40%,var(--line))}
+.log{background:var(--panel);color:var(--panel-ink);font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.85;padding:14px 16px;border-radius:12px}
+.log em{font-style:normal;color:var(--panel-muted);margin-right:10px}
+.log .g{color:#4ED68A}
+.q{display:flex;flex-direction:column}
+.q-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.q-row:last-child{border-bottom:0}
+.q-row b{font-size:14.5px;font-weight:650}
+.q-row small{grid-column:1;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+.q-row .chip{grid-row:1/span 2;grid-column:2}
+
+/* other projects */
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.next a.card{color:var(--ink);padding:10px;display:flex;flex-direction:column}
+.next a.card:hover{color:var(--ink)}
+.next .pbody{flex-direction:row;align-items:center;justify-content:space-between}
+.next .arr{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.next a.card:hover .arr{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.back-row{display:flex;justify-content:center;margin-top:28px}
+.btn-out{color:var(--ink);border-color:var(--line);background:var(--card)}
+.btn-out:hover{border-color:var(--ink);color:var(--ink)}
+.foot-links{display:flex;gap:6px 18px;flex-wrap:wrap}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+
+/* hero layout + guard demo */
+.dh-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);gap:48px;align-items:center}
+.dh-grid .dh-title{font-size:clamp(40px,4.6vw,66px)}
+.dh-grid .facts.f3{grid-template-columns:minmax(0,.85fr) minmax(0,1fr) minmax(0,1.45fr)}
+.term{background:#111216;border:1px solid rgba(255,255,255,.12);border-radius:20px;overflow:hidden;font-size:14.5px;color:#ECEDF0;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.term-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'Geist Mono',monospace;font-size:12.5px;color:#9396A0}
+.dots{display:flex;gap:6px}.dots i{width:9px;height:9px;border-radius:50%;background:#33363E}
+.tbadge{font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:650;padding:3px 10px;border-radius:99px;background:rgba(255,122,61,.14);color:#FFB089;white-space:nowrap}
+.tbadge.on{background:rgba(78,214,138,.14);color:#8BEBB4}
+.tb{padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.tline{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:start;line-height:1.6}
+.who{font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#9396A0;padding-top:3px}
+.tline .mono{font-family:'Geist Mono',monospace;font-size:13px;color:#C9CEFF}
+.tline .mut{color:#A6A9B2}
+.res{border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.7}
+.res.block{background:rgba(255,122,61,.11);color:#FFC1A3;border:1px solid rgba(255,122,61,.28)}
+.res.pass{background:rgba(78,214,138,.1);color:#A9F0C8;border:1px solid rgba(78,214,138,.28)}
+.term-f{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 14px;border-top:1px solid rgba(255,255,255,.08)}
+.tbtn{height:42px;padding:0 15px;border-radius:11px;font:inherit;font-size:14px;font-weight:650;cursor:pointer;border:1px solid rgba(255,255,255,.22);background:transparent;color:#FFFFFF}
+.tbtn:hover{border-color:#FFFFFF}
+.tbtn[aria-pressed="true"]{border-color:#4ED68A;color:#8BEBB4}
+.tbtn.pri{background:#7D8CFF;border-color:#7D8CFF;color:#0C0D10}
+.tbtn.pri:hover{background:#A3AEFF;border-color:#A3AEFF}
+.hint{margin:12px 2px 0;font-size:13px;color:rgba(255,255,255,.55)}
+
+/* why */
+.why{display:flex;flex-direction:column;gap:10px;min-height:170px}
+.why b{font-size:17.5px;font-weight:730;letter-spacing:-.02em}
+.why p{margin:0;color:var(--muted);font-size:15px;line-height:1.75}
+.why .n{font-family:'Geist Mono',monospace;font-size:12px;color:var(--accent);font-weight:600}
+.why.ok{background:var(--panel);border-color:var(--panel-line);color:var(--panel-ink)}
+.why.ok p{color:var(--panel-muted)}
+.why.ok .n{color:var(--glow)}
+
+/* run */
+.proc{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px}
+.psteps{display:flex;flex-direction:column;gap:12px}
+.ps{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;padding:20px 22px}
+.ps i{font-style:normal;width:40px;height:40px;border-radius:12px;background:var(--ink);color:var(--bg);font-family:'Geist Mono',monospace;font-weight:600;font-size:14px;display:grid;place-items:center}
+.ps b{display:block;font-size:16.5px;font-weight:720;letter-spacing:-.015em;line-height:1.45}
+.ps p{margin:6px 0 0;color:var(--muted);font-size:14.5px;line-height:1.7}
+.run{background:var(--panel);border-color:var(--panel-line);color:var(--panel-ink);padding:0;display:flex;flex-direction:column}
+.run-h{padding:20px 22px 16px;border-bottom:1px solid var(--panel-line);display:flex;flex-direction:column;gap:12px}
+.run-h b{font-size:16.5px;font-weight:720}
+.run-h b span{font-family:'Geist Mono',monospace;color:var(--glow);margin-right:8px}
+.states{display:flex;gap:6px;flex-wrap:wrap}
+.states span{font-size:12px;font-weight:650;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.06);color:var(--panel-muted)}
+.states span.on{background:var(--glow);color:#0C0D10}
+.stg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.stg span{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--panel-muted);display:flex;flex-direction:column;gap:6px}
+.stg span::before{content:"";height:3px;border-radius:2px;background:#4ED68A}
+.rmeta{font-family:'Geist Mono',monospace;font-size:12px;color:var(--panel-muted);line-height:1.7}
+.rlog{padding:16px 22px;display:flex;flex-direction:column;gap:9px;font-family:'Geist Mono',monospace;font-size:12.8px;line-height:1.55;flex:1}
+.rl{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px}
+.rl em{font-style:normal;font-size:11px;letter-spacing:.04em;padding:2px 0;border-radius:6px;text-align:center;background:rgba(255,255,255,.07);color:var(--panel-muted);height:fit-content}
+.rl.q em{background:rgba(232,161,12,.2);color:#F2C14E}
+.rl.a em{background:rgba(125,140,255,.22);color:#C9CEFF}
+.rl.d em{background:rgba(78,214,138,.18);color:#8BEBB4}
+.rl .plus{color:#4ED68A}.rl .minus{color:#FF8A70}
+.pr{margin:0 22px 20px;border:1px solid var(--panel-line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;font-size:14px}
+.pr b{font-family:'Geist Mono',monospace;color:#8BEBB4;white-space:nowrap}
+
+/* flow */
+.ftabs{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:16px;background:var(--soft);border:1px solid var(--line);width:fit-content;max-width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 20px}
+.ac{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap;line-height:1.5}
+.ac.p{background:var(--accent-soft);color:var(--accent)}
+.ac.c{background:color-mix(in srgb,#9B5DE5 16%,transparent);color:#8A4AD6}
+.ac.h{background:color-mix(in srgb,var(--hot) 16%,transparent);color:#D9561C}
+.ac.s{background:color-mix(in srgb,#22B45E 15%,transparent);color:#169A4C}
+.ac.r{background:color-mix(in srgb,#0FA3B1 16%,transparent);color:#0B8793}
+.ac.g{background:var(--soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.root.dark .ac.c{color:#C39BFF}.root.dark .ac.h{color:#FF9A6B}.root.dark .ac.s{color:#4ED68A}.root.dark .ac.r{color:#4FD3DE}
+.layers{display:flex;flex-direction:column;gap:12px}
+.layer{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:stretch}
+.layer>span{font-size:14px;font-weight:720;padding-top:14px}
+.layer>span small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+.lnodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ln{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);display:flex;flex-direction:column;gap:8px}
+.ln b{font-size:15px;font-weight:720}
+.ln small{color:var(--muted);font-size:13px;line-height:1.55}
+.fgroups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.fgroups.one{grid-template-columns:minmax(0,1fr)}
+.fg{display:flex;flex-direction:column;gap:14px}
+.fg h3{margin:0;font-size:18px;font-weight:740;letter-spacing:-.02em}
+.sts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;position:relative}
+.sts>li{position:relative;padding:0 0 16px 26px}
+.sts>li::before{content:"";position:absolute;left:5px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--card);border:2px solid var(--accent)}
+.sts>li::after{content:"";position:absolute;left:9.5px;top:20px;bottom:0;width:1px;background:var(--line)}
+.sts>li:last-child{padding-bottom:0}
+.sts>li:last-child::after{display:none}
+.sts .t{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.sts .t b{font-size:15.5px;font-weight:700}
+.sts p{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.65}
+.brs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.brc{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--soft)}
+.brc>span{display:inline-block;margin-bottom:8px}
+.brc ul{margin:0;padding:0 0 0 16px;font-size:13.5px;line-height:1.65;color:var(--ink)}
+.flow-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+
+/* features */
+.fx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(20px,3vw,40px);padding:clamp(22px,3vw,36px);align-items:start}
+.fx.flip .fx-vis{order:-1}
+.fx-text{display:flex;flex-direction:column;gap:14px}
+.fx-text h3{margin:0;font-size:clamp(21px,2.2vw,26px);letter-spacing:-.03em;font-weight:760;line-height:1.35}
+.fx-text>p{margin:0;font-size:16.5px;line-height:1.8}
+.fx-vis{display:flex;flex-direction:column;gap:8px}
+.ctx{background:var(--panel);color:var(--panel-ink);font-family:'Geist Mono',monospace;font-size:12.8px;line-height:1.75;padding:16px 18px;display:grid;grid-template-columns:76px minmax(0,1fr);gap:4px 14px}
+.ctx .k{color:var(--panel-muted)}
+.ctx .h{grid-column:1/-1;color:var(--glow);margin-bottom:4px}
+.sess{display:flex;flex-direction:column}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow b{font-size:14.5px;font-weight:680}
+.srow b span{font-family:'Geist Mono',monospace;color:var(--accent);margin-right:6px}
+.srow small{font-size:12.5px;color:var(--muted)}
+.srow .chip{justify-self:end}
+.apps{display:grid;grid-template-columns:150px minmax(0,1fr)}
+.apps-l{border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:4px;background:var(--soft)}
+.apps-l span{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;font-size:13.5px;font-weight:600}
+.apps-l span.on{background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.apps-l span em{font-style:normal;font-family:'Geist Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.apps-r{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.apps-r b{font-size:16px}
+.apps-r small{color:var(--muted);font-size:13px}
+.prog{height:6px;border-radius:99px;background:var(--soft);overflow:hidden}
+.prog i{display:block;height:100%;width:50%;background:var(--accent);border-radius:99px}
+.warnbox{border-radius:12px;padding:11px 13px;background:color-mix(in srgb,#E8A10C 13%,transparent);color:var(--ink);font-size:13.5px;line-height:1.6}
+.plan{padding:18px;display:flex;flex-direction:column;gap:12px}
+.plan p{margin:0;font-size:14.5px;line-height:1.7}
+.exp{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.exp em{font-style:normal;font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px;white-space:nowrap}
+.pmeta2{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+.chk{list-style:none;margin:0;padding:6px 16px 14px;display:flex;flex-direction:column}
+.chk li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px;font-weight:650}
+.chk li:last-child{border-bottom:0}
+.chk li small{display:block;font-weight:500;font-size:12.5px;color:var(--muted);margin-top:2px}
+.chk .ck{width:22px;height:22px;border-radius:50%;background:#22B45E;color:#fff;display:grid;place-items:center}
+.chk .ck.run{background:var(--accent-soft);color:var(--accent)}
+
+/* decisions */
+.decs{display:flex;flex-direction:column;gap:0}
+.dec{padding:16px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.dec:first-of-type{border-top:0;padding-top:4px}
+.dec .pick{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.dec .pick b{font-size:16px;font-weight:720}
+.dec .alt{font-size:13.5px;color:var(--muted)}
+.dec .alt s{text-decoration-color:color-mix(in srgb,var(--muted) 70%,transparent)}
+.dec p{margin:0;font-size:14.5px;line-height:1.75;color:var(--muted)}
+.dh3{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.dh3 h3{margin:0;font-size:19px;font-weight:740;letter-spacing:-.02em}
+
+/* ops */
+.ops{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.op{display:flex;flex-direction:column;gap:12px;min-height:170px;justify-content:space-between}
+.op .num{font-size:clamp(40px,4vw,54px)}
+.op small{font-size:14px;color:var(--muted);line-height:1.6}
+
+@media (max-width: 960px){
+  .dh-grid{grid-template-columns:minmax(0,1fr)}
+  .proc,.fx,.flow-cols{grid-template-columns:minmax(0,1fr)}
+  .fx.flip .fx-vis{order:0}
+  .fgroups{grid-template-columns:minmax(0,1fr)}
+  .layer{grid-template-columns:minmax(0,1fr);gap:8px}
+  .layer>span{padding-top:0}
+  .lnodes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ops{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 600px){
+  .lnodes,.ops{grid-template-columns:minmax(0,1fr)}
+  .apps{grid-template-columns:minmax(0,1fr)}
+  .apps-l{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap}
+  .ftabs{width:100%}
+  .ftabs .tab{flex:1 1 40%;justify-content:center}
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px){.nav-links{display:none}}
+@media (max-width: 960px){
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .feats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pipe{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pstep::after{display:none}
+  .prob{grid-template-columns:minmax(0,1fr)}
+  .prob.flip .prob-vis{order:0}
+  .prob-vis{position:static}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 760px){
+  .flow{flex-direction:column}
+  .edge{flex:0 0 auto;flex-direction:row;padding:10px 0}
+  .edge svg{transform:rotate(90deg)}
+  .flow>.node.solo{align-self:stretch}
+  .pstep{min-height:0}
+}
+@media (max-width: 600px){
+  .bento,.feats,.pipe,.next{grid-template-columns:minmax(0,1fr)}
+  .c2{grid-column:auto}
+  .sec{padding-top:80px}
+  .dhero{padding-top:120px}
+  .dh-sub{font-size:16.5px}
+  .facts,.facts.f3{grid-template-columns:minmax(0,1fr)}
+  .nav-cta{padding:0 14px}
+  .mt th,.mt td{padding:10px 12px}
+  .mt th,.mt .m{white-space:normal}
+  .mock{font-size:13.5px}
+}
+</style>
 </head>
-<body>
+<body style="background:#0A0B0E">
+<div class="root" id="root">
+<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}if(d)document.getElementById('root').classList.add('dark')})();</script>
 
-<header class="hero" id="top">
-  <div class="hero-l">
-    <a class="mark" href="index.html#work"><b>KSM</b><span>김수만 포트폴리오</span></a>
-    <div>
-      <h1 class="lines">
-        <span class="line"><span data-line style="--i:0">AI 에이전트</span></span>
-        <span class="line"><span data-line style="--i:1">통합 관제 시스템</span></span>
-      </h1>
-      <p class="hero-copy hero-fade">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
-      <div class="hero-act hero-fade late">
-        <a class="btn btn-light" href="#how">동작 방식 보기</a>
-        <span class="hero-meta">개인 프로젝트 · 2026년 10월부터 · NestJS, PostgreSQL, React</span>
+  <header class="nav" id="nav">
+    <div class="nav-in">
+      <a class="brand" href="index.html"><span class="logo">SK</span><span>김수만</span></a>
+      <nav class="nav-links" aria-label="페이지 섹션">
+        <a class="nl" href="#why">만든 이유</a>
+        <a class="nl" href="#process">실행 과정</a>
+        <a class="nl" href="#flow">흐름도</a>
+        <a class="nl" href="#features">주요 기능</a>
+        <a class="nl" href="#decisions">설계</a>
+        <a class="nl" href="#ops">운영</a>
+      </nav>
+      <div class="nav-act">
+        <button class="icon-btn" type="button" id="theme-btn" aria-label="다크 모드로 전환" aria-pressed="false">
+          <svg class="ic i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+          <svg class="ic i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>
+        </button>
+        <a class="nav-cta" href="index.html"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a>
       </div>
     </div>
-  </div>
-  <div class="hero-r">
-    <button type="button" class="theme-link" id="themeBtn">다크 모드</button>
-    <div class="guard" data-ui id="guard" aria-label="task 가드 시연">
-      <div class="ui-head">
-        <span class="ui-title">claude <span class="ui-sub">~/project/portfolio</span></span>
-        <span class="pill bad" id="gState">연결된 task 없음</span>
-      </div>
-      <div class="g-body" aria-live="polite">
-        <div class="g-row g-user g-step show"><span class="g-who">나</span><span class="g-text" id="gAsk">이 페이지를 다크 모드로 바꿔 줘</span></div>
-        <div class="g-row g-tool g-step show"><span class="g-who">Claude</span><span class="g-text"><code>Edit</code> agent-control.html</span></div>
-        <div class="g-row g-hook g-step show"><span class="g-who">hook</span><span class="g-text">수정 전에 관제 서버에 통과 여부를 묻습니다</span></div>
-        <div class="g-row g-result deny g-step show" id="gResult"><span class="g-who">결과</span><span class="g-text"><b>차단</b> · 이 세션에 진행 중인 task가 없어서 파일 수정과 Bash를 막았습니다. task를 진행 중으로 바꾸면 풀립니다.</span></div>
-      </div>
-      <div class="g-foot">
-        <label class="switch"><input type="checkbox" role="switch" id="gTask"><span>PO-9 진행 중으로 연결</span></label>
-        <button type="button" class="ui-btn primary" id="gSend">Claude에게 보내기</button>
-      </div>
-    </div>
-    <p class="hero-note hero-fade late">task를 연결하고 보내면 이 페이지 테마가 실제로 바뀝니다.</p>
-  </div>
-</header>
+  </header>
 
-<main>
-  <section class="sec wrap" id="why" aria-labelledby="why-h">
-    <div class="grid">
-      <h2 class="why-head" id="why-h" data-rise>만든 이유</h2>
-      <p class="statement" data-rise style="--d:1">앱 여러 개를 번갈아 개발하다 보니, task가 어디까지 갔는지와 어제 세션에서 한 일을 매번 다시 찾고 있었습니다.</p>
-    </div>
-    <div class="grid why-split">
-      <div class="problems">
-        <h3 data-rise>불편했던 점</h3>
-        <ul class="plist">
-          <li><b>task가 저장소마다 따로 있었습니다</b><p>처음엔 저장소마다 Task Master 파일로 task를 관리했습니다. Link 하나에만 <span class="fig">270</span>개가 쌓이고 나니, 다른 앱까지 합친 전체 상황은 볼 방법이 없었습니다.</p></li>
-          <li><b>세션이 매번 처음부터 시작했습니다</b><p>새 세션을 열면 어디까지 했는지부터 다시 설명해야 했습니다. 지난 세션에서 지적한 실수를 다음 세션이 그대로 반복한 적도 여러 번 있었습니다.</p></li>
-          <li><b>적어 둔 규칙이 가끔 무시됐습니다</b><p>CLAUDE.md에 “task부터 갱신할 것”, “main에 직접 push하지 말 것”을 적어 뒀지만, 규칙 파일은 참고 사항이라 지켜지지 않을 때가 있었습니다.</p></li>
-          <li><b>확인할 곳이 너무 많았습니다</b><p>어느 세션이 제 답을 기다리는지는 터미널을 하나씩 열어 봐야 알았고, PR은 GitHub, 배포는 Railway에서 따로 확인했습니다. 실행 비용은 볼 방법이 없었습니다.</p></li>
-        </ul>
-      </div>
-      <div class="principles" data-rise style="--d:2">
-        <h3>만들면서 정한 것</h3>
-        <ul class="plist">
-          <li><b>task는 한 곳에서 관리</b><p>task, 기획, 실수 기록, 실행 결과, 배포 기록을 전부 DB 하나에 모았습니다. 저장소에 있던 Task Master 파일은 한 번 가져온 뒤로 쓰지 않습니다.</p></li>
-          <li><b>중요한 규칙은 코드로 막기</b><p>꼭 지켜야 하는 건 hook에서 막도록 했습니다. 연결된 task가 없으면 파일을 고칠 수 없고, push는 에이전트 대신 서버가 합니다.</p></li>
-          <li><b>저는 확인하고 결정하는 일만</b><p>실행하고 기록하는 건 서버에 맡기고, 저는 기획을 승인하거나 질문에 답하고 PR을 머지하는 일만 합니다.</p></li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="how" aria-labelledby="how-h">
-    <div class="grid">
-      <h2 id="how-h" style="grid-column:1 / span 8" data-rise>task 하나가 PR이 되는 과정</h2>
-    </div>
-    <div class="grid pin">
-      <div class="pin-steps" id="pinSteps">
-        <div class="pin-step on" data-step="1">
-          <p class="big">실행을 누르면 작업용 브랜치를 따로 만듭니다.</p>
-          <p class="sub">대시보드에서 실행하면 큐에 들어갔다가, 차례가 오면 git worktree로 작업 폴더를 따로 만듭니다. 원래 저장소에는 손대지 않습니다.</p>
-        </div>
-        <div class="pin-step" data-step="2">
-          <p class="big">에이전트가 작업하는 동안 로그가 계속 올라옵니다.</p>
-          <p class="sub">허용한 도구만 쓸 수 있고 push 권한은 없습니다. 출력은 줄 단위로 DB에 저장되고, 대시보드에서 실시간으로 볼 수 있습니다.</p>
-        </div>
-        <div class="pin-step" data-step="3">
-          <p class="big">중간에 질문이 오면 답하고 이어서 진행합니다.</p>
-          <p class="sub">질문으로 끝나면 task가 ‘답변 대기’로 바뀝니다. 답을 보내면 같은 세션을 이어서 실행하기 때문에 앞의 대화가 그대로 남아 있습니다.</p>
-        </div>
-        <div class="pin-step" data-step="4">
-          <p class="big">검사를 통과하면 서버가 PR을 올립니다.</p>
-          <p class="sub">push 전에 앱마다 정해 둔 검사 명령을 돌리고, 실패하면 PR을 만들지 않습니다. 제가 머지하면 task가 완료되고 작업 폴더도 지워집니다.</p>
-        </div>
-      </div>
-      <div class="pin-stage">
-        <div class="run" data-ui id="run" data-state="4" aria-label="task 실행 화면">
-          <div class="ui-head">
-            <span class="ui-title"><span class="id">PO-9</span> 관제 시스템 서브 페이지 디자인 리뉴얼</span>
-            <span class="pill wait" data-s="1">준비 중</span><span class="pill live" data-s="2">실행 중</span><span class="pill wait" data-s="3">답변 대기</span><span class="pill ok" data-s="4">리뷰</span>
+  <main>
+    <section class="dhero" id="top" aria-label="프로젝트 소개">
+      <div class="wrap">
+        <div class="dh-grid">
+          <div>
+            <div class="crumb"><a href="index.html"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a><i></i><span>Case Study</span><i></i><span>개인 프로젝트</span></div>
+            <h1 class="dh-title">AI 에이전트<br><span class="acc">통합 관제 시스템</span></h1>
+            <p class="dh-sub">Claude Code로 개인 앱 여러 개를 동시에 개발하면서 만든 로컬 서버입니다. 세션마다 지금 할 task를 알려 주고, task 없이 코드를 고치려 하면 막고, task를 맡기면 브랜치를 따로 만들어 PR까지 올립니다.</p>
+            <div class="facts f3">
+              <div class="fact"><small>구분</small><b>개인 프로젝트</b></div>
+              <div class="fact"><small>기간</small><b>2026년 10월부터</b></div>
+              <div class="fact"><small>스택</small><b>NestJS · PostgreSQL · React</b></div>
+            </div>
+            <div class="dh-row"><a class="btn btn-light" href="#flow">동작 방식 보기<svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></a></div>
           </div>
-          <div class="bar" aria-hidden="true">
-            <span data-b="1">준비</span><span data-b="2">실행</span><span data-b="3">판정</span><span data-b="4">PR</span>
-          </div>
-          <div class="meta"><span>브랜치 <code>PO-9-subpage-redesign</code></span><span>준비 명령 없음 · 정적 사이트</span><span>동시 실행 1 / 2</span></div>
-<pre aria-label="실행 로그"><code><span class="ln" data-s="1 2 3 4"><span class="c">큐</span> run 대기열에서 꺼냄 · 동시 실행 1/2</span><span class="ln" data-s="1 2 3 4"><span class="c">git</span> worktree add -b PO-9-subpage-redesign</span><span class="ln" data-s="1"><span class="y">준비</span> setup 명령 없음, 바로 실행</span><span class="ln" data-s="2 3 4"><span class="b">Read</span> agent-control.html</span><span class="ln" data-s="2 3 4"><span class="b">Bash</span> node inspect.mjs agent-control.html</span><span class="ln" data-s="2"><span class="b">Edit</span> agent-control.html  <span class="g">+412</span> <span class="y">−186</span></span><span class="ln" data-s="3"><span class="y">질문</span> 회고 섹션은 그대로 둘까요, 지울까요?</span><span class="ln" data-s="4"><span class="g">완료</span> 사전 검사 통과 · 커밋 3개</span><span class="ln" data-s="4"><span class="g">PR</span> #3 생성 · task를 리뷰로</span></code></pre>
-          <div class="act">
-            <span class="ui-sub" data-s="1">작업 공간을 준비하는 중입니다</span>
-            <span class="ui-sub" data-s="2">로그가 실시간으로 이어집니다</span>
-            <span class="answer" data-s="3">지워 줘</span><button type="button" class="ui-btn primary" data-s="3" tabindex="-1">답변 보내기</button>
-            <span data-s="4"><b>PR #3</b> <span class="ui-sub">feat: 관제 시스템 페이지 소개 재작성 + 내부 동작 워크플로우</span></span>
-          </div>
+          <div><div class="term" aria-label="가드 데모"><div class="term-h"><span class="dots"><i></i><i></i><i></i></span><span>claude ~/project/portfolio</span><span class="tbadge" id="g-badge">연결된 task 없음</span></div><div class="tb"><div class="tline"><span class="who">나</span><span>이 페이지를 다크 모드로 바꿔 줘</span></div><div class="tline"><span class="who">Claude</span><span class="mono">Edit agent-control.html</span></div><div class="tline"><span class="who">hook</span><span class="mut">수정 전에 관제 서버에 통과 여부를 묻습니다</span></div><div class="tline"><span class="who">결과</span><div><div class="res block" id="g-block"><b>차단</b> · 이 세션에 진행 중인 task가 없어서 파일 수정과 Bash를 막았습니다. task를 진행 중으로 바꾸면 풀립니다.</div><div class="res pass" id="g-pass" hidden><b>통과</b> · PO-9가 진행 중으로 연결된 세션이라 수정을 허용했습니다. 이 페이지 테마를 바꿨습니다.</div></div></div></div><div class="term-f"><button class="tbtn" type="button" id="g-link" aria-pressed="false">PO-9 진행 중으로 연결</button><button class="tbtn pri" type="button" id="g-send">Claude에게 보내기</button></div></div><p class="hint">task를 연결하고 보내면 이 페이지 테마가 실제로 바뀝니다.</p></div>
         </div>
+        <div class="shot-frame"><img src="images/hub-card.jpg" alt="Hub 대시보드 — 앱별 세션과 진행 중인 task 현황"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="sec wrap" id="flows" aria-labelledby="flows-h">
-    <div class="flows-head">
-      <div>
-        <h2 id="flows-h" data-rise>전체 흐름도</h2>
-        <p>세션, hook, 서버, runner, GitHub 사이에서 일이 넘어가는 순서입니다.</p>
-      </div>
-      <button type="button" class="btn btn-accent" id="wfPlay">단계별로 재생</button>
-    </div>
-    <div class="wf-bar">
-      <div class="tabs" role="tablist" aria-label="흐름 고르기">
-        <button type="button" role="tab" id="t-arch" aria-controls="p-arch" aria-selected="true">전체 구조</button>
-        <button type="button" role="tab" id="t-session" aria-controls="p-session" aria-selected="false" tabindex="-1">세션 연결과 가드</button>
-        <button type="button" role="tab" id="t-run" aria-controls="p-run" aria-selected="false" tabindex="-1">task 실행</button>
-        <button type="button" role="tab" id="t-idea" aria-controls="p-idea" aria-selected="false" tabindex="-1">기획과 새 앱</button>
-      </div>
-    </div>
-    <div class="legend" aria-label="역할 색">
-      <span data-a="person">사람</span><span data-a="session">Claude 세션</span><span data-a="hook">hook</span>
-      <span data-a="server">관제 서버</span><span data-a="runner">runner</span><span data-a="github">GitHub</span>
-    </div>
-
-    <div class="wf" role="tabpanel" id="p-arch" aria-labelledby="t-arch">
-      <div class="arch">
-        <div class="col">
-          <div class="col-h">요청이 들어오는 곳</div>
-          <div class="node" data-a="session"><span class="who">Claude 세션</span><b>직접 연 세션</b><p>터미널이나 백그라운드에서 연 세션</p></div>
-          <div class="node" data-a="runner"><span class="who">runner</span><b>시스템이 띄운 에이전트</b><p>task 실행, 기획 생성, 새 앱 시작</p></div>
-          <div class="node" data-a="person"><span class="who">사람</span><b>웹 대시보드</b><p>승인, 답변, 실행, 설정</p></div>
-          <div class="node" data-a="github"><span class="who">GitHub</span><b>저장소</b><p>배포 기록, Actions 결과, PR 머지</p></div>
-        </div>
-        <div class="arr" aria-hidden="true"></div>
-        <div class="col">
-          <div class="col-h">입구 (얇게 유지)</div>
-          <div class="node" data-a="hook"><span class="who">hook</span><b>hook API</b><p>세션 시작, 도구 사용 전후를 받아 맥락을 주고 가드를 판정</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>MCP 서버</b><p>세션이 쓰는 도구 12개: task, 명세, 실수, 버그, 배포 기록</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>REST와 WebSocket</b><p>대시보드 조회, 실행 로그 실시간 전송</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>주기 작업</b><p>5분마다 GitHub 가져오기, 기획 자동 생성</p></div>
-        </div>
-        <div class="arr" aria-hidden="true"></div>
-        <div class="col">
-          <div class="col-h">규칙과 상태 관리</div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>앱과 저장소</b><p>작업 폴더로 앱을 판별, 앱 하나에 저장소 여러 개</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>task 상태 전이</b><p>허용된 전이만 통과, 어느 입구로 와도 같은 규칙</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>세션, 실수, 명세</b><p>세션 기록, 맥락 조립, 인수인계 문서</p></div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>실행, 기획, 배포</b><p>실행과 비용, 기획 버전, 배포와 히스토리</p></div>
-        </div>
-        <div class="arr" aria-hidden="true"></div>
-        <div class="col">
-          <div class="col-h">저장과 실행</div>
-          <div class="node" data-a="server"><span class="who">관제 서버</span><b>PostgreSQL</b><p>task, 기획, 실행 로그, 히스토리를 한 곳에</p></div>
-          <div class="node" data-a="runner"><span class="who">runner</span><b>pg-boss 큐</b><p>실행 대기열, 재시도, 동시 실행 제한, cron</p></div>
-          <div class="node" data-a="runner"><span class="who">runner</span><b>git worktree</b><p>task마다 격리된 작업 공간과 전용 브랜치</p></div>
-          <div class="node" data-a="github"><span class="who">GitHub</span><b>gh CLI</b><p>push와 PR 생성은 시스템만</p></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="wf" role="tabpanel" id="p-session" aria-labelledby="t-session" hidden>
-      <div class="lanes">
+    <section class="wrap sec" id="why">
+      <div class="sec-head">
         <div>
-          <h3 class="lane-h">세션이 시작될 때</h3>
-          <ol class="steps">
-            <li class="node" data-a="session"><span class="who">Claude 세션</span><b>세션 시작</b><p>터미널에서 연 세션이든 백그라운드 세션이든 똑같이 처리됩니다.</p></li>
-            <li class="node" data-a="hook"><span class="who">hook</span><b>세션 정보 전달</b><p>작업 폴더와 세션 ID를 관제 서버로 보냅니다.</p></li>
-            <li class="node" data-a="server"><span class="who">관제 서버</span><b>앱 판별과 task 연결</b><p>작업 폴더로 앱을 찾고, 이 세션에 연결된 task를 확인합니다.</p></li>
-            <li class="node" data-a="server"><span class="who">관제 서버</span><b>맥락 블록 조립</b><p>앱, 이 세션의 task, 열린 task, 실수 기록 순서로 8,000자 안에 담습니다.</p></li>
-            <li class="node" data-a="session"><span class="who">Claude 세션</span><b>맥락을 받은 채로 시작</b><p>하던 task와 지난 실수 기록을 알고 대화를 시작합니다.</p></li>
-          </ol>
+          <span class="eyebrow">01 · Why</span>
+          <h2 class="h2">만든 이유</h2>
+          <p class="lead">앱 여러 개를 번갈아 개발하다 보니, task가 어디까지 갔는지와 어제 세션에서 한 일을 매번 다시 찾고 있었습니다.</p>
         </div>
+      </div>
+      <div class="sub-head" style="margin-top:0"><h3>불편했던 점</h3></div>
+      <div class="bento">
+          <div class="card c2 why"><span class="n">01</span><b>task가 저장소마다 따로 있었습니다</b><p>처음엔 저장소마다 Task Master 파일로 task를 관리했습니다. Link 하나에만 270 개가 쌓이고 나니, 다른 앱까지 합친 전체 상황은 볼 방법이 없었습니다.</p></div>
+          <div class="card c2 why"><span class="n">02</span><b>세션이 매번 처음부터 시작했습니다</b><p>새 세션을 열면 어디까지 했는지부터 다시 설명해야 했습니다. 지난 세션에서 지적한 실수를 다음 세션이 그대로 반복한 적도 여러 번 있었습니다.</p></div>
+          <div class="card c2 why"><span class="n">03</span><b>적어 둔 규칙이 가끔 무시됐습니다</b><p>CLAUDE.md에 “task부터 갱신할 것”, “main에 직접 push하지 말 것”을 적어 뒀지만, 규칙 파일은 참고 사항이라 지켜지지 않을 때가 있었습니다.</p></div>
+          <div class="card c2 why"><span class="n">04</span><b>확인할 곳이 너무 많았습니다</b><p>어느 세션이 제 답을 기다리는지는 터미널을 하나씩 열어 봐야 알았고, PR은 GitHub, 배포는 Railway에서 따로 확인했습니다. 실행 비용은 볼 방법이 없었습니다.</p></div>
+      </div>
+      <div class="sub-head"><h3>만들면서 정한 것</h3></div>
+      <div class="bento">
+          <div class="card c2 why ok"><span class="n">01</span><b>task는 한 곳에서 관리</b><p>task, 기획, 실수 기록, 실행 결과, 배포 기록을 전부 DB 하나에 모았습니다. 저장소에 있던 Task Master 파일은 한 번 가져온 뒤로 쓰지 않습니다.</p></div>
+          <div class="card c2 why ok"><span class="n">02</span><b>중요한 규칙은 코드로 막기</b><p>꼭 지켜야 하는 건 hook에서 막도록 했습니다. 연결된 task가 없으면 파일을 고칠 수 없고, push는 에이전트 대신 서버가 합니다.</p></div>
+          <div class="card c4 why ok"><span class="n">03</span><b>저는 확인하고 결정하는 일만</b><p>실행하고 기록하는 건 서버에 맡기고, 저는 기획을 승인하거나 질문에 답하고 PR을 머지하는 일만 합니다.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap sec" id="process">
+      <div class="sec-head">
         <div>
-          <h3 class="lane-h">코드를 고치기 직전</h3>
-          <ol class="steps">
-            <li class="node" data-a="session"><span class="who">Claude 세션</span><b>수정이나 셸 실행 시도</b><p>파일 수정과 Bash만 검사합니다. 읽기는 늘 허용합니다.</p></li>
-            <li class="node" data-a="hook"><span class="who">hook</span><b>실행 전 확인</b><p>도구를 실행하기 전에 관제 서버에 통과 여부를 묻습니다.</p></li>
-            <li class="node" data-a="server"><span class="who">관제 서버</span><b>가드 판정</b>
-              <div class="branches">
-                <div class="br"><span class="bl">통과</span><ul><li>진행 중 task가 연결된 세션</li><li>시스템이 띄운 세션</li><li>관제 서버가 꺼져 있을 때</li></ul></div>
-                <div class="br" data-k="fail"><span class="bl">차단</span><ul><li>진행 중 task 없음</li><li>등록되지 않은 프로젝트 폴더</li><li>이유와 푸는 법을 세션에 안내</li></ul></div>
+          <span class="eyebrow">02 · Process</span>
+          <h2 class="h2">task 하나가 PR이 되는 과정</h2>
+        </div>
+      </div>
+      <div class="proc">
+        <div class="psteps">
+          <div class="card ps"><i>1</i><div><b>실행을 누르면 작업용 브랜치를 따로 만듭니다.</b><p>대시보드에서 실행하면 큐에 들어갔다가, 차례가 오면 git worktree로 작업 폴더를 따로 만듭니다. 원래 저장소에는 손대지 않습니다.</p></div></div>
+          <div class="card ps"><i>2</i><div><b>에이전트가 작업하는 동안 로그가 계속 올라옵니다.</b><p>허용한 도구만 쓸 수 있고 push 권한은 없습니다. 출력은 줄 단위로 DB에 저장되고, 대시보드에서 실시간으로 볼 수 있습니다.</p></div></div>
+          <div class="card ps"><i>3</i><div><b>중간에 질문이 오면 답하고 이어서 진행합니다.</b><p>질문으로 끝나면 task가 ‘답변 대기’로 바뀝니다. 답을 보내면 같은 세션을 이어서 실행하기 때문에 앞의 대화가 그대로 남아 있습니다.</p></div></div>
+          <div class="card ps"><i>4</i><div><b>검사를 통과하면 서버가 PR을 올립니다.</b><p>push 전에 앱마다 정해 둔 검사 명령을 돌리고, 실패하면 PR을 만들지 않습니다. 제가 머지하면 task가 완료되고 작업 폴더도 지워집니다.</p></div></div>
+        </div>
+        <div class="card run">
+          <div class="run-h">
+            <b><span>PO-9</span>관제 시스템 서브 페이지 디자인 리뉴얼</b>
+            <div class="states"><span>준비 중</span><span>실행 중</span><span>답변 대기</span><span class="on">리뷰</span></div>
+            <div class="stg"><span>준비</span><span>실행</span><span>판정</span><span>PR</span></div>
+            <div class="rmeta">브랜치 PO-9-subpage-redesign · 준비 명령 없음 · 정적 사이트 · 동시 실행 1 / 2</div>
+          </div>
+          <div class="rlog">
+            <div class="rl"><em>큐</em><span>run 대기열에서 꺼냄 · 동시 실행 1/2</span></div>
+            <div class="rl"><em>git</em><span>git worktree add -b PO-9-subpage-redesign</span></div>
+            <div class="rl"><em>준비</em><span>setup 명령 없음, 바로 실행</span></div>
+            <div class="rl"><em>Read</em><span>agent-control.html</span></div>
+            <div class="rl"><em>Bash</em><span>node inspect.mjs agent-control.html</span></div>
+            <div class="rl"><em>Edit</em><span>agent-control.html <span class="plus">+412</span> <span class="minus">−186</span></span></div>
+            <div class="rl q"><em>질문</em><span>회고 섹션은 그대로 둘까요, 지울까요?</span></div>
+            <div class="rl a"><em>답변</em><span>지워 줘</span></div>
+            <div class="rl d"><em>완료</em><span>사전 검사 통과 · 커밋 3개</span></div>
+            <div class="rl d"><em>PR</em><span>PR #3 생성 · task를 리뷰로</span></div>
+          </div>
+          <div class="pr"><b>PR #3</b><span>feat: 관제 시스템 페이지 소개 재작성 + 내부 동작 워크플로우</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap sec" id="flow">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">03 · Flow</span>
+          <h2 class="h2">전체 흐름도</h2>
+          <p class="lead">세션, hook, 서버, runner, GitHub 사이에서 일이 넘어가는 순서입니다.</p>
+        </div>
+      </div>
+      <div class="ftabs" role="group" aria-label="흐름 선택"><button type="button" class="tab on" data-flow="0" aria-pressed="true">전체 구조</button><button type="button" class="tab" data-flow="1" aria-pressed="false">세션 연결과 가드</button><button type="button" class="tab" data-flow="2" aria-pressed="false">task 실행</button><button type="button" class="tab" data-flow="3" aria-pressed="false">기획과 새 앱</button></div>
+      <div class="legend"><span class="ac p">사람</span><span class="ac c">Claude 세션</span><span class="ac h">hook</span><span class="ac s">관제 서버</span><span class="ac r">runner</span><span class="ac g">GitHub</span></div>
+      <div data-flow-panel="0"><div class="layers"><div class="layer"><span>요청이 들어오는 곳</span><div class="lnodes"><div class="ln"><span class="ac c">Claude 세션</span><b>직접 연 세션</b><small>터미널이나 백그라운드에서 연 세션</small></div><div class="ln"><span class="ac r">runner</span><b>시스템이 띄운 에이전트</b><small>task 실행, 기획 생성, 새 앱 시작</small></div><div class="ln"><span class="ac p">사람</span><b>웹 대시보드</b><small>승인, 답변, 실행, 설정</small></div><div class="ln"><span class="ac g">GitHub</span><b>저장소</b><small>배포 기록, Actions 결과, PR 머지</small></div></div></div><div class="layer"><span>입구<small>(얇게 유지)</small></span><div class="lnodes"><div class="ln"><span class="ac h">hook</span><b>hook API</b><small>세션 시작, 도구 사용 전후를 받아 맥락을 주고 가드를 판정</small></div><div class="ln"><span class="ac s">관제 서버</span><b>MCP 서버</b><small>세션이 쓰는 도구 12개: task, 명세, 실수, 버그, 배포 기록</small></div><div class="ln"><span class="ac s">관제 서버</span><b>REST와 WebSocket</b><small>대시보드 조회, 실행 로그 실시간 전송</small></div><div class="ln"><span class="ac s">관제 서버</span><b>주기 작업</b><small>5분마다 GitHub 가져오기, 기획 자동 생성</small></div></div></div><div class="layer"><span>규칙과 상태 관리</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>앱과 저장소</b><small>작업 폴더로 앱을 판별, 앱 하나에 저장소 여러 개</small></div><div class="ln"><span class="ac s">관제 서버</span><b>task 상태 전이</b><small>허용된 전이만 통과, 어느 입구로 와도 같은 규칙</small></div><div class="ln"><span class="ac s">관제 서버</span><b>세션, 실수, 명세</b><small>세션 기록, 맥락 조립, 인수인계 문서</small></div><div class="ln"><span class="ac s">관제 서버</span><b>실행, 기획, 배포</b><small>실행과 비용, 기획 버전, 배포와 히스토리</small></div></div></div><div class="layer"><span>저장과 실행</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>PostgreSQL</b><small>task, 기획, 실행 로그, 히스토리를 한 곳에</small></div><div class="ln"><span class="ac r">runner</span><b>pg-boss 큐</b><small>실행 대기열, 재시도, 동시 실행 제한, cron</small></div><div class="ln"><span class="ac r">runner</span><b>git worktree</b><small>task마다 격리된 작업 공간과 전용 브랜치</small></div><div class="ln"><span class="ac g">GitHub</span><b>gh CLI</b><small>push와 PR 생성은 시스템만</small></div></div></div></div></div><div data-flow-panel="1" hidden><div class="fgroups"><div class="card fg"><h3>세션이 시작될 때</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>세션 시작</b></div><p>터미널에서 연 세션이든 백그라운드 세션이든 똑같이 처리됩니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>세션 정보 전달</b></div><p>작업 폴더와 세션 ID를 관제 서버로 보냅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>앱 판별과 task 연결</b></div><p>작업 폴더로 앱을 찾고, 이 세션에 연결된 task를 확인합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>맥락 블록 조립</b></div><p>앱, 이 세션의 task, 열린 task, 실수 기록 순서로 8,000자 안에 담습니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>맥락을 받은 채로 시작</b></div><p>하던 task와 지난 실수 기록을 알고 대화를 시작합니다.</p></li></ol></div><div class="card fg"><h3>코드를 고치기 직전</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>수정이나 셸 실행 시도</b></div><p>파일 수정과 Bash만 검사합니다. 읽기는 늘 허용합니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>실행 전 확인</b></div><p>도구를 실행하기 전에 관제 서버에 통과 여부를 묻습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>가드 판정</b></div><div class="brs"><div class="brc"><span class="chip ok">통과</span><ul><li>진행 중 task가 연결된 세션</li><li>시스템이 띄운 세션</li><li>관제 서버가 꺼져 있을 때</li></ul></div><div class="brc"><span class="chip bad">차단</span><ul><li>진행 중 task 없음</li><li>등록되지 않은 프로젝트 폴더</li><li>이유와 푸는 법을 세션에 안내</li></ul></div></div></li></ol></div><div class="card fg"><h3>도구를 쓴 직후</h3><ol class="sts"><li><div class="t"><span class="ac h">hook</span><b>사용 기록 전달</b></div><p>명령과 도구 사용이 자동으로 쌓입니다. 토큰과 키는 가려서 저장합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>task 상태를 바꿨나?</b></div><p>응답이 아니라 DB의 실제 상태로 판단해, 거부된 변경은 무시합니다.</p><div class="brs"><div class="brc"><span class="chip info">진행 중, 답변 대기</span><ul><li>세션과 task 연결</li><li>수정이 풀림</li></ul></div><div class="brc"><span class="chip ">리뷰, 완료</span><ul><li>연결 해제</li><li>다음 일은 새 task로</li></ul></div></div></li></ol></div></div></div><div data-flow-panel="2" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac p">사람</span><b>task 실행</b></div><p>대시보드에서 실행을 누르거나 API를 한 번 부릅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>대기열에 등록</b></div><p>pg-boss 큐가 동시에 2개까지 꺼냅니다. 맥북 CPU와 디스크를 지키기 위한 제한입니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>격리된 작업 공간</b></div><p>git worktree와 전용 브랜치를 만들고, 앱별 준비 명령을 실행합니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>Claude 실행</b></div><p>task 설명, 기획 명세, 완료 조건을 담아 실행합니다. 허용한 도구만 쓰고 push 권한은 없습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>로그 저장과 실시간 전송</b></div><p>출력 이벤트를 DB에 남기고 대시보드로 보냅니다. 원본도 그대로 보관합니다.</p></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>결과 판정</b></div><p>에이전트의 마지막 구조화된 출력으로 어떻게 끝났는지 가립니다.</p><div class="brs"><div class="brc"><span class="chip ok">완료</span><ul><li>커밋 확인</li><li>사전 검사, 실패하면 PR 없음</li><li>시스템이 push하고 PR 생성</li><li>task를 리뷰로</li></ul></div><div class="brc"><span class="chip wait">질문</span><ul><li>task를 답변 대기로</li><li>사람이 대시보드에서 답변</li><li>같은 세션으로 이어서 실행</li></ul></div><div class="brc"><span class="chip bad">실패</span><ul><li>오류, 사용량 한도, 중지를 구분해 기록</li><li>사유를 대시보드에 표시</li><li>다시 실행해 끝나면 실패 표시 정리</li></ul></div></div></li><li><div class="t"><span class="ac p">사람</span><b>PR 리뷰와 머지</b></div><p>머지는 언제나 사람이 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>머지 감지</b></div><p>5분마다 GitHub를 확인해 머지된 PR을 찾습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>완료와 정리</b></div><p>task를 완료로 바꾸고 worktree를 지웁니다. 실행 비용은 앱별, 월별로 합산됩니다.</p></li></ol></div></div></div><div data-flow-panel="3" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>기획 생성 시작</b></div><p>앱별 주기에 맞춰 자동으로, 또는 즉시. 구독 사용량이 80%를 넘으면 건너뜁니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>읽기 전용 에이전트가 기획 작성</b></div><p>방향성 메모, 열린 task, 이전 반려 사유를 읽고 정해진 형식으로 냅니다. 새 앱 기획은 비슷한 서비스와 시장도 웹에서 조사합니다.</p></li><li><div class="t"><span class="ac p">사람</span><b>검토</b></div><div class="brs"><div class="brc"><span class="chip ok">승인</span><ul><li>task와 기획 명세 생성</li><li>기존 앱이면 task 실행으로</li></ul></div><div class="brc"><span class="chip wait">수정 요청</span><ul><li>요청을 더해 새 버전 작성</li></ul></div><div class="brc"><span class="chip bad">반려</span><ul><li>사유를 다음 기획에 반영</li></ul></div></div></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac r">runner</span><b>새 앱이면 프로젝트 만들기</b></div><p>폴더를 만들고 git을 시작한 뒤, README와 기획 문서로 첫 커밋을 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>비공개 저장소 생성</b></div><p>같은 이름이 있으면 덮어쓰지 않고 멈춥니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>작업 폴더 신뢰 등록</b></div><p>방금 만든 폴더만 Claude Code 신뢰 목록에 올립니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>백그라운드 세션 시작</b></div><p>기획 읽기, UI 시안, 첫 task 구현, PR 순서로 진행합니다. 원격으로 이어 볼 수 있습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>실패하면 이어서</b></div><p>끝난 단계는 건너뛰고 실패한 단계부터 다시 합니다.</p></li></ol></div></div></div>
+    </section>
+
+    <section class="wrap sec" id="features">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">04 · Features</span>
+          <h2 class="h2">주요 기능</h2>
+        </div>
+      </div>
+      <div class="bento">
+
+        <article class="card c4 fx">
+          <div class="fx-text">
+            <h3>세션 시작 시 맥락 전달</h3>
+            <p>새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>넣는 순서는 앱 정보, 이 세션의 task, 열린 task, 실수 기록 순이고 8,000자를 넘으면 뒤에서부터 자릅니다.</li>
+              <li>세션은 MCP 도구로 task 상태를 바꾸고, 실수나 인수인계 문서, 버그를 직접 기록합니다.</li>
+              <li>인수인계 문서는 저장소의 docs/ 폴더에도 복사돼서 다음 세션이 읽을 수 있습니다.</li>
+              <li>작업 규칙은 대시보드에서 수정하면 모든 세션의 규칙 파일에 반영됩니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>세션 시작 · 받은 맥락</b><small>1,912 / 8,000자</small></div>
+              <div class="ctx">
+                <span class="h">[관제 컨텍스트]</span>
+                <span class="k">앱</span><span>PO 포트폴리오 · ~/project/portfolio</span>
+                <span class="k">이 세션</span><span>PO-9 서브 페이지 디자인 리뉴얼 · 진행 중</span>
+                <span class="k">열린 task</span><span>PO-6 소개 재작성 · 리뷰<br>PO-7 동작 워크플로우 추가 · 리뷰</span>
+                <span class="k">실수 기록</span><span>리뷰로 넘긴 task를 다시 진행 중으로 바꾸려 함 → 새 task를 만들어 진행</span>
               </div>
-            </li>
-          </ol>
-        </div>
-        <div>
-          <h3 class="lane-h">도구를 쓴 직후</h3>
-          <ol class="steps">
-            <li class="node" data-a="hook"><span class="who">hook</span><b>사용 기록 전달</b><p>명령과 도구 사용이 자동으로 쌓입니다. 토큰과 키는 가려서 저장합니다.</p></li>
-            <li class="node" data-a="server"><span class="who">관제 서버</span><b>task 상태를 바꿨나?</b><p>응답이 아니라 DB의 실제 상태로 판단해, 거부된 변경은 무시합니다.</p>
-              <div class="branches">
-                <div class="br"><span class="bl">진행 중, 답변 대기</span><ul><li>세션과 task 연결</li><li>수정이 풀림</li></ul></div>
-                <div class="br" data-k="ask"><span class="bl">리뷰, 완료</span><ul><li>연결 해제</li><li>다음 일은 새 task로</li></ul></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card c4 fx flip">
+          <div class="fx-text">
+            <h3>task 없는 수정 차단</h3>
+            <p>규칙 파일에 적어 두는 것만으로는 부족해서, 파일 수정이나 Bash를 실행하기 직전에 서버가 허용 여부를 판정하도록 만들었습니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>진행 중인 task가 연결되지 않은 세션은 수정과 Bash가 막힙니다. 읽기는 막지 않습니다.</li>
+              <li>세션이 task를 ‘진행 중’으로 바꾸면 자동으로 연결되고, ‘리뷰’로 넘기면 다시 잠깁니다.</li>
+              <li>등록하지 않은 프로젝트 폴더에서도 막힙니다.</li>
+              <li>서버가 꺼져 있을 때는 막지 않습니다. 서버 문제 때문에 작업 전체가 멈추는 건 피하고 싶었습니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>가드 판정 규칙</b><small>Edit · Write · Bash</small></div>
+              <table class="mt">
+                <thead><tr><th>세션 상황</th><th class="r">판정</th></tr></thead>
+                <tbody>
+                  <tr><td>진행 중 task가 연결된 세션</td><td class="r"><span class="chip ok">통과</span></td></tr>
+                  <tr><td>연결된 task가 없는 세션</td><td class="r"><span class="chip bad">차단</span></td></tr>
+                  <tr><td>등록되지 않은 프로젝트 폴더</td><td class="r"><span class="chip bad">차단</span></td></tr>
+                  <tr><td>시스템이 실행을 위해 띄운 세션</td><td class="r"><span class="chip ok">통과</span></td></tr>
+                  <tr><td>관제 서버가 꺼져 있음</td><td class="r"><span class="chip ok">통과</span></td></tr>
+                  <tr><td>읽기 도구 (Read, Grep)</td><td class="r"><span class="chip ok">항상 통과</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <article class="card c4 fx">
+          <div class="fx-text">
+            <h3>task 자동 실행과 PR 생성</h3>
+            <p>task를 실행하면 따로 만든 작업 폴더에서 에이전트가 작업하고, 검사를 통과한 결과만 PR로 올라옵니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>task마다 git worktree와 브랜치를 새로 만들어서 다른 작업과 섞이지 않습니다.</li>
+              <li>에이전트에게는 push 권한이 없습니다. 검사가 통과하면 서버가 push하고 PR을 만듭니다.</li>
+              <li>에이전트가 질문하면 멈춰서 기다리고, 답하면 같은 세션으로 이어서 실행합니다.</li>
+              <li>실행마다 비용이 기록되고, PR이 머지되면 task가 자동으로 완료 처리됩니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>실행 기록 · test-hub</b><small>10월 26–27일</small></div>
+              <table class="mt">
+                <thead><tr><th>실행</th><th>대상</th><th>결과</th><th class="r">비용</th></tr></thead>
+                <tbody>
+                  <tr><td class="m">run 4</td><td>TH-4 package.json에 description, engines 추가</td><td><span class="chip ok">PR #3</span></td><td class="r m">$0.52</td></tr>
+                  <tr><td class="m">run 3</td><td>TH-2 clamp 유틸리티 구현</td><td><span class="chip ok">PR #2</span></td><td class="r m">$0.45</td></tr>
+                  <tr><td class="m">run 2</td><td>기획 생성</td><td><span class="chip info">기획 #1</span></td><td class="r m">$0.60</td></tr>
+                  <tr><td class="m">run 1</td><td>TH-1 첫 실행</td><td><span class="chip ok">PR #1</span></td><td class="r m">$0.53</td></tr>
+                </tbody>
+              </table>
+              <div class="mock-f"><span>합계</span><b class="mono" style="color:var(--ink)">$2.10</b></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card c4 fx flip">
+          <div class="fx-text">
+            <h3>세션 모니터링</h3>
+            <p>터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>상태는 hook 기록으로 추정합니다. 작업 중, 입력 대기, 30분 넘게 소식 없음, 종료 네 가지입니다.</li>
+              <li>세션마다 연결된 task, 누가 시작했는지, 마지막 메시지와 도구를 보여 줍니다.</li>
+              <li>세션을 누르면 대화 내용을 채팅 화면으로 볼 수 있습니다.</li>
+              <li>백그라운드 세션은 원격 조종 링크로 바로 이어서 볼 수 있습니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>열린 세션 3</b><small>지난 7일 보기</small></div>
+              <div class="sess">
+                <div class="srow"><b><span>PO-9</span>서브 페이지 디자인 리뉴얼</b><span class="chip ok">일하는 중</span><small>Edit agent-control.html · 방금 · 내가 시작 · 터미널</small></div>
+                <div class="srow"><b><span>HB-6</span>세션 대화 보기</b><span class="chip wait">입력 대기</span><small>“패널을 오른쪽에 둘까요?” · 12분 전 · 내가 시작 · 백그라운드</small></div>
+                <div class="srow"><b><span>FJ-3</span>벌금 규칙 화면</b><span class="chip">소식 없음</span><small>Bash flutter test · 41분 전 · 시스템 · 구현 실행</small></div>
               </div>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </div>
-
-    <div class="wf" role="tabpanel" id="p-run" aria-labelledby="t-run" hidden>
-      <ol class="steps narrow">
-        <li class="node" data-a="person"><span class="who">사람</span><b>task 실행</b><p>대시보드에서 실행을 누르거나 API를 한 번 부릅니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>대기열에 등록</b><p>pg-boss 큐가 동시에 2개까지 꺼냅니다. 맥북 CPU와 디스크를 지키기 위한 제한입니다.</p></li>
-        <li class="node" data-a="runner"><span class="who">runner</span><b>격리된 작업 공간</b><p>git worktree와 전용 브랜치를 만들고, 앱별 준비 명령을 실행합니다.</p></li>
-        <li class="node" data-a="runner"><span class="who">runner</span><b>Claude 실행</b><p>task 설명, 기획 명세, 완료 조건을 담아 실행합니다. 허용한 도구만 쓰고 push 권한은 없습니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>로그 저장과 실시간 전송</b><p>출력 이벤트를 DB에 남기고 대시보드로 보냅니다. 원본도 그대로 보관합니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>결과 판정</b><p>에이전트의 마지막 구조화된 출력으로 어떻게 끝났는지 가립니다.</p>
-          <div class="branches">
-            <div class="br"><span class="bl">완료</span><ul><li>커밋 확인</li><li>사전 검사, 실패하면 PR 없음</li><li>시스템이 push하고 PR 생성</li><li>task를 리뷰로</li></ul></div>
-            <div class="br" data-k="ask"><span class="bl">질문</span><ul><li>task를 답변 대기로</li><li>사람이 대시보드에서 답변</li><li>같은 세션으로 이어서 실행</li></ul></div>
-            <div class="br" data-k="fail"><span class="bl">실패</span><ul><li>오류, 사용량 한도, 중지를 구분해 기록</li><li>사유를 대시보드에 표시</li><li>다시 실행해 끝나면 실패 표시 정리</li></ul></div>
+            </div>
           </div>
-        </li>
-        <li class="node" data-a="person"><span class="who">사람</span><b>PR 리뷰와 머지</b><p>머지는 언제나 사람이 합니다.</p></li>
-        <li class="node" data-a="github"><span class="who">GitHub</span><b>머지 감지</b><p>5분마다 GitHub를 확인해 머지된 PR을 찾습니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>완료와 정리</b><p>task를 완료로 바꾸고 worktree를 지웁니다. 실행 비용은 앱별, 월별로 합산됩니다.</p></li>
-      </ol>
-    </div>
+        </article>
 
-    <div class="wf" role="tabpanel" id="p-idea" aria-labelledby="t-idea" hidden>
-      <ol class="steps narrow">
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>기획 생성 시작</b><p>앱별 주기에 맞춰 자동으로, 또는 즉시. 구독 사용량이 80%를 넘으면 건너뜁니다.</p></li>
-        <li class="node" data-a="runner"><span class="who">runner</span><b>읽기 전용 에이전트가 기획 작성</b><p>방향성 메모, 열린 task, 이전 반려 사유를 읽고 정해진 형식으로 냅니다. 새 앱 기획은 비슷한 서비스와 시장도 웹에서 조사합니다.</p></li>
-        <li class="node" data-a="person"><span class="who">사람</span><b>검토</b>
-          <div class="branches">
-            <div class="br"><span class="bl">승인</span><ul><li>task와 기획 명세 생성</li><li>기존 앱이면 task 실행으로</li></ul></div>
-            <div class="br" data-k="ask"><span class="bl">수정 요청</span><ul><li>요청을 더해 새 버전 작성</li></ul></div>
-            <div class="br" data-k="fail"><span class="bl">반려</span><ul><li>사유를 다음 기획에 반영</li></ul></div>
+        <article class="card c4 fx">
+          <div class="fx-text">
+            <h3>앱별 상태와 배포 관리</h3>
+            <p>앱마다 개발 단계, 배포 기록, 버그, 제가 직접 해야 할 일, 작업 히스토리, 비용을 한 페이지에 모았습니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>사이드바의 앱 이름 옆 점 색으로 가장 급한 상태를 보여 줍니다. 배포가 실패했거나 심각한 버그가 있으면 빨강, 답변 대기면 주황 식입니다.</li>
+              <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다.</li>
+              <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다.</li>
+              <li>스토어 제출처럼 제가 직접 해야 하는 일은 세션이 ‘내 할 일’로 따로 등록합니다.</li>
+            </ul>
           </div>
-        </li>
-        <li class="node" data-a="runner"><span class="who">runner</span><b>새 앱이면 프로젝트 만들기</b><p>폴더를 만들고 git을 시작한 뒤, README와 기획 문서로 첫 커밋을 합니다.</p></li>
-        <li class="node" data-a="github"><span class="who">GitHub</span><b>비공개 저장소 생성</b><p>같은 이름이 있으면 덮어쓰지 않고 멈춥니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>작업 폴더 신뢰 등록</b><p>방금 만든 폴더만 Claude Code 신뢰 목록에 올립니다.</p></li>
-        <li class="node" data-a="session"><span class="who">Claude 세션</span><b>백그라운드 세션 시작</b><p>기획 읽기, UI 시안, 첫 task 구현, PR 순서로 진행합니다. 원격으로 이어 볼 수 있습니다.</p></li>
-        <li class="node" data-a="server"><span class="who">관제 서버</span><b>실패하면 이어서</b><p>끝난 단계는 건너뛰고 실패한 단계부터 다시 합니다.</p></li>
-      </ol>
-    </div>
-  </section>
+          <div class="fx-vis">
+            <div class="mock apps">
+              <div class="apps-l">
+                <span class="on"><i class="dot" style="background:#22B45E"></i>Link<em>LK</em></span>
+                <span><i class="dot" style="background:#FF7A3D"></i>cyphers-meta<em>CM</em></span>
+                <span><i class="dot" style="background:#E8A10C"></i>벌금통<em>FJ</em></span>
+                <span><i class="dot" style="background:#B9BCC4"></i>하루알바<em>HR</em></span>
+              </div>
+              <div class="apps-r">
+                <div><b>Link</b><br><small>소셜 + 실시간 채팅 · NestJS, Flutter</small></div>
+                <div class="row-b" style="font-size:13px"><span>개발 3 / 6단계</span><span class="pmeta2">열린 task 75 · 리뷰 4</span></div>
+                <div class="prog"><i></i></div>
+                <table class="mt" style="border:1px solid var(--line);border-radius:12px;border-collapse:separate;border-spacing:0;overflow:hidden">
+                  <thead><tr><th>배포</th><th>버전</th><th class="r">상태</th></tr></thead>
+                  <tbody>
+                    <tr><td>운영 서버</td><td class="m">backend-v0.1.32</td><td class="r"><span class="chip ok">성공</span></td></tr>
+                    <tr><td>앱 배포 (안드로이드)</td><td class="m">스토어</td><td class="r"><span class="chip ok">성공</span></td></tr>
+                  </tbody>
+                </table>
+                <div class="warnbox">하루알바 · 97일째 조용합니다. 계속할까요, 멈춤으로 둘까요?</div>
+              </div>
+            </div>
+          </div>
+        </article>
 
-  <section class="sec wrap" id="features" aria-labelledby="feat-h">
-    <div class="feat-head">
-      <h2 id="feat-h" data-rise>주요 기능</h2>
-    </div>
+        <article class="card c4 fx flip">
+          <div class="fx-text">
+            <h3>기획 제안과 승인</h3>
+            <p>앱마다 다음에 만들 만한 기능을 에이전트가 기획해서 올리고, 저는 승인하거나 수정 요청, 반려만 합니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>앱 방향성 메모, 열린 task, 이전에 반려한 이유를 참고해서 기획을 씁니다.</li>
+              <li>기획 단계의 에이전트는 코드를 읽기만 할 수 있습니다.</li>
+              <li>승인하면 예상 task와 기획 명세가 바로 만들어지고, 수정 요청을 보내면 새 버전이 올라옵니다.</li>
+              <li>앱별로 주기를 정해 자동으로 돌릴 수 있는데, 구독 사용량이 80%를 넘으면 그 회차는 건너뜁니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>기획 #1 clamp 유틸리티 추가</b><span class="chip wait">검토 대기</span></div>
+              <div class="plan">
+                <p>숫자를 최솟값과 최댓값 사이로 묶는 유틸리티. 입력 검증 세 곳에서 같은 코드가 반복됩니다.</p>
+                <div class="exp"><em>예상 1</em><span>clamp 함수와 단위 테스트</span></div>
+                <div class="exp"><em>예상 2</em><span>기존 입력 검증 세 곳을 clamp로 교체</span></div>
+                <span class="pmeta2">v1 · 생성 비용 $0.60 · 영향 파일 4개</span>
+                <div class="mbtns" style="flex-wrap:wrap"><span class="mb pri">승인하고 task 만들기</span><span class="mb">수정 요청</span><span class="mb dang">반려</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
 
-    <!--
-      시연 영상: 기능마다 figure의 data-youtube에 유튜브 주소를 넣는다.
-      watch?v=, youtu.be/, shorts/, embed/ 형식이 모두 된다. 비어 있으면 화면 조각만 보인다.
-    -->
+        <article class="card c4 fx">
+          <div class="fx-text">
+            <h3>새 앱 시작 자동화</h3>
+            <p>아직 저장소도 없는 앱 아이디어를 기획으로 받아 보고, 승인하면 저장소 생성부터 첫 PR까지 자동으로 진행됩니다.</p>
+            <ul class="pts" style="gap:9px">
+              <li>지금 쓰는 스택을 참고하고, 비슷한 서비스와 시장을 웹에서 조사해서 기획을 씁니다.</li>
+              <li>승인하면 폴더 생성, 첫 커밋, GitHub 비공개 저장소 생성까지 진행됩니다.</li>
+              <li>그다음 백그라운드 세션이 기획을 읽고 UI 시안, 첫 task 구현, PR 순서로 작업합니다.</li>
+              <li>중간에 실패하면 이미 끝난 단계는 건너뛰고 실패한 단계부터 다시 시작합니다.</li>
+            </ul>
+          </div>
+          <div class="fx-vis">
+            <div class="mock">
+              <div class="mock-h"><b>새 앱 시작 · 벌금통 FJ</b><span class="chip info">진행 중</span></div>
+              <ul class="chk">
+                <li><span class="ck"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span>폴더 생성, 첫 커밋<small>README, CLAUDE.md, 기획 문서</small></span></li>
+                <li><span class="ck"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span>GitHub 비공개 저장소<small>같은 이름이 있으면 멈춤</small></span></li>
+                <li><span class="ck"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span>작업 폴더 신뢰 등록</span></li>
+                <li><span class="ck run"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span><span>백그라운드 세션 시작<small>기획 읽기 → UI 시안 → 첫 task</small></span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
 
-    <article class="grid feature" id="f-context">
-      <div class="f-text">
-        <h3 data-rise>세션 시작 시 맥락 전달</h3>
-        <p class="one">새 세션이 열리면 hook이 지금 앱의 task 상황과 지난 실수 기록을 모아서 세션에 넣어 줍니다.</p>
-        <ul>
-          <li>넣는 순서는 앱 정보, 이 세션의 task, 열린 task, 실수 기록 순이고 8,000자를 넘으면 뒤에서부터 자릅니다.</li>
-          <li>세션은 MCP 도구로 task 상태를 바꾸고, 실수나 인수인계 문서, 버그를 직접 기록합니다.</li>
-          <li>인수인계 문서는 저장소의 docs/ 폴더에도 복사돼서 다음 세션이 읽을 수 있습니다.</li>
-          <li>작업 규칙은 대시보드에서 수정하면 모든 세션의 규칙 파일에 반영됩니다.</li>
-        </ul>
       </div>
-      <figure class="f-fig w-6" data-youtube="" data-title="세션 맥락 주입 시연" data-rise style="--d:1; margin:0">
-        <div class="ctx" data-ui>
-          <div class="ui-head"><span class="ui-title">세션 시작 · 받은 맥락</span><span class="pill ok">1,912 / 8,000자</span></div>
-<pre><code><span class="h">[관제 컨텍스트]</span>
-<span class="k">앱</span>        PO 포트폴리오 · ~/project/portfolio
-<span class="k">이 세션</span>   PO-9 서브 페이지 디자인 리뉴얼 · <span class="g">진행 중</span>
-<span class="k">열린 task</span> PO-6 소개 재작성 · 리뷰
-          PO-7 동작 워크플로우 추가 · 리뷰
-<span class="k">실수 기록</span> 리뷰로 넘긴 task를 다시 진행 중으로
-          바꾸려 함 → 새 task를 만들어 진행</code></pre>
+    </section>
+
+    <section class="wrap sec" id="decisions">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">05 · Decisions</span>
+          <h2 class="h2">설계하면서 고민한 것</h2>
         </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-guard">
-      <div class="f-text">
-        <h3 data-rise>task 없는 수정 차단</h3>
-        <p class="one">규칙 파일에 적어 두는 것만으로는 부족해서, 파일 수정이나 Bash를 실행하기 직전에 서버가 허용 여부를 판정하도록 만들었습니다.</p>
-        <ul>
-          <li>진행 중인 task가 연결되지 않은 세션은 수정과 Bash가 막힙니다. 읽기는 막지 않습니다.</li>
-          <li>세션이 task를 ‘진행 중’으로 바꾸면 자동으로 연결되고, ‘리뷰’로 넘기면 다시 잠깁니다.</li>
-          <li>등록하지 않은 프로젝트 폴더에서도 막힙니다.</li>
-          <li>서버가 꺼져 있을 때는 막지 않습니다. 서버 문제 때문에 작업 전체가 멈추는 건 피하고 싶었습니다.</li>
-        </ul>
       </div>
-      <figure class="f-fig w-6" data-youtube="" data-title="task 가드 시연" data-rise style="--d:1; margin:0">
-        <div data-ui>
-          <div class="ui-head"><span class="ui-title">가드 판정 규칙</span><span class="ui-sub">Edit · Write · Bash</span></div>
-          <table>
-            <thead><tr><th>세션 상황</th><th class="num">판정</th></tr></thead>
-            <tbody>
-              <tr><td>진행 중 task가 연결된 세션</td><td class="num"><span class="rule-res ok">통과</span></td></tr>
-              <tr><td>연결된 task가 없는 세션</td><td class="num"><span class="rule-res bad">차단</span></td></tr>
-              <tr><td>등록되지 않은 프로젝트 폴더</td><td class="num"><span class="rule-res bad">차단</span></td></tr>
-              <tr><td>시스템이 실행을 위해 띄운 세션</td><td class="num"><span class="rule-res ok">통과</span></td></tr>
-              <tr><td>관제 서버가 꺼져 있음</td><td class="num"><span class="rule-res ok">통과</span></td></tr>
-              <tr><td>읽기 도구 (Read, Grep)</td><td class="num"><span class="rule-res ok">항상 통과</span></td></tr>
-            </tbody>
-          </table>
+      <div class="bento">
+        <div class="card c2"><div class="dh3"><h3>데이터와 큐</h3><span class="badge">결정 3개</span></div><div class="decs">
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>PostgreSQL</b></div><span class="alt">대안 · <s>SQLite</s></span><p>SQLite로 파일 하나에 끝내는 것도 고민했지만, 큐와 cron까지 DB에 올리려고 Postgres로 정했습니다. Docker 컨테이너 하나만 더 띄우면 됩니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>pg-boss로 큐, 재시도, cron 처리</b></div><span class="alt">대안 · <s>BullMQ + Redis</s></span><p>맥북 한 대에서 계속 떠 있어야 하는 서버라 프로세스를 하나라도 줄이고 싶었습니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>히스토리는 이벤트가 생길 때 바로 저장</b></div><span class="alt">대안 · <s>조회할 때 여러 테이블을 합쳐 계산</s></span><p>조회가 빠르고, 직접 남긴 메모처럼 다른 테이블에 없는 기록도 같이 넣을 수 있습니다.</p></div>
+        </div></div>
+        <div class="card c2"><div class="dh3"><h3>실행</h3><span class="badge">결정 3개</span></div><div class="decs">
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>claude CLI를 자식 프로세스로 실행</b></div><span class="alt">대안 · <s>Agent SDK</s></span><p>맥북에 로그인된 계정과 구독을 그대로 쓸 수 있어서입니다. 실행 부분은 인터페이스로 분리해 둬서 나중에 SDK로 바꾸기 쉽게 했습니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>규칙, hook, MCP를 켠 상태로 실행</b></div><span class="alt">대안 · <s>--bare 옵션으로 가볍게 실행</s></span><p>--bare를 쓰면 규칙과 hook이 전부 빠집니다. 서버가 띄운 세션도 제가 연 세션과 같은 규칙을 따라야 했습니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>동시 실행 2개로 제한</b></div><span class="alt">대안 · <s>제한 없이 병렬 실행</s></span><p>작업 폴더마다 의존성을 새로 설치해서 CPU와 디스크를 꽤 씁니다. 일단 2개로 시작했습니다.</p></div>
+        </div></div>
+        <div class="card c2"><div class="dh3"><h3>가드</h3><span class="badge">결정 3개</span></div><div class="decs">
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>서버가 꺼져 있으면 통과</b></div><span class="alt">대안 · <s>꺼져 있어도 차단</s></span><p>막아 버리면 task를 만드는 MCP 도구도 쓸 수 없어서 아무 작업도 못 하게 됩니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>Bash는 읽기 명령도 전부 검사</b></div><span class="alt">대안 · <s>읽기 전용 명령만 허용</s></span><p>읽기 전용 명령만 골라내는 규칙은 우회하기가 너무 쉬웠습니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>세션 연결은 DB의 task 상태로 판단</b></div><span class="alt">대안 · <s>도구 응답 내용으로 판단</s></span><p>상태 변경이 거부된 경우에도 연결이 잘못 바뀌지 않게 DB를 기준으로 했습니다.</p></div>
+        </div></div>
+        <div class="card c2"><div class="dh3"><h3>반영</h3><span class="badge">결정 3개</span></div><div class="decs">
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>push와 PR은 서버가 직접</b></div><span class="alt">대안 · <s>에이전트가 push</s></span><p>에이전트 허용 도구에서 git push를 아예 뺐습니다. 검사를 통과한 결과만 올라갑니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>main 보호를 두 군데서</b></div><span class="alt">대안 · <s>금지 규칙만 사용</s></span><p>금지 규칙만으로는 git -C . push 처럼 돌려 쓴 명령까지 막지 못해서, GitHub 브랜치 보호도 같이 걸었습니다.</p></div>
+          <div class="dec"><div class="pick"><span class="chip ok">선택</span><b>GitHub 상태를 5분마다 가져오기</b></div><span class="alt">대안 · <s>웹훅으로 받기</s></span><p>서버가 맥북 안에서만 열려 있어서 GitHub가 서버를 호출할 수 없습니다.</p></div>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="wrap sec" id="ops">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">06 · Operations</span>
+          <h2 class="h2">운영</h2>
+          <p class="lead">매일 켜 두고 쓰는 서버라 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고, 죽으면 다시 띄웁니다.</p>
         </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-runner">
-      <div class="f-text">
-        <h3 data-rise>task 자동 실행과 PR 생성</h3>
-        <p class="one">task를 실행하면 따로 만든 작업 폴더에서 에이전트가 작업하고, 검사를 통과한 결과만 PR로 올라옵니다.</p>
-        <ul>
-          <li>task마다 git worktree와 브랜치를 새로 만들어서 다른 작업과 섞이지 않습니다.</li>
-          <li>에이전트에게는 push 권한이 없습니다. 검사가 통과하면 서버가 push하고 PR을 만듭니다.</li>
-          <li>에이전트가 질문하면 멈춰서 기다리고, 답하면 같은 세션으로 이어서 실행합니다.</li>
-          <li>실행마다 비용이 기록되고, PR이 머지되면 task가 자동으로 완료 처리됩니다.</li>
-        </ul>
       </div>
-      <figure class="f-fig" data-youtube="" data-title="task 자동 실행 시연" data-rise style="--d:1; margin:0">
-        <div data-ui>
-          <div class="ui-head"><span class="ui-title">실행 기록 · test-hub</span><span class="ui-sub">10월 26–27일</span></div>
-          <table>
-            <thead><tr><th>실행</th><th>대상</th><th class="hide-s">결과</th><th class="num">비용</th></tr></thead>
-            <tbody>
-              <tr><td class="id">run 4</td><td>TH-4 package.json에 description, engines 추가</td><td class="hide-s"><span class="pill ok">PR #3</span></td><td class="num">$0.52</td></tr>
-              <tr><td class="id">run 3</td><td>TH-2 clamp 유틸리티 구현</td><td class="hide-s"><span class="pill ok">PR #2</span></td><td class="num">$0.45</td></tr>
-              <tr><td class="id">run 2</td><td>기획 생성</td><td class="hide-s"><span class="pill">기획 #1</span></td><td class="num">$0.60</td></tr>
-              <tr><td class="id">run 1</td><td>TH-1 첫 실행</td><td class="hide-s"><span class="pill ok">PR #1</span></td><td class="num">$0.53</td></tr>
-              <tr><td></td><td><b>합계</b></td><td class="hide-s"></td><td class="num"><b>$2.10</b></td></tr>
-            </tbody>
-          </table>
+      <div class="ops">
+        <div class="card op"><div class="num">5<span class="plus">분</span></div><small>GitHub에서 배포, Actions 결과, 머지된 PR을 가져오는 주기</small></div>
+        <div class="card op"><div class="num">14<span class="plus">일</span></div><small>하루 한 번 pg_dump로 백업하고, 백업을 보관하는 기간</small></div>
+        <div class="card op"><div class="num">2<span class="plus">개</span></div><small>동시에 실행하는 작업 수. 나머지는 큐에서 대기합니다</small></div>
+        <div class="card op"><div class="num">80<span class="plus">%</span></div><small>구독 사용량이 이보다 높으면 자동 기획 생성을 건너뜁니다</small></div>
+        <div class="card op"><div class="num">5<span class="plus">번</span></div><small>대시보드 비밀번호를 연속으로 틀리면 10분간 잠깁니다</small></div>
+      </div>
+      <div class="mock" style="margin-top:16px;border-radius:24px">
+        <div class="mock-h" style="padding:16px 22px"><b>상주 실행 항목</b><span class="chip ok">둘 다 실행 중</span></div>
+        <table class="mt">
+          <thead><tr><th style="padding-left:22px">항목</th><th>하는 일</th></tr></thead>
+          <tbody>
+            <tr><td style="padding-left:22px"><b>서버</b></td><td>로그인하면 시작, 죽으면 재시작. DB 포트가 열릴 때까지 대기</td></tr>
+            <tr><td style="padding-left:22px"><b>백업</b></td><td>한 시간마다 확인해 오늘 백업이 없을 때만 pg_dump</td></tr>
+            <tr><td style="padding-left:22px"><b>접속</b></td><td>127.0.0.1에만 열림. 모든 요청에 토큰 필요</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="wrap sec" id="more">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">→ · More</span>
+          <h2 class="h2">다른 프로젝트도 보기</h2>
         </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-sessions">
-      <div class="f-text">
-        <h3 data-rise>세션 모니터링</h3>
-        <p class="one">터미널에서 직접 연 세션, 백그라운드 세션, 서버가 띄운 실행을 한 목록에서 봅니다.</p>
-        <ul>
-          <li>상태는 hook 기록으로 추정합니다. 작업 중, 입력 대기, 30분 넘게 소식 없음, 종료 네 가지입니다.</li>
-          <li>세션마다 연결된 task, 누가 시작했는지, 마지막 메시지와 도구를 보여 줍니다.</li>
-          <li>세션을 누르면 대화 내용을 채팅 화면으로 볼 수 있습니다.</li>
-          <li>백그라운드 세션은 원격 조종 링크로 바로 이어서 볼 수 있습니다.</li>
-        </ul>
       </div>
-      <figure class="f-fig" data-youtube="" data-title="세션 관제 시연" data-rise style="--d:1; margin:0">
-        <div class="sess" data-ui>
-          <div class="ui-head"><span class="ui-title">열린 세션 3</span><span class="ui-sub">지난 7일 보기</span></div>
-          <table>
-            <thead><tr><th>세션</th><th>상태</th><th class="hide-s">시작</th></tr></thead>
-            <tbody>
-              <tr><td><b>PO-9</b> 서브 페이지 디자인 리뉴얼<span class="last">Edit agent-control.html · 방금</span></td><td><span class="pill live">일하는 중</span></td><td class="hide-s">내가 시작 · 터미널</td></tr>
-              <tr><td><b>HB-6</b> 세션 대화 보기<span class="last">“패널을 오른쪽에 둘까요?” · 12분 전</span></td><td><span class="pill wait">입력 대기</span></td><td class="hide-s">내가 시작 · 백그라운드</td></tr>
-              <tr><td><b>FJ-3</b> 벌금 규칙 화면<span class="last">Bash flutter test · 41분 전</span></td><td><span class="pill">소식 없음</span></td><td class="hide-s">시스템 · 구현 실행</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-apps">
-      <div class="f-text">
-        <h3 data-rise>앱별 상태와 배포 관리</h3>
-        <p class="one">앱마다 개발 단계, 배포 기록, 버그, 제가 직접 해야 할 일, 작업 히스토리, 비용을 한 페이지에 모았습니다.</p>
-        <ul>
-          <li>사이드바의 앱 이름 옆 점 색으로 가장 급한 상태를 보여 줍니다. 배포가 실패했거나 심각한 버그가 있으면 빨강, 답변 대기면 주황 식입니다.</li>
-          <li>GitHub 배포 기록과 Actions 결과를 5분마다 가져옵니다.</li>
-          <li>개발 중으로 둔 앱이 14일 넘게 조용하면 계속할지 멈출지 물어봅니다.</li>
-          <li>스토어 제출처럼 제가 직접 해야 하는 일은 세션이 ‘내 할 일’로 따로 등록합니다.</li>
-        </ul>
-      </div>
-      <figure class="f-fig" data-youtube="" data-title="앱 통합 관리 시연" data-rise style="--d:1; margin:0">
-        <div class="apps" data-ui>
-          <nav class="side" aria-label="앱 목록 예시">
-            <a class="cur" href="#f-apps" tabindex="-1"><i class="live"></i>Link<span class="c">LK</span></a>
-            <a href="#f-apps" tabindex="-1"><i class="ok"></i>cyphers-meta<span class="c">CM</span></a>
-            <a href="#f-apps" tabindex="-1"><i class="wait"></i>벌금통<span class="c">FJ</span></a>
-            <a href="#f-apps" tabindex="-1"><i class="quiet"></i>하루알바<span class="c">HR</span></a>
-          </nav>
-          <div class="main">
-            <div><div class="ui-title">Link</div><div class="ui-sub">소셜 + 실시간 채팅 · NestJS, Flutter</div></div>
+      <div class="next">
+        <a class="card lift" href="Project-ONEPASS-PRO.dc.html">
+          <div class="vis photo"><img class="shot" src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드"></div>
+          <div class="pbody">
             <div>
-              <div class="stage-bar" aria-hidden="true"><span class="d"></span><span class="d"></span><span class="c"></span><span></span><span></span><span></span></div>
-              <div class="stage-lbl"><span>개발 3 / 6단계</span><span>열린 task 75 · 리뷰 4</span></div>
+              <span class="period">회사 · 출입·근태 관리</span>
+              <h3 class="pt" style="margin-top:4px">ONEPASS PRO</h3>
             </div>
-            <table class="deploys">
-              <thead><tr><th>배포</th><th>버전</th><th class="num">상태</th></tr></thead>
-              <tbody>
-                <tr><td>운영 서버</td><td class="id">backend-v0.1.32</td><td class="num"><span class="pill ok">성공</span></td></tr>
-                <tr><td>앱 배포 (안드로이드)</td><td class="id">스토어</td><td class="num"><span class="pill ok">성공</span></td></tr>
-              </tbody>
-            </table>
-            <div class="signal"><b>하루알바</b> · 97일째 조용합니다. 계속할까요, 멈춤으로 둘까요?</div>
+            <span class="arr"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
           </div>
-        </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-ideas">
-      <div class="f-text">
-        <h3 data-rise>기획 제안과 승인</h3>
-        <p class="one">앱마다 다음에 만들 만한 기능을 에이전트가 기획해서 올리고, 저는 승인하거나 수정 요청, 반려만 합니다.</p>
-        <ul>
-          <li>앱 방향성 메모, 열린 task, 이전에 반려한 이유를 참고해서 기획을 씁니다.</li>
-          <li>기획 단계의 에이전트는 코드를 읽기만 할 수 있습니다.</li>
-          <li>승인하면 예상 task와 기획 명세가 바로 만들어지고, 수정 요청을 보내면 새 버전이 올라옵니다.</li>
-          <li>앱별로 주기를 정해 자동으로 돌릴 수 있는데, 구독 사용량이 80%를 넘으면 그 회차는 건너뜁니다.</li>
-        </ul>
-      </div>
-      <figure class="f-fig w-5" data-youtube="" data-title="기획 승인 시연" data-rise style="--d:1; margin:0">
-        <div class="idea" data-ui>
-          <div class="ui-head"><span class="ui-title">기획 #1 clamp 유틸리티 추가</span><span class="pill wait">검토 대기</span></div>
-          <div class="body">
-            <p>숫자를 최솟값과 최댓값 사이로 묶는 유틸리티. 입력 검증 세 곳에서 같은 코드가 반복됩니다.</p>
-            <div class="tasks">
-              <div><span class="id">예상 1</span>clamp 함수와 단위 테스트</div>
-              <div><span class="id">예상 2</span>기존 입력 검증 세 곳을 clamp로 교체</div>
+        </a>
+        <a class="card lift" href="Project-iSchool.dc.html">
+          <div class="vis photo"><img class="shot" src="images/is-full.jpg" alt="아이스쿨 기관 관리자 대시보드"></div>
+          <div class="pbody">
+            <div>
+              <span class="period">회사 · 통학버스 안전관리</span>
+              <h3 class="pt" style="margin-top:4px">아이스쿨</h3>
             </div>
-            <p class="ui-sub">v1 · 생성 비용 $0.60 · 영향 파일 4개</p>
+            <span class="arr"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
           </div>
-          <div class="idea-act">
-            <button type="button" class="ui-btn primary" tabindex="-1">승인하고 task 만들기</button>
-            <button type="button" class="ui-btn secondary" tabindex="-1">수정 요청</button>
-            <button type="button" class="ui-btn secondary" tabindex="-1">반려</button>
-          </div>
-        </div>
-      </figure>
-    </article>
-
-    <article class="grid feature" id="f-bootstrap">
-      <div class="f-text">
-        <h3 data-rise>새 앱 시작 자동화</h3>
-        <p class="one">아직 저장소도 없는 앱 아이디어를 기획으로 받아 보고, 승인하면 저장소 생성부터 첫 PR까지 자동으로 진행됩니다.</p>
-        <ul>
-          <li>지금 쓰는 스택을 참고하고, 비슷한 서비스와 시장을 웹에서 조사해서 기획을 씁니다.</li>
-          <li>승인하면 폴더 생성, 첫 커밋, GitHub 비공개 저장소 생성까지 진행됩니다.</li>
-          <li>그다음 백그라운드 세션이 기획을 읽고 UI 시안, 첫 task 구현, PR 순서로 작업합니다.</li>
-          <li>중간에 실패하면 이미 끝난 단계는 건너뛰고 실패한 단계부터 다시 시작합니다.</li>
-        </ul>
+        </a>
       </div>
-      <figure class="f-fig w-5" data-youtube="" data-title="새 앱 시작 시연" data-rise style="--d:1; margin:0">
-        <div class="boot" data-ui>
-          <div class="ui-head"><span class="ui-title">새 앱 시작 · 벌금통 FJ</span><span class="pill live">진행 중</span></div>
-          <ol>
-            <li><span class="ck" aria-hidden="true"></span><span>폴더 생성, 첫 커밋<span class="d">README, CLAUDE.md, 기획 문서</span></span></li>
-            <li><span class="ck" aria-hidden="true"></span><span>GitHub 비공개 저장소<span class="d">같은 이름이 있으면 멈춤</span></span></li>
-            <li><span class="ck" aria-hidden="true"></span><span>작업 폴더 신뢰 등록</span></li>
-            <li class="cur"><span class="ck" aria-hidden="true"></span><span>백그라운드 세션 시작<span class="d">기획 읽기 → UI 시안 → 첫 task</span></span></li>
-          </ol>
-        </div>
-      </figure>
-    </article>
-  </section>
+      <div class="back-row"><a class="btn btn-out" href="index.html"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오로 돌아가기</a></div>
+    </section>
+  </main>
 
-  <section class="sec wrap" id="design" aria-labelledby="dec-h">
-    <div class="dec-head">
-      <h2 id="dec-h" data-rise>설계하면서 고민한 것</h2>
-    </div>
-    <div class="dec">
-      <div class="dtabs" role="tablist" aria-label="설계 영역">
-        <button type="button" role="tab" id="d-data" aria-controls="dp-data" aria-selected="true"><b>데이터와 큐</b><span>결정 3개</span></button>
-        <button type="button" role="tab" id="d-exec" aria-controls="dp-exec" aria-selected="false" tabindex="-1"><b>실행</b><span>결정 3개</span></button>
-        <button type="button" role="tab" id="d-guard" aria-controls="dp-guard" aria-selected="false" tabindex="-1"><b>가드</b><span>결정 3개</span></button>
-        <button type="button" role="tab" id="d-ship" aria-controls="dp-ship" aria-selected="false" tabindex="-1"><b>반영</b><span>결정 3개</span></button>
-      </div>
-      <div>
-        <div class="dcols" aria-hidden="true"><span>선택</span><span>대안</span><span>이유</span></div>
-        <div class="dlist" role="tabpanel" id="dp-data" aria-labelledby="d-data">
-          <div class="drow"><span class="pick">PostgreSQL</span><span class="alt">SQLite</span><span>SQLite로 파일 하나에 끝내는 것도 고민했지만, 큐와 cron까지 DB에 올리려고 Postgres로 정했습니다. Docker 컨테이너 하나만 더 띄우면 됩니다.</span></div>
-          <div class="drow"><span class="pick">pg-boss로 큐, 재시도, cron 처리</span><span class="alt">BullMQ + Redis</span><span>맥북 한 대에서 계속 떠 있어야 하는 서버라 프로세스를 하나라도 줄이고 싶었습니다.</span></div>
-          <div class="drow"><span class="pick">히스토리는 이벤트가 생길 때 바로 저장</span><span class="alt">조회할 때 여러 테이블을 합쳐 계산</span><span>조회가 빠르고, 직접 남긴 메모처럼 다른 테이블에 없는 기록도 같이 넣을 수 있습니다.</span></div>
-        </div>
-        <div class="dlist" role="tabpanel" id="dp-exec" aria-labelledby="d-exec" hidden>
-          <div class="drow"><span class="pick">claude CLI를 자식 프로세스로 실행</span><span class="alt">Agent SDK</span><span>맥북에 로그인된 계정과 구독을 그대로 쓸 수 있어서입니다. 실행 부분은 인터페이스로 분리해 둬서 나중에 SDK로 바꾸기 쉽게 했습니다.</span></div>
-          <div class="drow"><span class="pick">규칙, hook, MCP를 켠 상태로 실행</span><span class="alt">--bare 옵션으로 가볍게 실행</span><span>--bare를 쓰면 규칙과 hook이 전부 빠집니다. 서버가 띄운 세션도 제가 연 세션과 같은 규칙을 따라야 했습니다.</span></div>
-          <div class="drow"><span class="pick">동시 실행 2개로 제한</span><span class="alt">제한 없이 병렬 실행</span><span>작업 폴더마다 의존성을 새로 설치해서 CPU와 디스크를 꽤 씁니다. 일단 2개로 시작했습니다.</span></div>
-        </div>
-        <div class="dlist" role="tabpanel" id="dp-guard" aria-labelledby="d-guard" hidden>
-          <div class="drow"><span class="pick">서버가 꺼져 있으면 통과</span><span class="alt">꺼져 있어도 차단</span><span>막아 버리면 task를 만드는 MCP 도구도 쓸 수 없어서 아무 작업도 못 하게 됩니다.</span></div>
-          <div class="drow"><span class="pick">Bash는 읽기 명령도 전부 검사</span><span class="alt">읽기 전용 명령만 허용</span><span>읽기 전용 명령만 골라내는 규칙은 우회하기가 너무 쉬웠습니다.</span></div>
-          <div class="drow"><span class="pick">세션 연결은 DB의 task 상태로 판단</span><span class="alt">도구 응답 내용으로 판단</span><span>상태 변경이 거부된 경우에도 연결이 잘못 바뀌지 않게 DB를 기준으로 했습니다.</span></div>
-        </div>
-        <div class="dlist" role="tabpanel" id="dp-ship" aria-labelledby="d-ship" hidden>
-          <div class="drow"><span class="pick">push와 PR은 서버가 직접</span><span class="alt">에이전트가 push</span><span>에이전트 허용 도구에서 git push를 아예 뺐습니다. 검사를 통과한 결과만 올라갑니다.</span></div>
-          <div class="drow"><span class="pick">main 보호를 두 군데서</span><span class="alt">금지 규칙만 사용</span><span>금지 규칙만으로는 <code>git -C . push</code>처럼 돌려 쓴 명령까지 막지 못해서, GitHub 브랜치 보호도 같이 걸었습니다.</span></div>
-          <div class="drow"><span class="pick">GitHub 상태를 5분마다 가져오기</span><span class="alt">웹훅으로 받기</span><span>서버가 맥북 안에서만 열려 있어서 GitHub가 서버를 호출할 수 없습니다.</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="ops" aria-labelledby="ops-h" style="padding-bottom:clamp(96px,10vw,160px)">
-    <div class="grid ops">
-      <div class="ops-text">
-        <h2 id="ops-h" data-rise>운영</h2>
-        <p class="lead">매일 켜 두고 쓰는 서버라 꺼지거나 데이터가 날아가지 않게 하는 데 신경을 썼습니다. 로그인하면 launchd가 서버를 띄우고, 죽으면 다시 띄웁니다.</p>
-        <dl class="figs">
-          <div><dt>5분</dt><dd>GitHub에서 배포, Actions 결과, 머지된 PR을 가져오는 주기</dd></div>
-          <div><dt>14일</dt><dd>하루 한 번 pg_dump로 백업하고, 백업을 보관하는 기간</dd></div>
-          <div><dt>2개</dt><dd>동시에 실행하는 작업 수. 나머지는 큐에서 대기합니다</dd></div>
-          <div><dt>80%</dt><dd>구독 사용량이 이보다 높으면 자동 기획 생성을 건너뜁니다</dd></div>
-          <div><dt>5번</dt><dd>대시보드 비밀번호를 연속으로 틀리면 10분간 잠깁니다</dd></div>
-        </dl>
-      </div>
-      <figure class="ops-fig" data-rise style="--d:2; margin:0">
-        <div data-ui>
-          <div class="ui-head"><span class="ui-title">상주 실행 항목</span><span class="pill ok">둘 다 실행 중</span></div>
-          <table>
-            <thead><tr><th>항목</th><th>하는 일</th></tr></thead>
-            <tbody>
-              <tr><td><b>서버</b></td><td>로그인하면 시작, 죽으면 재시작. DB 포트가 열릴 때까지 대기</td></tr>
-              <tr><td><b>백업</b></td><td>한 시간마다 확인해 오늘 백업이 없을 때만 pg_dump</td></tr>
-              <tr><td><b>접속</b></td><td>127.0.0.1에만 열림. 모든 요청에 토큰 필요</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </figure>
-    </div>
-  </section>
-</main>
-
+  <footer class="foot">
+    <span>© 2026 김수만 · Full-Stack Developer</span>
+    <span class="foot-links">
+      <a href="index.html"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a>
+      <a href="mailto:zzsdsdsd@gmail.com"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>zzsdsdsd@gmail.com</a>
+      <a href="https://github.com/suman-kim"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5a3 3 0 0 0-.9-2.3c3-.3 6-1.5 6-6.6a5.2 5.2 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.4 12.4 0 0 0-6.6 0C5.9 1.1 4.8 1.4 4.8 1.4a4.8 4.8 0 0 0-.1 3.6A5.2 5.2 0 0 0 3.3 8.6c0 5.1 3 6.3 6 6.6a3 3 0 0 0-.9 2.3V21"></path></svg>GitHub</a>
+    </span>
+  </footer>
+</div>
 <script>
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // 테마: 다른 페이지와 같은 pf-theme 값을 쓴다
-  var themeBtn = document.getElementById('themeBtn');
-  function theme() { return document.documentElement.getAttribute('data-theme'); }
-  function setTheme(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    try { localStorage.setItem('pf-theme', t); } catch (e) {}
-    themeBtn.textContent = t === 'dark' ? '라이트 모드' : '다크 모드';
-    syncAsk();
+(function(){
+  var root = document.getElementById('root');
+  var btn = document.getElementById('theme-btn');
+  function apply(dark){
+    root.classList.toggle('dark', dark);
+    btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+    btn.setAttribute('aria-pressed', String(dark));
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
   }
-  themeBtn.addEventListener('click', function () { setTheme(theme() === 'dark' ? 'light' : 'dark'); });
-  themeBtn.textContent = theme() === 'dark' ? '라이트 모드' : '다크 모드';
-
-  // 가드 시연: task가 연결되어 있을 때만 이 페이지의 테마를 실제로 바꾼다
-  var gTask = document.getElementById('gTask');
-  var gSend = document.getElementById('gSend');
-  var gState = document.getElementById('gState');
-  var gAsk = document.getElementById('gAsk');
-  var gResult = document.getElementById('gResult');
-  var gSteps = Array.prototype.slice.call(document.querySelectorAll('#guard .g-step'));
-  function syncAsk() { gAsk.textContent = '이 페이지를 ' + (theme() === 'dark' ? '라이트' : '다크') + ' 모드로 바꿔 줘'; }
-  syncAsk();
-  gTask.addEventListener('change', function () {
-    gState.textContent = gTask.checked ? 'PO-9 진행 중' : '연결된 task 없음';
-    gState.className = 'pill ' + (gTask.checked ? 'ok' : 'bad');
+  var dark = root.classList.contains('dark');
+  apply(dark);
+  btn.addEventListener('click', function(){
+    dark = !dark; apply(dark);
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
   });
-  var busy = false;
-  gSend.addEventListener('click', function () {
-    if (busy) return;
-    busy = true;
-    var allow = gTask.checked;
-    var target = theme() === 'dark' ? 'light' : 'dark';
-    gSteps.forEach(function (s, i) { if (i > 0) s.classList.remove('show'); });
-    gResult.className = 'g-row g-result g-step ' + (allow ? 'allow' : 'deny');
-    gResult.querySelector('.g-text').innerHTML = allow
-      ? '<b>통과</b> · PO-9가 진행 중입니다. 수정을 적용했습니다.'
-      : '<b>차단</b> · 이 세션에 진행 중인 task가 없어서 파일 수정과 Bash를 막았습니다. task를 진행 중으로 바꾸면 풀립니다.';
-    var wait = reduce ? 0 : 420;
-    gSteps.slice(1).forEach(function (s, i) {
-      setTimeout(function () {
-        s.classList.add('show');
-        if (s === gResult) { if (allow) setTheme(target); busy = false; }
-      }, wait * (i + 1));
-    });
+  window.__setDark = function(v){ dark = v; apply(v); try { localStorage.setItem('theme', v ? 'dark' : 'light'); } catch (e) {} };
+  var nav = document.getElementById('nav');
+  var hero = document.querySelector('.dhero');
+  function onScroll(){ nav.classList.toggle('solid', window.scrollY > (hero ? hero.offsetHeight - 72 : 400)); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+(function(){
+  var linked = false;
+  var badge = document.getElementById('g-badge'), link = document.getElementById('g-link'), send = document.getElementById('g-send');
+  var blk = document.getElementById('g-block'), pass = document.getElementById('g-pass');
+  function show(passed){ blk.hidden = passed; pass.hidden = !passed; }
+  link.addEventListener('click', function(){
+    linked = !linked;
+    badge.textContent = linked ? 'PO-9 · 진행 중' : '연결된 task 없음';
+    badge.classList.toggle('on', linked);
+    link.textContent = linked ? 'PO-9 연결됨 · 해제' : 'PO-9 진행 중으로 연결';
+    link.setAttribute('aria-pressed', String(linked));
+    show(false);
   });
-
-  // 등장: 섹션 안 요소가 화면에 들어오면 한 번만
-  // 빠르게 건너뛰거나 링크로 이동해 화면을 지나친 요소도 보이도록, 화면 위쪽에 있는 것은 모두 연다
-  (function () {
-    var rest = Array.prototype.slice.call(document.querySelectorAll('[data-rise]'));
-    if (reduce) { rest.forEach(function (el) { el.classList.add('in'); }); return; }
-    var queued = false;
-    function check() {
-      queued = false;
-      var lim = window.innerHeight * 0.92;
-      rest = rest.filter(function (el) {
-        if (el.getBoundingClientRect().top < lim) { el.classList.add('in'); return false; }
-        return true;
-      });
-      if (!rest.length) { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
-    }
-    function onScroll() { if (!queued) { queued = true; requestAnimationFrame(check); } }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    check();
-  })();
-
-  // 동작 방식: 화면 가운데에 온 문장에 맞춰 실행 화면 상태를 바꾼다
-  (function () {
-    var run = document.getElementById('run');
-    var steps = Array.prototype.slice.call(document.querySelectorAll('#pinSteps .pin-step'));
-    var bars = Array.prototype.slice.call(run.querySelectorAll('.bar span'));
-    var cur = 0;
-    function show(n) {
-      if (n === cur) return;
-      cur = n;
-      run.setAttribute('data-state', String(n));
-      steps.forEach(function (s) { s.classList.toggle('on', Number(s.dataset.step) === n); });
-      bars.forEach(function (b) {
-        var k = Number(b.dataset.b);
-        b.className = k < n ? 'done' : (k === n ? 'cur' : '');
-      });
-      var lines = Array.prototype.slice.call(run.querySelectorAll('pre .ln')).filter(function (l) {
-        return (' ' + l.dataset.s + ' ').indexOf(' ' + n + ' ') > -1;
-      });
-      lines.forEach(function (l, i) {
-        l.classList.remove('show');
-        setTimeout(function () { l.classList.add('show'); }, reduce ? 0 : 140 * i);
-      });
-    }
-    // 좁은 화면에서는 조각이 고정되지 않으므로 끝난 상태를 보여 준다
-    if (!('IntersectionObserver' in window) || window.matchMedia('(max-width: 900px)').matches) { show(4); return; }
-    show(1);
-    var so = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) show(Number(e.target.dataset.step)); });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    steps.forEach(function (s) { so.observe(s); });
-  })();
-
-  // 흐름도 탭과 단계별 재생
-  (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('#flows [role="tab"]'));
-    var playBtn = document.getElementById('wfPlay');
-    var timer = null;
-    function panelOf(t) { return document.getElementById(t.getAttribute('aria-controls')); }
-    function active() { return panelOf(tabs.filter(function (b) { return b.getAttribute('aria-selected') === 'true'; })[0]); }
-    function stop() {
-      clearTimeout(timer); timer = null;
-      document.querySelectorAll('#flows .wf').forEach(function (p) {
-        p.classList.remove('playing');
-        p.querySelectorAll('.node').forEach(function (n) { n.classList.remove('on', 'done'); });
-      });
-      playBtn.textContent = '단계별로 재생';
-    }
-    function select(tab, focus) {
-      stop();
-      tabs.forEach(function (b) {
-        var on = b === tab;
-        b.setAttribute('aria-selected', on ? 'true' : 'false');
-        b.tabIndex = on ? 0 : -1;
-        panelOf(b).hidden = !on;
-      });
-      if (focus) tab.focus();
-    }
-    tabs.forEach(function (b, i) {
-      b.addEventListener('click', function () { select(b); });
-      b.addEventListener('keydown', function (e) {
-        var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : null;
-        if (j === null) return;
-        e.preventDefault();
-        select(tabs[(j + tabs.length) % tabs.length], true);
-      });
-    });
-    playBtn.addEventListener('click', function () {
-      if (timer) { stop(); return; }
-      var panel = active();
-      var nodes = Array.prototype.slice.call(panel.querySelectorAll('.node'));
-      var i = 0;
-      panel.classList.add('playing');
-      playBtn.textContent = '재생 멈추기';
-      (function step() {
-        nodes.forEach(function (n, k) { n.classList.toggle('on', k === i); n.classList.toggle('done', k < i); });
-        var r = nodes[i].getBoundingClientRect();
-        if (r.top < 60 || r.bottom > window.innerHeight - 40) nodes[i].scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
-        i += 1;
-        timer = setTimeout(i < nodes.length ? step : stop, i < nodes.length ? 1300 : 2200);
-      })();
-    });
-  })();
-
-  // 설계 탭
-  (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.dtabs [role="tab"]'));
-    function select(tab, focus) {
-      tabs.forEach(function (b) {
-        var on = b === tab;
-        b.setAttribute('aria-selected', on ? 'true' : 'false');
-        b.tabIndex = on ? 0 : -1;
-        document.getElementById(b.getAttribute('aria-controls')).hidden = !on;
-      });
-      if (focus) tab.focus();
-    }
-    tabs.forEach(function (b, i) {
-      b.addEventListener('click', function () { select(b); });
-      b.addEventListener('keydown', function (e) {
-        var k = e.key;
-        var j = (k === 'ArrowDown' || k === 'ArrowRight') ? i + 1 : (k === 'ArrowUp' || k === 'ArrowLeft') ? i - 1 : k === 'Home' ? 0 : k === 'End' ? tabs.length - 1 : null;
-        if (j === null) return;
-        e.preventDefault();
-        select(tabs[(j + tabs.length) % tabs.length], true);
-      });
-    });
-  })();
-
-  // 시연 영상: data-youtube에 주소가 있으면 '시연 영상 보기' 버튼을 붙이고, 누르면 조각 대신 플레이어를 띄운다
-  (function () {
-    function youtubeId(url) {
-      var m = String(url).match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);
-      return m ? m[1] : (/^[A-Za-z0-9_-]{11}$/.test(url) ? url : null);
-    }
-    document.querySelectorAll('figure[data-youtube]').forEach(function (fig) {
-      var id = youtubeId(fig.getAttribute('data-youtube') || '');
-      if (!id) return;
-      var title = fig.getAttribute('data-title') || '시연 영상';
-      var text = fig.parentElement.querySelector('.f-text');
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'btn btn-plain f-video';
-      btn.textContent = '시연 영상 보기';
-      btn.addEventListener('click', function () {
-        var box = document.createElement('div');
-        box.className = 'player';
-        var f = document.createElement('iframe');
-        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
-        f.title = title;
-        f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        f.allowFullscreen = true;
-        box.appendChild(f);
-        var ui = fig.querySelector('[data-ui]');
-        if (ui) ui.replaceWith(box);
-        btn.remove();
-      });
-      text.appendChild(btn);
-    });
-  })();
-</script>
+  send.addEventListener('click', function(){
+    if (!linked) { show(false); return; }
+    show(true);
+    window.__setDark(!document.getElementById('root').classList.contains('dark'));
+  });
+  var tabs = document.querySelectorAll('[data-flow]'), panels = document.querySelectorAll('[data-flow-panel]');
+  tabs.forEach(function(t){ t.addEventListener('click', function(){
+    var f = t.getAttribute('data-flow');
+    tabs.forEach(function(x){ var on = x === t; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    panels.forEach(function(pn){ pn.hidden = pn.getAttribute('data-flow-panel') !== f; });
+  }); });
+})();</script>
 </body>
 </html>

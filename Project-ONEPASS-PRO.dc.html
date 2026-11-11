@@ -1,523 +1,628 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ONEPASS PRO · 김수만</title>
-  <meta name="description" content="얼굴 인식 단말기 기반 통합 출입·근태관리 솔루션. 사업장마다 개별 설치되는 On-premise 패키지로 개발했습니다.">
-  <meta name="author" content="김수만">
-  <link rel="canonical" href="https://suman-kim.github.io/Project-ONEPASS-PRO.dc.html">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="ONEPASS PRO · 김수만">
-  <meta property="og:description" content="얼굴 인식 단말기 기반 통합 출입·근태관리 솔루션. 사업장마다 개별 설치되는 On-premise 패키지로 개발했습니다.">
-  <meta property="og:image" content="https://suman-kim.github.io/og-image.png">
-  <meta property="og:locale" content="ko_KR">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314181d'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='21' fill='%23f8f9fb'%3EKSM%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-  <script>
-    // 다른 페이지와 같은 테마 저장값(pf-theme)을 쓰고, 없으면 라이트
-    (function () {
-      var t = 'light';
-      try { t = localStorage.getItem('pf-theme') || 'light'; } catch (e) {}
-      document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
-      document.documentElement.classList.add('js');
-    })();
-  </script>
-  <style>
-    /* ---------- 토큰 ---------- */
-    :root, :root[data-theme="light"] {
-      --bg:#f8f9fb; --surface:#eef1f5; --field:#e3e7ed;
-      --ink:#1b2129; --muted:#515b67; --accent:#0b7a57; --accent-ink:#ffffff;
-      --hero-l:#14181d; --hero-r:#1f252d; --hero-ink:#eef1f5; --hero-muted:#b4bdc7;
-      /* 화면 조각 (제품 UI) */
-      --ui-bg:#ffffff; --ui-soft:#f1f3f6; --ui-border:#dde2e8; --ui-ink:#141920; --ui-muted:#5d6773;
-      --ui-chart:#1d5fbf; --ui-ok:#157a3c; --ui-bad:#b42318; --ui-wait:#9a5800; --ui-primary:#141920; --ui-primary-ink:#ffffff;
-    }
-    :root[data-theme="dark"] {
-      --bg:#171b21; --surface:#1f242c; --field:#29303a;
-      --ink:#e8ecf1; --muted:#a6b0bc; --accent:#45c49a; --accent-ink:#061a13;
-      --hero-l:#12161c; --hero-r:#1c2129; --hero-ink:#eef1f5; --hero-muted:#a9b3be;
-      --ui-bg:#1d232b; --ui-soft:#252c35; --ui-border:#343c47; --ui-ink:#eef2f6; --ui-muted:#a3adb9;
-      --ui-chart:#78a6ff; --ui-ok:#5fd38d; --ui-bad:#ff8a80; --ui-wait:#f0b45a; --ui-primary:#eef2f6; --ui-primary-ink:#141920;
-    }
-    :root {
-      --m: clamp(16px, 2.6vw, 40px);
-      --gap: clamp(12px, 1.6vw, 24px);
-      --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-      --step-body: clamp(1rem, 0.97rem + 0.1vw, 1.0625rem);
-      --step-lead: clamp(1.125rem, 1.05rem + 0.25vw, 1.25rem);
-      --step-head: clamp(1.5rem, 1.2rem + 0.9vw, 1.875rem);
-      --step-display: clamp(2.25rem, 1.4rem + 2.6vw, 3.5rem);
-      --ease-out: cubic-bezier(.16,1,.3,1);
-      --r: 8px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* taste-skill-ignore: pre/code 전용 */
-      /* 흐름도에서 뒤에 겹친 다른 사업장 판 */
-      --plate1: color-mix(in srgb, var(--field) 78%, var(--muted));
-      --plate2: color-mix(in srgb, var(--field) 88%, var(--muted));
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONEPASS PRO · 김수만</title>
+<meta name="description" content="얼굴 인식 단말기 기반 통합 출입·근태관리 솔루션 ONEPASS PRO 케이스 스터디.">
+<meta name="theme-color" content="#0A0B0E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23141416'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='monospace' font-size='24' font-weight='700' fill='%23F5F5F7'%3ESK%3C/text%3E%3Ccircle cx='52' cy='12' r='6' fill='%237D8CFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;display=swap">
+<style>html{scroll-behavior:smooth}
+body{margin:0}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+.i-sun{display:none}.root.dark .i-sun{display:block}.root.dark .i-moon{display:none}
+section{scroll-margin-top:72px}
 
-    /* ---------- 바탕 ---------- */
-    *, *::before, *::after { box-sizing:border-box; }
-    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
-    body {
-      margin:0; background:var(--bg); color:var(--ink);
-      font-family:'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      font-size:var(--step-body); line-height:1.6; word-break:keep-all; overflow-wrap:break-word;
-      -webkit-font-smoothing:antialiased;
-    }
-    ::selection { background:var(--accent); color:var(--accent-ink); }
-    a { color:inherit; }
-    :focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
-    h1, h2, h3, h4 { margin:0; font-weight:700; letter-spacing:-0.03em; line-height:1.12; text-wrap:balance; }
-    h2 { font-size:var(--step-head); }
-    h3 { font-size:var(--step-lead); letter-spacing:-0.02em; line-height:1.3; }
-    h4 { font-size:var(--step-body); letter-spacing:-0.01em; line-height:1.4; }
-    p { margin:0; }
-    img { max-width:100%; }
-    .wrap { padding-left:var(--m); padding-right:var(--m); }
-    .grid { display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); column-gap:var(--gap); }
-    section.sec { padding-top:clamp(96px, 12vw, 200px); }
-    [hidden] { display:none !important; }
+/* ---------- theme ---------- */
+.root{--bg:#F5F5F7;--card:#FFFFFF;--line:#E5E5EA;--ink:#141416;--muted:#5A5B62;--soft:#EFEFF2;--accent:#2B47E8;--on-accent:#FFFFFF;--accent-soft:#E6EAFF;--hot:#FF7A3D;--panel:#121317;--panel-2:#1A1C21;--panel-line:#2A2D35;--panel-ink:#ECEDF0;--panel-muted:#9396A0;--glow:#7D8CFF;--on-glow:#0C0D10;
+  min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+.root.dark{color-scheme:dark;--bg:#0C0D10;--card:#15161A;--line:#26282E;--ink:#ECEDF0;--muted:#A0A3AC;--soft:#1D1F24;--accent:#7D8CFF;--on-accent:#0C0D10;--accent-soft:#1F2547;--panel:#0E0F12;--panel-2:#17191E;--panel-line:#272A31}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--ink)}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.sec{padding-top:104px}
+.lbl{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.eyebrow{font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:20px;height:1px;background:currentColor}
+.h2{font-size:clamp(30px,3.6vw,44px);line-height:1.2;letter-spacing:-.035em;font-weight:740;margin:12px 0 0}
+.lead{margin:12px 0 0;color:var(--muted);font-size:17px;max-width:560px}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+.row-b{display:flex;justify-content:space-between;align-items:center;gap:12px}
 
-    .btn {
-      display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:0 22px;
-      font:inherit; font-size:var(--step-small); font-weight:600; letter-spacing:-0.01em;
-      border:0; border-radius:0; cursor:pointer; text-decoration:none;
-      transition:transform .18s var(--ease-out), background-color .18s ease, color .18s ease;
-    }
-    .btn:active { transform:translateY(1px) scale(.98); }
-    .btn-light { background:var(--hero-ink); color:#14181d; }
-    .btn-light:hover { background:#ffffff; }
+/* ---------- nav (fixed, inverts over any background) ---------- */
+.nav{position:fixed;left:0;right:0;top:0;z-index:50;color:#FFFFFF;border-bottom:1px solid transparent;transition:background-color .3s,color .3s,border-color .3s}
+.nav.solid{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);color:var(--ink);border-bottom-color:var(--line)}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;color:inherit;font-weight:720;letter-spacing:-.02em;font-size:17px;min-height:44px}
+.brand:hover{color:inherit}
+.logo{width:32px;height:32px;border-radius:10px;border:1.5px solid currentColor;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:12px;font-weight:600}
+.nav-links{display:flex;gap:2px}
+.nl{color:inherit;font-size:14.5px;font-weight:550;padding:10px 12px;border-radius:10px}
+.nl:hover{color:inherit;text-decoration:underline;text-underline-offset:6px}
+.nav-act{display:flex;align-items:center;gap:8px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;padding:0}
+.nav-cta{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:99px;border:1px solid currentColor;color:inherit;font-weight:650;font-size:14px}
+.nav-cta:hover{color:#0A0B0E;background:#FFFFFF;border-color:#FFFFFF}
+.nav.solid .nav-cta:hover{color:var(--bg);background:var(--ink);border-color:var(--ink)}
 
-    /* ---------- 화면 조각 (data-ui) ---------- */
-    [data-ui] {
-      background:var(--ui-bg); color:var(--ui-ink); border:1px solid var(--ui-border); border-radius:var(--r);
-      font-size:14px; line-height:1.5; letter-spacing:-0.005em; overflow:hidden;
-    }
-    [data-ui] .ui-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; border-bottom:1px solid var(--ui-border); }
-    [data-ui] .ui-title { font-weight:600; font-size:14px; }
-    [data-ui] .ui-sub { color:var(--ui-muted); font-size:13px; }
-    [data-ui] .pill { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--ui-soft); color:var(--ui-ink); white-space:nowrap; }
-    [data-ui] .pill::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--ui-muted); }
-    [data-ui] .pill.ok::before { background:var(--ui-ok); }
-    [data-ui] .pill.bad::before { background:var(--ui-bad); }
-    [data-ui] .pill.wait::before { background:var(--ui-wait); }
-    [data-ui] .pill.live::before { background:var(--ui-chart); }
-    [data-ui] code, [data-ui] pre { font-family:var(--mono); font-size:13px; } /* taste-skill-ignore: 실제 코드 */
-    [data-ui] .ui-btn { font:inherit; font-size:13px; font-weight:600; border-radius:6px; padding:7px 14px; border:0; cursor:pointer; transition:transform .15s var(--ease-out), opacity .15s; }
-    [data-ui] .ui-btn:active { transform:scale(.97); }
-    [data-ui] .ui-btn.primary { background:var(--ui-primary); color:var(--ui-primary-ink); }
-    [data-ui] .ui-btn.secondary { background:var(--ui-soft); color:var(--ui-ink); border-radius:999px; }
-    [data-ui] .ui-btn:hover { opacity:.86; }
-    [data-ui] table { width:100%; border-collapse:collapse; }
-    [data-ui] th { text-align:left; font-weight:500; font-size:13px; color:var(--ui-muted); padding:10px 16px 8px; }
-    [data-ui] td { padding:11px 16px; border-top:1px solid var(--ui-border); vertical-align:top; }
-    [data-ui] .num { font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap; }
-    [data-ui] .t { font-variant-numeric:tabular-nums; white-space:nowrap; }
-    [data-ui] .ui-foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-top:1px solid var(--ui-border); background:var(--ui-soft); }
-    [data-ui] .res { font-weight:600; }
-    [data-ui] .res.ok { color:var(--ui-ok); }
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 22px;border-radius:14px;font-weight:650;font-size:15.5px;border:1px solid transparent;white-space:nowrap;transition:background-color .2s,border-color .2s,color .2s}
+.btn-light{background:#FFFFFF;color:#0C0D10}
+.btn-light:hover{background:var(--glow);color:#0C0D10}
+.btn-ghost{color:#FFFFFF;border-color:rgba(255,255,255,.4)}
+.btn-ghost:hover{color:#FFFFFF;border-color:#FFFFFF}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px}
 
-    /* ---------- 히어로 ---------- */
-    .hero { display:grid; grid-template-columns:1fr 1fr; min-height:max(680px, 100svh); }
-    .hero-l { background:var(--hero-l); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:space-between; padding:clamp(24px,2.8vw,40px) var(--m) clamp(32px,4vw,56px); }
-    .hero-r { background:var(--hero-r); color:var(--hero-ink); display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; padding:clamp(72px,8vw,96px) var(--m) clamp(32px,4vw,56px); position:relative; }
-    .mark { display:inline-flex; gap:10px; align-items:center; font-size:var(--step-small); font-weight:600; text-decoration:none; color:var(--hero-ink); }
-    .mark b { display:inline-grid; place-items:center; width:34px; height:34px; background:var(--hero-ink); color:#14181d; font-size:13px; letter-spacing:-0.02em; }
-    .mark:hover span { text-decoration:underline; text-underline-offset:4px; }
-    .theme-link { position:absolute; top:clamp(24px,2.8vw,40px); right:var(--m); background:none; border:0; padding:6px 0; font:inherit; font-size:var(--step-small); color:var(--hero-ink); cursor:pointer; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px; }
-    .theme-link:hover { color:#ffffff; text-decoration-thickness:2px; }
-    .hero h1 { font-size:var(--step-display); line-height:0.98; letter-spacing:-0.045em; }
-    .lines .line { display:block; overflow:hidden; padding-bottom:0.08em; margin-bottom:-0.08em; }
-    .lines [data-line] { display:block; }
-    .hero-copy { margin-top:clamp(24px,2.6vw,40px); max-width:30em; font-size:var(--step-lead); line-height:1.5; letter-spacing:-0.015em; color:var(--hero-ink); }
-    .facts { margin:clamp(24px,2.4vw,36px) 0 0; display:grid; grid-template-columns:repeat(4, auto); justify-content:start; gap:12px clamp(20px,2.4vw,40px); }
-    .facts dt { font-size:var(--step-small); color:var(--hero-muted); }
-    .facts dd { margin:2px 0 0; font-size:var(--step-small); font-weight:600; color:var(--hero-ink); }
-    .stack { margin-top:16px; font-size:var(--step-small); color:var(--hero-muted); max-width:40em; }
-    .hero-act { margin-top:28px; }
-    .shot { margin:0; width:100%; max-width:980px; }
-    .shot img { display:block; width:100%; height:auto; border-radius:var(--r); background:var(--ui-bg); }
-    .shot figcaption { margin-top:12px; font-size:var(--step-small); color:var(--hero-muted); }
+/* ---------- bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;grid-auto-flow:dense}
+.c2{grid-column:span 2}
+.c4{grid-column:1/-1}
+.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;overflow:hidden}
+.lift:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.stat{display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:196px}
+.num{font-size:clamp(48px,5vw,68px);font-weight:780;letter-spacing:-.055em;line-height:1;display:flex;align-items:flex-start;padding:4px 0 2px}
+.plus{font-size:.5em;color:var(--accent);margin-left:3px;line-height:1.1}
+.stat-cap{font-size:15px;color:var(--muted);line-height:1.5}
+.stat-cap b{display:block;color:var(--ink);font-size:16px;font-weight:650}
+.shipped{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
+.ship-left{flex:0 0 220px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.ship-grid{flex:1 1 480px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ship{display:flex;flex-direction:column;gap:12px;background:var(--soft);border-radius:16px;padding:8px 8px 16px;color:var(--ink)}
+.ship:hover{color:var(--ink);background:var(--accent-soft)}
+.ship-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}
+.ship-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px}
+.ship b{font-size:17px;font-weight:740;letter-spacing:-.02em}
+.ship small{display:block;padding:0 8px;font-size:13.5px;line-height:1.55;color:var(--muted)}
+.gh{display:flex;flex-direction:column;justify-content:space-between;gap:18px;color:var(--ink);min-height:196px}
+.gh:hover{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+.gh:hover .lbl,.gh:hover .gh-sub{color:var(--on-accent)}
+.gh-title{font-size:28px;font-weight:760;letter-spacing:-.03em;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.gh-arr{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center}
+.gh-sub{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted);display:block;margin-top:6px}
 
-    /* ---------- 섹션 머리 ---------- */
-    .head { row-gap:20px; align-items:baseline; }
-    .head h2 { grid-column:1 / span 4; }
-    .head .lede { grid-column:5 / span 8; font-size:var(--step-lead); line-height:1.5; letter-spacing:-0.015em; max-width:38em; }
+/* projects */
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}
+.tab{height:44px;padding:0 16px;border-radius:12px;border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tab span{font-family:'Geist Mono',monospace;font-size:12px;font-weight:500}
+.tab:hover{color:var(--ink)}
+.tab.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.pc{padding:10px;display:flex;flex-direction:column}
+.vis{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10;flex:0 0 auto;background:var(--soft)}
+.pc.c1 .vis{aspect-ratio:16/11}
+.pc.feature{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;align-items:center}
+.pc.feature .pbody{padding:24px 28px}
+.pc.feature.flip .vis{order:2}
+.vis.photo::after{content:"";position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);pointer-events:none}
+.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
+.vis-dark{background-color:var(--panel);color:var(--panel-ink)}
+.vis-soft{background-color:var(--soft);background-image:radial-gradient(color-mix(in srgb,var(--ink) 12%,transparent) 1px,transparent 1.4px);background-size:16px 16px}
+.pbody{padding:20px 16px 12px;display:flex;flex-direction:column;gap:12px;flex:1 1 auto}
+.pmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.period{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted)}
+.badge{font-size:12.5px;font-weight:600;color:var(--muted);padding:3px 10px;border-radius:99px;background:var(--soft)}
+.badge.on{color:var(--accent);background:var(--accent-soft)}
+.pt{font-size:24px;line-height:1.3;font-weight:740;letter-spacing:-.03em;margin:0}
+.pd{margin:0;color:var(--muted);font-size:15.5px;line-height:1.7}
+.pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.pts li{display:flex;gap:10px;font-size:14.5px;line-height:1.6}
+.pts li::before{content:"";flex:0 0 6px;height:6px;margin-top:9px;border-radius:1.5px;background:var(--accent);transform:rotate(45deg)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);padding:4px 10px;border-radius:8px;border:1px solid var(--line);line-height:1.5}
+.more{display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--ink);margin-top:auto;min-height:44px;align-self:flex-start}
+.more:hover{color:var(--accent)}
 
-    /* ---------- 배경: 두 단 글 ---------- */
-    .bg-grid { row-gap:24px; }
-    .bg-grid h2 { grid-column:1 / span 4; }
-    .bg-grid p { grid-column:span 4; max-width:34em; }
 
-    /* ---------- 아키텍처 흐름도 ---------- */
-    .topo-field { margin:clamp(32px,3.6vw,56px) 0 0; background:var(--surface); padding:clamp(20px,3.2vw,48px); isolation:isolate; }
-    .topo { display:grid; grid-template-columns:minmax(0,1fr) 116px minmax(0,0.44fr); align-items:center; }
-    .site { position:relative; background:var(--field); padding:clamp(16px,2vw,28px); margin:0 16px 16px 0; }
-    .site::before, .site::after { content:''; position:absolute; inset:0; z-index:-1; }
-    .site::before { background:var(--plate1); transform:translate(8px, 8px); }
-    .site::after { background:var(--plate2); transform:translate(16px, 16px); z-index:-2; }
-    .site-h { font-size:var(--step-small); font-weight:700; margin-bottom:16px; }
-    .site-row { display:grid; grid-template-columns:minmax(0,0.8fr) 116px minmax(0,1fr); align-items:center; }
-    .blk { background:var(--bg); padding:16px 18px; }
-    .blk b { display:block; font-size:var(--step-body); font-weight:700; letter-spacing:-0.01em; line-height:1.35; }
-    .blk span { display:block; font-size:var(--step-small); color:var(--muted); margin-top:4px; line-height:1.5; }
-    .blk.srv { border-left:5px solid var(--accent); }
-    .stores { display:flex; gap:6px; margin-top:12px; }
-    .stores i { font-style:normal; font-size:var(--step-small); font-weight:600; background:var(--surface); padding:4px 10px; }
-    .blk.cloud { background:var(--ink); color:var(--bg); padding:20px 22px; }
-    .blk.cloud span { color:color-mix(in srgb, var(--bg) 80%, var(--ink)); }
-    .link { display:flex; flex-direction:column; align-items:center; gap:8px; padding:0 10px; text-align:center; font-size:var(--step-small); font-weight:600; line-height:1.35; }
-    .tri { width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:13px solid var(--ink); }
-    .topo-field figcaption { margin-top:clamp(24px,2.4vw,36px); font-size:var(--step-small); color:var(--muted); }
+/* mini cards */
+.mini{display:flex;flex-direction:column;gap:12px;padding:24px 24px 14px}
+.mini-ic{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.mini .pt{font-size:19px}
+.mini .pd{font-size:14.5px}
+.ph{color:var(--accent)}
 
-    .sum { margin-top:clamp(40px,4vw,64px); row-gap:20px; align-items:baseline; }
-    .sum h3 { grid-column:1 / span 4; }
-    .sum-body { grid-column:5 / span 8; }
-    .sum h4 { font-size:var(--step-small); color:var(--muted); margin-bottom:14px; }
-    .ticks { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:clamp(16px,2vw,32px); }
-    .ticks li, .case-a li { padding-left:22px; position:relative; }
-    .ticks li::before, .case-a li::before { content:''; position:absolute; left:2px; top:0.62em; width:8px; height:8px; background:var(--accent); }
+/* stack + steps */
+.stack-card{display:flex;flex-direction:column;gap:18px;min-height:196px}
+.stack-card h3{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
+.sk{display:flex;flex-wrap:wrap;gap:8px}
+.sk span{font-size:14px;font-weight:600;padding:7px 12px;border-radius:10px;background:var(--soft);color:var(--ink)}
+.sub-head{display:flex;align-items:center;gap:12px;margin:56px 0 16px}
+.sub-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
+.sub-head::after{content:"";flex:1;height:1px;background:var(--line)}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.step{display:flex;flex-direction:column;gap:14px}
+.step-ic{width:48px;height:48px;border-radius:14px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.step h4{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
+.step p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.75}
 
-    /* ---------- 배포 파이프라인: 가로 띠 ---------- */
-    .pipe { list-style:none; margin:clamp(32px,3.6vw,56px) 0 0; padding:0; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:28px; }
-    .pipe li { position:relative; background:var(--surface); padding:22px 20px 24px; min-height:136px; display:flex; flex-direction:column; justify-content:space-between; gap:16px; }
-    .pipe li:last-child { background:var(--ink); color:var(--bg); }
-    .pipe li + li::before { content:''; position:absolute; left:-20px; top:50%; margin-top:-9px; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:12px solid var(--ink); }
-    .pipe b { display:block; font-size:var(--step-lead); font-weight:700; letter-spacing:-0.02em; line-height:1.25; }
+/* career */
+.timeline{position:relative;display:flex;flex-direction:column;gap:16px}
+.timeline::before{content:"";position:absolute;left:215px;top:20px;bottom:20px;width:1px;background:var(--line)}
+.tl-item{display:grid;grid-template-columns:200px 32px minmax(0,1fr);align-items:start}
+.tl-when{font-family:'Geist Mono',monospace;font-size:14px;color:var(--muted);padding-top:30px}
+.tl-dot{width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);margin:35px auto 0;position:relative;z-index:1}
+.tl-item:first-child .tl-dot{background:var(--accent)}
+.tl-card{padding:30px;display:flex;flex-direction:column;gap:14px}
+.tl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.tl-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
+.tl-role{font-size:14.5px;color:var(--muted);font-weight:550}
+.tl-card p{margin:0;font-size:16px;line-height:1.8}
 
-    /* ---------- 핵심 문제 해결 ---------- */
-    .band { margin-top:clamp(32px,3.6vw,56px); row-gap:12px; align-items:end; }
-    .crop { --cx:170; --cy:136; --cw:1022; --ch:206; grid-column:1 / span 9; margin:0; position:relative; overflow:hidden; aspect-ratio:var(--cw) / var(--ch); border-radius:var(--r); background:#ffffff; }
-    .crop img { position:absolute; max-width:none; height:auto; width:calc(1200 / var(--cw) * 100%); left:calc(var(--cx) / var(--cw) * -100%); top:calc(var(--cy) / var(--ch) * -100%); }
-    .band-cap { grid-column:10 / span 3; font-size:var(--step-small); color:var(--muted); max-width:22em; }
-    .case { margin-top:clamp(64px,7vw,120px); row-gap:28px; align-items:start; }
-    .case-q { grid-column:1 / span 5; padding-right:clamp(0px,1.4vw,20px); }
-    .case-q h3 { margin-bottom:20px; }
-    .case-q p + p { margin-top:14px; }
-    .case-a { grid-column:6 / span 7; background:var(--surface); padding:clamp(22px,2.8vw,44px); }
-    .case-a h4 { margin-bottom:16px; }
-    .case-a ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
-    .case-a .tail { margin-top:24px; background:var(--field); padding:16px 20px; font-weight:600; }
-    .frag { margin:32px 0 0; }
-    .frag figcaption { margin-top:10px; font-size:var(--step-small); color:var(--muted); }
+/* education */
+.edu{padding:30px}
+.edu h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:18px;font-weight:720}
+.edu h3 svg{color:var(--accent)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:15px 0;border-top:1px solid var(--line)}
+.li:first-child{border-top:0}
+.li b{display:block;font-size:16px;font-weight:650;line-height:1.5}
+.li small{display:block;font-size:14px;color:var(--muted);margin-top:2px}
+.yr{font-family:'Geist Mono',monospace;font-size:13px;color:var(--muted);white-space:nowrap;padding-top:2px}
+.yr.new{color:var(--accent);font-weight:600}
 
-    /* 서버 매니저 조각 */
-    [data-ui] .mrow { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
-    [data-ui] .mrow + .mrow { border-top:1px solid var(--ui-border); }
-    [data-ui] .mrow b { display:block; font-weight:600; }
-    [data-ui] .mrow .acts { display:flex; gap:6px; flex:0 0 auto; }
-    [data-ui] .mlog { margin:0; padding:12px 16px; background:#12161b; color:#e3e8ee; line-height:1.7; white-space:pre-wrap; }
-    [data-ui] .mlog .c { color:#8a95a2; }
-    [data-ui] .mlog .g { color:#7fd6a0; }
+/* contact */
+.cta{background:var(--accent);border-color:var(--accent);color:var(--on-accent);padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;gap:30px;border-radius:32px}
+.cta .eyebrow{color:var(--on-accent)}
+.cta-h{margin:0;font-size:clamp(32px,4.6vw,60px);line-height:1.18;letter-spacing:-.045em;font-weight:780;max-width:820px}
+.btn-inv{background:var(--on-accent);color:var(--accent)}
+.btn-inv:hover{background:var(--on-accent);color:var(--accent)}
+.btn-line{color:var(--on-accent);border-color:color-mix(in srgb,var(--on-accent) 45%,transparent)}
+.btn-line:hover{color:var(--on-accent);border-color:var(--on-accent)}
+.foot{max-width:1200px;margin:0 auto;padding:44px 24px 52px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.foot a{color:var(--muted);display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.foot a:hover{color:var(--ink)}
+.credit{display:block;margin-top:6px;font-size:12px;opacity:.75}
 
-    /* ---------- 마무리 ---------- */
-    .closing { padding-top:clamp(96px,12vw,200px); padding-bottom:clamp(72px,8vw,128px); }
-    .closing .grid { row-gap:24px; align-items:start; }
-    .closing h2 { grid-column:1 / span 4; }
-    .next { grid-column:5 / span 8; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:6px; }
-    .next a {
-      display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:96px; padding:20px 24px;
-      background:var(--surface); color:var(--ink); text-decoration:none;
-      font-size:var(--step-lead); font-weight:700; letter-spacing:-0.02em; line-height:1.25;
-      transition:background-color .18s ease, color .18s ease, transform .18s var(--ease-out);
-    }
-    .next a:hover { background:var(--field); }
-    .next a:active { transform:scale(.99); }
-    .next a.go { background:var(--ink); color:var(--bg); }
-    .next a.go:hover { background:var(--accent); color:var(--accent-ink); }
-    .next .arr { flex:0 0 auto; transition:transform .2s var(--ease-out); }
-    .next a:hover .arr { transform:translateX(4px); }
-    .after { grid-column:5 / span 8; display:flex; flex-wrap:wrap; gap:8px 28px; font-size:var(--step-small); }
-    .after a { text-underline-offset:4px; }
-    .after a:hover { color:var(--accent); }
 
-    /* ---------- 등장 ---------- */
-    @media (prefers-reduced-motion: no-preference) {
-      .js .lines [data-line] { transform:translateY(105%); animation:line-up 900ms var(--ease-out) forwards; animation-delay:calc(var(--i) * 110ms + 150ms); }
-      .js .hero-fade { opacity:0; transform:translateY(16px); animation:fade-up 700ms var(--ease-out) 520ms forwards; }
-      .js .hero-fade.late { animation-delay:700ms; }
-      .js .shot-in { opacity:0; transform:translateY(24px) scale(.985); animation:fade-up 1000ms var(--ease-out) 320ms forwards; }
-    }
-    /* 섹션 등장은 넓은 화면에서만. 휴대폰은 긴 페이지라 내용을 바로 보여 준다 */
-    @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-      .js [data-rise] { opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .8s var(--ease-out); transition-delay:calc(var(--d, 0) * 80ms); }
-      .js [data-rise].in { opacity:1; transform:none; }
-    }
-    @keyframes line-up { to { transform:none; } }
-    @keyframes fade-up { to { opacity:1; transform:none; } }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior:auto; }
-      *, *::before, *::after { transition-duration:0s !important; animation-duration:0s !important; }
-    }
+/* ---------- detail hero ---------- */
+.dhero{position:relative;background:#0A0B0E;color:#FFFFFF;padding:152px 0 0;overflow:hidden;isolation:isolate}
+.dhero::before{content:"";position:absolute;inset:-20% -10% auto;height:620px;background:radial-gradient(60% 60% at 70% 30%,rgba(125,140,255,.22),transparent 70%);z-index:-1}
+.crumb{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.crumb a{color:inherit;display:inline-flex;align-items:center;gap:6px;min-height:32px}
+.crumb a:hover{color:#FFFFFF}
+.crumb i{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.6}
+.dh-title{margin:18px 0 0;font-size:clamp(44px,6.6vw,96px);line-height:1.04;letter-spacing:-.055em;font-weight:800}
+.dh-title .acc{color:var(--glow)}
+.dh-sub{max-width:760px;margin:24px 0 0;font-size:18.5px;line-height:1.8;color:rgba(255,255,255,.78)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:40px}
+.facts.f3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fact{border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px 18px;background:rgba(255,255,255,.035)}
+.fact small{display:block;font-family:'Geist Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.fact b{display:block;margin-top:6px;font-size:16.5px;font-weight:680;letter-spacing:-.01em}
+.dh-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px}
+.dhero .tag{color:rgba(255,255,255,.78);border-color:rgba(255,255,255,.2)}
+.shot-frame{margin-top:56px;border-radius:24px 24px 0 0;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-bottom:0;background:#15161A;box-shadow:0 -24px 90px -30px rgba(125,140,255,.35)}
+.shot-frame img{display:block;width:100%;height:auto}
+.cap{display:flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cap::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+.dhero .cap{color:rgba(255,255,255,.55);padding:14px 4px 0}
 
-    /* ---------- 좁은 화면 ---------- */
-    @media (max-width: 1100px) {
-      .bg-grid h2 { grid-column:1 / -1; }
-      .bg-grid p { grid-column:span 6; }
-      .topo { grid-template-columns:minmax(0,1fr) 96px minmax(0,0.5fr); }
-      .site-row { grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr); }
-      .crop { grid-column:1 / -1; --cx:170; --cy:136; --cw:700; --ch:206; }
-      .band-cap { grid-column:1 / -1; }
-      .facts { grid-template-columns:repeat(2, auto); }
-    }
-    @media (max-width: 900px) {
-      .hero { grid-template-columns:1fr; }
-      .hero-r { order:-1; padding-top:72px; }
-      .shot figcaption { display:none; }
-      .hero-l { gap:48px; }
-      .mark { position:absolute; top:24px; left:var(--m); z-index:2; }
-      .theme-link { top:24px; }
-      .head h2, .head .lede, .sum h3, .sum-body, .closing h2, .next, .after { grid-column:1 / -1; }
-      .topo, .site-row { grid-template-columns:minmax(0,1fr); }
-      .site { margin:0 16px 16px 0; }
-      .link { padding:14px 0; flex-direction:row; justify-content:center; gap:12px; }
-      .tri { border-top:13px solid var(--ink); border-left:9px solid transparent; border-right:9px solid transparent; border-bottom:0; }
-      .pipe { grid-template-columns:minmax(0,1fr); gap:26px; }
-      .pipe li { min-height:0; }
-      .pipe li + li::before { left:28px; top:-20px; margin-top:0; border-left:9px solid transparent; border-right:9px solid transparent; border-top:12px solid var(--ink); border-bottom:0; }
-      .case-q, .case-a { grid-column:1 / -1; }
-      .case-q { padding-right:0; }
-    }
-    @media (max-width: 760px) {
-      .ticks { grid-template-columns:minmax(0,1fr); }
-    }
-    @media (max-width: 560px) {
-      .bg-grid p { grid-column:1 / -1; }
-      .crop { --cx:170; --cy:136; --cw:376; --ch:206; }
-      .next { grid-template-columns:minmax(0,1fr); }
-      .next a { min-height:80px; }
-      [data-ui] .hide-s { display:none; }
-      [data-ui] .mrow { flex-wrap:wrap; }
-    }
-  </style>
+/* ---------- content blocks ---------- */
+.prose p{margin:0 0 14px;font-size:17px;line-height:1.85}
+.prose p:last-child{margin-bottom:0}
+.prose b{font-weight:700}
+.prose .hl{color:var(--accent);font-weight:700}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.big-q{margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.5;letter-spacing:-.025em;font-weight:700}
+.note{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);color:var(--ink);border-radius:16px;padding:16px 18px;font-size:15.5px;line-height:1.75}
+.note svg{color:var(--accent);margin-top:3px}
+.hd4{margin:0;font-size:15px;font-weight:720;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.hd4::before{content:"";width:16px;height:2px;border-radius:2px;background:var(--accent)}
+.ol{margin:0;padding:0;list-style:none;counter-reset:ol;display:flex;flex-direction:column;gap:10px}
+.ol li{counter-increment:ol;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:15.5px;line-height:1.7}
+.ol li::before{content:counter(ol);width:26px;height:26px;border-radius:8px;background:var(--soft);color:var(--ink);font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;display:grid;place-items:center}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.feat{display:flex;flex-direction:column;gap:12px;min-height:188px}
+.feat h3{margin:0;font-size:18.5px;font-weight:730;letter-spacing:-.02em}
+.feat p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+.f-ic{width:44px;height:44px;border-radius:13px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+
+/* architecture */
+.arch-card{padding:clamp(20px,3vw,36px);display:flex;flex-direction:column;gap:22px}
+.zone{position:relative;border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:22px;padding:34px 18px 18px}
+.zone-l{position:absolute;top:-12px;left:18px;background:var(--card);padding:0 10px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--accent);font-weight:600}
+.flow{display:flex;align-items:stretch;gap:0}
+.node{flex:1 1 0;min-width:0;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;background:var(--soft);display:flex;flex-direction:column;gap:6px}
+.node b{font-size:17.5px;font-weight:740;letter-spacing:-.02em}
+.node small{color:var(--muted);font-size:14px;line-height:1.55}
+.node.core{background:var(--panel);border-color:var(--panel-line);color:var(--panel-ink)}
+.node.core small{color:var(--panel-muted)}
+.node.core .lbl{color:var(--panel-muted)}
+.node .dbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.node .dbs span{font-family:'Geist Mono',monospace;font-size:12px;padding:3px 9px;border-radius:8px;background:color-mix(in srgb,var(--glow) 22%,transparent);color:inherit}
+.node .warn{font-size:12.5px;font-weight:650;color:var(--hot)}
+.edge{flex:0 0 112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 6px;text-align:center;font-family:'Geist Mono',monospace;font-size:11.5px;line-height:1.4;color:var(--muted)}
+.edge svg{color:var(--accent)}
+.flow>.node.solo{align-self:center}
+.arch-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted)}
+
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;counter-reset:pp}
+.pstep{counter-increment:pp;display:flex;flex-direction:column;gap:10px;min-height:170px;padding:20px}
+.pstep::before{content:"0" counter(pp);font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;color:var(--accent)}
+.pstep b{font-size:17px;font-weight:730;letter-spacing:-.02em}
+.pstep small{font-size:14px;color:var(--muted);line-height:1.6}
+.pstep:not(:last-child)::after{content:"";position:absolute;right:-12px;top:30px;width:12px;height:2px;background:var(--accent);opacity:.5}
+.pstep{overflow:visible}
+
+/* problem solving */
+.prob{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);padding:clamp(22px,3vw,40px)}
+.prob.flip .prob-vis{order:-1}
+.prob-text{display:flex;flex-direction:column;gap:18px}
+.prob-no{font-family:'Geist Mono',monospace;font-size:12.5px;font-weight:600;color:var(--accent);letter-spacing:.06em}
+.prob h3{margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.35;letter-spacing:-.03em;font-weight:760}
+.prob h3 span{display:block;font-size:.62em;font-weight:650;color:var(--muted);letter-spacing:-.01em;margin-bottom:6px}
+.prob-vis{display:flex;flex-direction:column;gap:10px;align-self:start;position:sticky;top:96px}
+.frame{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--soft)}
+.frame img{display:block;width:100%;height:auto}
+
+/* mock UI panels */
+.mock{border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden;font-size:14px}
+.mock-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft)}
+.mock-h b{font-size:14.5px;font-weight:720}
+.mock-h small{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+.mock-f{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.mt{width:100%;border-collapse:collapse}
+.mt th{font-weight:600;font-size:12.5px;color:var(--muted);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+.mt td{padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.mt tr:last-child td{border-bottom:0}
+.mt .m{font-family:'Geist Mono',monospace;font-size:12.5px;white-space:nowrap}
+.mt .r{text-align:right}
+.mt tr.hl td{background:color-mix(in srgb,var(--hot) 9%,transparent)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:650;padding:3px 9px;border-radius:99px;white-space:nowrap;background:var(--soft);color:var(--muted)}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.ok{background:color-mix(in srgb,#22B45E 14%,transparent);color:#169A4C}
+.chip.bad{background:color-mix(in srgb,var(--hot) 15%,transparent);color:#D9561C}
+.chip.info{background:var(--accent-soft);color:var(--accent)}
+.chip.wait{background:color-mix(in srgb,#E8A10C 16%,transparent);color:#B57A00}
+.root.dark .chip.ok{color:#4ED68A}.root.dark .chip.bad{color:#FF9A6B}.root.dark .chip.wait{color:#F2C14E}
+.ex{font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:right}
+.mgr{display:flex;flex-direction:column;gap:10px;padding:16px}
+.mgr-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.mgr-row span{font-size:14px;font-weight:600}
+.mgr-row small{display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-top:2px}
+.mbtns{display:flex;gap:6px}
+.mb{font-size:12.5px;font-weight:650;padding:6px 11px;border-radius:9px;border:1px solid var(--line);color:var(--ink);background:var(--card);white-space:nowrap}
+.mb.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.mb.dang{color:#D9561C;border-color:color-mix(in srgb,var(--hot) 40%,var(--line))}
+.log{background:var(--panel);color:var(--panel-ink);font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.85;padding:14px 16px;border-radius:12px}
+.log em{font-style:normal;color:var(--panel-muted);margin-right:10px}
+.log .g{color:#4ED68A}
+.q{display:flex;flex-direction:column}
+.q-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.q-row:last-child{border-bottom:0}
+.q-row b{font-size:14.5px;font-weight:650}
+.q-row small{grid-column:1;font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted)}
+.q-row .chip{grid-row:1/span 2;grid-column:2}
+
+/* other projects */
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.next a.card{color:var(--ink);padding:10px;display:flex;flex-direction:column}
+.next a.card:hover{color:var(--ink)}
+.next .pbody{flex-direction:row;align-items:center;justify-content:space-between}
+.next .arr{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.next a.card:hover .arr{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.back-row{display:flex;justify-content:center;margin-top:28px}
+.btn-out{color:var(--ink);border-color:var(--line);background:var(--card)}
+.btn-out:hover{border-color:var(--ink);color:var(--ink)}
+.foot-links{display:flex;gap:6px 18px;flex-wrap:wrap}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1080px){.nav-links{display:none}}
+@media (max-width: 960px){
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .feats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pipe{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pstep::after{display:none}
+  .prob{grid-template-columns:minmax(0,1fr)}
+  .prob.flip .prob-vis{order:0}
+  .prob-vis{position:static}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 760px){
+  .flow{flex-direction:column}
+  .edge{flex:0 0 auto;flex-direction:row;padding:10px 0}
+  .edge svg{transform:rotate(90deg)}
+  .flow>.node.solo{align-self:stretch}
+  .pstep{min-height:0}
+}
+@media (max-width: 600px){
+  .bento,.feats,.pipe,.next{grid-template-columns:minmax(0,1fr)}
+  .c2{grid-column:auto}
+  .sec{padding-top:80px}
+  .dhero{padding-top:120px}
+  .dh-sub{font-size:16.5px}
+  .facts,.facts.f3{grid-template-columns:minmax(0,1fr)}
+  .nav-cta{padding:0 14px}
+  .mt th,.mt td{padding:10px 12px}
+  .mt th,.mt .m{white-space:normal}
+  .mock{font-size:13.5px}
+}
+</style>
 </head>
-<body>
+<body style="background:#0A0B0E">
+<div class="root" id="root">
+<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}if(d)document.getElementById('root').classList.add('dark')})();</script>
 
-<header class="hero" id="top">
-  <div class="hero-l">
-    <a class="mark" href="index.html#work"><b>KSM</b><span>김수만 포트폴리오</span></a>
-    <div>
-      <h1 class="lines">
-        <span class="line"><span data-line style="--i:0">ONEPASS PRO</span></span>
-      </h1>
-      <p class="hero-copy hero-fade">얼굴 인식 단말기 기반 통합 출입·근태관리 솔루션. 사업장마다 개별 설치되는 On-premise 패키지로 개발했습니다.</p>
-      <dl class="facts hero-fade late">
-        <div><dt>역할</dt><dd>풀스택 개발</dd></div>
-        <div><dt>팀</dt><dd>Smart Access팀</dd></div>
-        <div><dt>형태</dt><dd>사업장별 설치형</dd></div>
-        <div><dt>프론트엔드</dt><dd>EJS SSR</dd></div>
-      </dl>
-      <p class="stack hero-fade late">Node.js · Express · EJS · Socket.IO · MySQL · Redis · MQTT · N8N · Electron</p>
-      <div class="hero-act hero-fade late">
-        <a class="btn btn-light" href="#solve">핵심 문제 해결 보기</a>
+  <header class="nav" id="nav">
+    <div class="nav-in">
+      <a class="brand" href="index.html"><span class="logo">SK</span><span>김수만</span></a>
+      <nav class="nav-links" aria-label="페이지 섹션">
+        <a class="nl" href="#background">배경</a>
+        <a class="nl" href="#architecture">아키텍처</a>
+        <a class="nl" href="#pipeline">배포 파이프라인</a>
+        <a class="nl" href="#solve">문제 해결</a>
+      </nav>
+      <div class="nav-act">
+        <button class="icon-btn" type="button" id="theme-btn" aria-label="다크 모드로 전환" aria-pressed="false">
+          <svg class="ic i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+          <svg class="ic i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>
+        </button>
+        <a class="nav-cta" href="index.html"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a>
       </div>
     </div>
-  </div>
-  <div class="hero-r">
-    <button type="button" class="theme-link" id="themeBtn">다크 모드</button>
-    <figure class="shot shot-in">
-      <img src="assets/onepass.jpg" width="1200" height="674" alt="ONEPASS PRO 대시보드. 전체 직원, 오늘 출근과 퇴근, 현재 재실, 지각 인원 요약 아래에 실시간 출입 기록, 근태 통계, 출퇴근 현황, 시간 추적 차트, 보안 알림, 출입문 상태가 한 화면에 모여 있다.">
-      <figcaption>ONEPASS PRO 관리자 대시보드</figcaption>
-    </figure>
-  </div>
-</header>
+  </header>
 
-<main>
-  <section class="sec wrap" id="background" aria-labelledby="bg-h">
-    <div class="grid bg-grid">
-      <h2 id="bg-h" data-rise>배경 / 문제 정의</h2>
-      <p data-rise style="--d:1">기존 카드·키패드 방식의 출입통제는 카드 대여나 대리출입 같은 인증 도용 문제에서 자유롭지 않았습니다. ONEPASS PRO는 얼굴 인식으로 이 문제를 해결하기 위해 시작된 프로젝트입니다.</p>
-      <p data-rise style="--d:2">B2B 판매 구조인 만큼 각 사업장에 개별적으로 패키지를 설치하면서도, 운영사 입장에서는 여러 사업장의 서버 상태를 중앙에서 파악할 수 있어야 하는 요구사항이 있었습니다.</p>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="arch" aria-labelledby="arch-h">
-    <div class="grid head">
-      <h2 id="arch-h" data-rise>아키텍처</h2>
-      <p class="lede" data-rise style="--d:1">데이터 처리는 엣지(사업장)에서, 운영은 클라우드에서 분리된 구조입니다.</p>
-    </div>
-
-    <figure class="topo-field" data-rise style="--d:1" aria-label="얼굴인식 단말기에서 온프레미스 ONEPASS 서버를 거쳐 클라우드 서버로 이어지는 단계별 아키텍처">
-      <div class="topo">
-        <div class="site">
-          <p class="site-h">업장 · 현장 On-premise 설치</p>
-          <div class="site-row">
-            <div class="blk"><b>얼굴인식 단말기</b><span>현장 출입 인증</span></div>
-            <div class="link"><span class="tri" aria-hidden="true"></span><span>인식 이벤트 · Socket.IO</span></div>
-            <div class="blk srv"><b>ONEPASS PRO 서버</b><span>온프레미스 · 출입·근태 처리</span><span class="stores"><i>MySQL</i><i>Redis</i></span></div>
-          </div>
+  <main>
+    <section class="dhero" id="top" aria-label="프로젝트 소개">
+      <div class="wrap">
+        <div class="crumb"><a href="index.html"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a><i></i><span>Case Study</span><i></i><span>회사 · 포커스에이아이 · 2021 — 2025</span></div>
+        <h1 class="dh-title">ONEPASS PRO</h1>
+        <p class="dh-sub">얼굴 인식 단말기 기반 통합 출입·근태관리 솔루션. 사업장마다 개별 설치되는 On-premise 패키지로 개발했습니다.</p>
+        <div class="facts">
+          <div class="fact"><small>역할</small><b>풀스택 개발</b></div>
+          <div class="fact"><small>팀</small><b>Smart Access팀</b></div>
+          <div class="fact"><small>형태</small><b>사업장별 설치형</b></div>
+          <div class="fact"><small>프론트엔드</small><b>EJS SSR</b></div>
         </div>
-        <div class="link"><span class="tri" aria-hidden="true"></span><span>상태 전송</span></div>
-        <div class="blk cloud"><b>클라우드 서버</b><span>서버 관리 · 모니터링</span><span>출입 로직 직접 처리 X</span></div>
+        <div class="dh-row">
+          <div class="tags"><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">EJS</span><span class="tag">Socket.IO</span><span class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">MQTT</span><span class="tag">N8N</span><span class="tag">Electron</span></div>
+          <a class="btn btn-light" href="#solve">핵심 문제 해결 보기<svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></a>
+        </div>
+        <div class="shot-frame"><img src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드"></div>
       </div>
-      <figcaption>① 단말기 → ② 온프레미스 서버 → ③ 클라우드, 단계별 통신 구조</figcaption>
-    </figure>
+    </section>
 
-    <div class="grid sum">
-      <h3 data-rise>구조 요약</h3>
-      <div class="sum-body" data-rise style="--d:1">
-        <h4>핵심</h4>
-        <ul class="ticks">
-          <li>각 사업장에 독립적인 ONEPASS 서버 + 로컬 MySQL·Redis가 설치되어 실제 출입·근태 로직을 처리</li>
-          <li>클라우드 서버는 각 로컬 서버의 상태를 리슨해 서버 관리·헬스체크만 담당</li>
-          <li>EJS로 서버사이드 렌더링해 대시보드 제공, Socket.IO로 실시간 이벤트 push</li>
-        </ul>
+    <section class="wrap sec" id="background">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">01 · Background</span>
+          <h2 class="h2">배경 / 문제 정의</h2>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="sec wrap" id="deploy" aria-labelledby="deploy-h">
-    <div class="grid head">
-      <h2 id="deploy-h" data-rise>배포 파이프라인</h2>
-      <p class="lede" data-rise style="--d:1">On-premise 패키지 특성상 사업장마다 개별로 배포·업데이트해야 하는 구조라, 수동으로 하던 빌드 → 패키징 → 배포 → 공지 과정을 N8N 기반 파이프라인 하나로 자동화했습니다.</p>
-    </div>
-    <ol class="pipe" aria-label="N8N 배포 파이프라인 순서">
-      <li data-rise style="--d:1"><b>서버 빌드</b><span>애플리케이션 소스 빌드</span></li>
-      <li data-rise style="--d:2"><b>.exe 패키징</b><span>Inno Setup 설치 패키지 생성</span></li>
-      <li data-rise style="--d:3"><b>FTP 업로드</b><span>회사 FTP 서버에 자동 업로드</span></li>
-      <li data-rise style="--d:4"><b>배포 알림</b><span>담당 영업에게 메일 자동 발송</span></li>
-      <li data-rise style="--d:5"><b>릴리즈 노트</b><span>Git 커밋 로그를 추출해 자동 정리</span></li>
-    </ol>
-  </section>
-
-  <section class="sec wrap" id="solve" aria-labelledby="solve-h">
-    <div class="grid">
-      <h2 id="solve-h" style="grid-column:1 / span 8" data-rise>핵심 문제 해결</h2>
-    </div>
-    <div class="grid band">
-      <figure class="crop" data-rise style="--d:1">
-        <img src="assets/onepass.jpg" width="1200" height="674" loading="lazy" alt="ONEPASS PRO 대시보드 일부. 실시간 출입 기록 표, 근태 통계 도넛 차트, 출퇴근 현황 목록.">
-      </figure>
-    </div>
-
-    <article class="grid case" aria-labelledby="c1-h">
-      <div class="case-q" data-rise>
-        <h3 id="c1-h">근태 관리 — 손 대지 않는 자동 출퇴근 판정</h3>
-        <p>얼굴 인식이 성공하면 단말기 화면에 출근/퇴근 버튼이 떠서 사용자가 직접 선택할 수 있었지만, 버튼을 누르려면 결국 손을 써야 했습니다. "얼굴만 대면 끝"이라는 얼굴 인식의 장점이 사라지는 지점이라고 판단해, 출근·퇴근 구분을 최대한 서버 내부 로직으로 자동 판정하는 방향으로 살리고 싶었습니다.</p>
-        <p>그런데 사용자마다 근태 규칙이 다르고, 규칙 안에는 근무시작/종료시간과 함께 "당일 퇴근" 타입과 "익일 퇴근" 타입이 구분되어 있습니다. 문제는 요일·날짜별로 전날이 휴무일 수도 있다는 점 — 단순히 "전날 = 어제"로 고정할 수 없는 구조였습니다.</p>
+      <div class="bento">
+        <div class="card c2 prose" style="padding:32px">
+          <span class="kicker">문제</span>
+          <p style="margin-top:14px">기존 카드·키패드 방식의 출입통제는 카드 대여나 대리출입 같은 인증 도용 문제에서 자유롭지 않았습니다. ONEPASS PRO는 <span class="hl">얼굴 인식</span>으로 이 문제를 해결하기 위해 시작된 프로젝트입니다.</p>
+        </div>
+        <div class="card c2 prose" style="padding:32px">
+          <span class="kicker">요구사항</span>
+          <p style="margin-top:14px">B2B 판매 구조인 만큼 각 사업장에 개별적으로 패키지를 설치하면서도, 운영사 입장에서는 <span class="hl">여러 사업장의 서버 상태를 중앙에서 파악</span>할 수 있어야 하는 요구사항이 있었습니다.</p>
+        </div>
       </div>
-      <div class="case-a" data-rise style="--d:1">
-        <h4>해결 로직</h4>
-        <ul>
-          <li>단말기에서 이벤트 수신 시, 이벤트 발생일 기준으로 해당 사용자의 근태 규칙이 "익일 퇴근 타입"인지 확인</li>
-          <li>익일 퇴근 타입이면, 전날 근태 기록에 퇴근시간이 이미 있는지 조회</li>
-          <li>전날 기록에 퇴근시간이 없다면, 이번 이벤트를 전날의 퇴근시간으로 귀속 처리</li>
-        </ul>
-        <p class="tail">즉 이벤트 시각이 아니라 근태 규칙 + 직전 기록 유무를 함께 판단해, 사용자가 버튼을 누르지 않아도 어느 날짜의 출근·퇴근인지 서버가 결정하는 구조입니다.</p>
-      </div>
-    </article>
+    </section>
 
-    <article class="grid case" aria-labelledby="c2-h">
-      <div class="case-q" data-rise>
-        <h3 id="c2-h">이벤트 수신 안정성 — 누락 이벤트 자동 복구</h3>
-        <p>얼굴 인식 단말기의 인식 이벤트는 MQTT와 Socket.IO 두 경로로 서버에 전달됩니다. 실시간성은 좋지만, 네트워크 상황에 따라 가끔 이벤트가 누락되는 증상이 있었습니다. 근태·출입 기록의 정확성과 직결되는 문제라 그냥 둘 수 없었습니다.</p>
-        <figure class="frag">
-          <div data-ui>
-            <div class="ui-head"><span class="ui-title">이벤트 대조 <span class="ui-sub">단말기 로그와 서버 DB</span></span><span class="pill live">백그라운드 작업</span></div>
-            <table>
-              <thead><tr><th>인식 시각</th><th>이름</th><th class="hide-s">출입문</th><th class="num">서버 DB</th></tr></thead>
-              <tbody>
-                <tr><td class="t">09:15:30</td><td>김민수</td><td class="hide-s">1층 메인 출입문</td><td class="num"><span class="res ok">반영됨</span></td></tr>
-                <tr><td class="t">09:14:22</td><td>이영희</td><td class="hide-s">1층 메인 출입문</td><td class="num"><span class="pill wait">누락, 재등록</span></td></tr>
-                <tr><td class="t">09:13:45</td><td>박철수</td><td class="hide-s">2층 서측 출입문</td><td class="num"><span class="res ok">반영됨</span></td></tr>
-                <tr><td class="t">09:11:08</td><td>정현우</td><td class="hide-s">3층 동측 출입문</td><td class="num"><span class="pill wait">누락, 재등록</span></td></tr>
-              </tbody>
-            </table>
-            <div class="ui-foot"><span class="ui-sub">단말기 로그 4건 · 서버 DB 2건</span><span class="ui-title">2건 재등록</span></div>
+    <section class="wrap sec" id="architecture">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">02 · Architecture</span>
+          <h2 class="h2">아키텍처</h2>
+          <p class="lead">데이터 처리는 엣지(사업장)에서, 운영은 클라우드에서 분리된 구조입니다.</p>
+        </div>
+      </div>
+      <div class="bento">
+        <div class="card c4 arch-card">
+          <div class="flow">
+            <div class="zone flow" style="flex:2 1 0">
+              <span class="zone-l">사업장 · 현장 — On-premise 설치</span>
+              <div class="node"><span class="lbl">① 단말기</span><b>얼굴인식 단말기</b><small>현장 출입 인증</small></div>
+              <div class="edge"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span>인식 이벤트<br>Socket.IO</span></div>
+              <div class="node core"><span class="lbl">② 온프레미스</span><b>ONEPASS PRO 서버</b><small>온프레미스 · 출입·근태 처리</small><div class="dbs"><span>MySQL</span><span>Redis</span></div></div>
+            </div>
+            <div class="edge"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg><span>상태 전송</span></div>
+            <div class="node solo"><span class="lbl">③ 클라우드</span><b>클라우드 서버</b><small>서버 관리 · 모니터링</small><span class="warn">출입 로직 직접 처리 X</span></div>
           </div>
-          <figcaption>예시 화면</figcaption>
-        </figure>
+          <div class="arch-foot"><span>① 단말기 → ② 온프레미스 서버 → ③ 클라우드, 단계별 통신 구조</span></div>
+        </div>
+        <div class="card c4" style="padding:32px;display:flex;flex-direction:column;gap:16px">
+          <h3 class="pt" style="font-size:22px">구조 요약</h3>
+          <h4 class="hd4">핵심</h4>
+          <ul class="pts" style="gap:10px">
+            <li>각 사업장에 독립적인 ONEPASS 서버 + 로컬 MySQL·Redis가 설치되어 실제 출입·근태 로직을 처리</li>
+            <li>클라우드 서버는 각 로컬 서버의 상태를 리슨해 서버 관리·헬스체크만 담당</li>
+            <li>EJS로 서버사이드 렌더링해 대시보드 제공, Socket.IO로 실시간 이벤트 push</li>
+          </ul>
+        </div>
       </div>
-      <div class="case-a" data-rise style="--d:1">
-        <h4>해결</h4>
-        <ul>
-          <li>단말기 자체에 저장된 이벤트 로그와 서버 DB에 적재된 이벤트를 백그라운드에서 주기적으로 대조</li>
-          <li>서버에 반영되지 않은(누락된) 이벤트를 찾아내 자동으로 재등록</li>
-          <li>실시간 수신(MQTT·Socket.IO)은 그대로 두고, 대조·복구는 별도 백그라운드 작업으로 분리해 안정성을 보강</li>
-        </ul>
-        <p class="tail">실시간 경로로 놓친 이벤트도 결국 기록에 반영되도록, 실시간 수신과 정합성 보정을 이중화한 구조입니다.</p>
-      </div>
-    </article>
+    </section>
 
-    <article class="grid case" aria-labelledby="c3-h">
-      <div class="case-q" data-rise>
-        <h3 id="c3-h">서버 운영 — 비개발자를 위한 데스크톱 서버 매니저</h3>
-        <p>Windows 기반 설치형 서버를 업장의 직원·관리자가 직접 실행해야 하는데, 이들을 터미널이나 CLI만 있는 환경에서 서버를 다루게 만들고 싶지 않았습니다. 비개발자도 화면을 보고 클릭 몇 번으로 서버를 켜고 끌 수 있어야 했습니다.</p>
-        <figure class="frag">
-          <div data-ui>
-            <div class="ui-head"><span class="ui-title">ONEPASS 서버 매니저</span><span class="pill ok">실행 중</span></div>
-            <div class="mrow"><span><b>서버</b><span class="ui-sub">실행 여부와 헬스 정상</span></span><span class="acts"><button type="button" class="ui-btn primary" tabindex="-1">서버 중단</button></span></div>
-            <div class="mrow"><span><b>데이터</b><span class="ui-sub">백업 및 복원</span></span><span class="acts"><button type="button" class="ui-btn secondary" tabindex="-1">백업</button><button type="button" class="ui-btn secondary" tabindex="-1">복원</button></span></div>
-            <div class="mrow"><span><b>실행 환경</b><span class="ui-sub">서버 포트</span></span><span class="acts"><button type="button" class="ui-btn secondary" tabindex="-1">포트 변경</button></span></div>
-<pre class="mlog" aria-label="서버 로그"><code><span class="c">09:00:02</span>  서버 시작
-<span class="c">09:00:03</span>  MySQL 연결 <span class="g">정상</span>
-<span class="c">09:00:03</span>  Redis 연결 <span class="g">정상</span>
-<span class="c">09:00:04</span>  단말기 이벤트 수신 대기</code></pre>
+    <section class="wrap sec" id="pipeline">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">03 · Pipeline</span>
+          <h2 class="h2">배포 파이프라인</h2>
+          <p class="lead">On-premise 패키지 특성상 사업장마다 개별로 배포·업데이트해야 하는 구조라, 수동으로 하던 빌드 → 패키징 → 배포 → 공지 과정을 N8N 기반 파이프라인 하나로 자동화했습니다.</p>
+        </div>
+      </div>
+      <div class="pipe">
+        <div class="card pstep"><b>서버 빌드</b><small>애플리케이션 소스 빌드</small></div>
+        <div class="card pstep"><b>.exe 패키징</b><small>Inno Setup 설치 패키지 생성</small></div>
+        <div class="card pstep"><b>FTP 업로드</b><small>회사 FTP 서버에 자동 업로드</small></div>
+        <div class="card pstep"><b>배포 알림</b><small>담당 영업에게 메일 자동 발송</small></div>
+        <div class="card pstep"><b>릴리즈 노트</b><small>Git 커밋 로그를 추출해 자동 정리</small></div>
+      </div>
+    </section>
+
+    <section class="wrap sec" id="solve">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">04 · Problem solving</span>
+          <h2 class="h2">핵심 문제 해결</h2>
+        </div>
+      </div>
+      <div class="bento">
+
+        <article class="card c4 prob">
+          <div class="prob-text">
+            <span class="prob-no">PROBLEM 01</span>
+            <h3><span>근태 관리</span>손 대지 않는 자동 출퇴근 판정</h3>
+            <div class="prose">
+              <p>얼굴 인식이 성공하면 단말기 화면에 출근/퇴근 버튼이 떠서 사용자가 직접 선택할 수 있었지만, 버튼을 누르려면 결국 손을 써야 했습니다. "얼굴만 대면 끝"이라는 얼굴 인식의 장점이 사라지는 지점이라고 판단해, 출근·퇴근 구분을 최대한 서버 내부 로직으로 자동 판정하는 방향으로 살리고 싶었습니다.</p>
+              <p>그런데 사용자마다 근태 규칙이 다르고, 규칙 안에는 근무시작/종료시간과 함께 "당일 퇴근" 타입과 "익일 퇴근" 타입이 구분되어 있습니다. 문제는 요일·날짜별로 전날이 휴무일 수도 있다는 점 — 단순히 "전날 = 어제"로 고정할 수 없는 구조였습니다.</p>
+            </div>
+            <h4 class="hd4">해결 로직</h4>
+            <ol class="ol">
+              <li>단말기에서 이벤트 수신 시, 이벤트 발생일 기준으로 해당 사용자의 근태 규칙이 "익일 퇴근 타입"인지 확인</li>
+              <li>익일 퇴근 타입이면, 전날 근태 기록에 퇴근시간이 이미 있는지 조회</li>
+              <li>전날 기록에 퇴근시간이 없다면, 이번 이벤트를 전날의 퇴근시간으로 귀속 처리</li>
+            </ol>
+            <div class="note"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span>즉 이벤트 시각이 아니라 <b>근태 규칙 + 직전 기록 유무</b>를 함께 판단해, 사용자가 버튼을 누르지 않아도 어느 날짜의 출근·퇴근인지 서버가 결정하는 구조입니다.</span></div>
           </div>
-          <figcaption>예시 화면</figcaption>
-        </figure>
-      </div>
-      <div class="case-a" data-rise style="--d:1">
-        <h4>해결</h4>
-        <ul>
-          <li>Node · Electron 데스크톱 앱으로 "서버 매니저" 실행 프로그램을 제작</li>
-          <li>서버 시작·중단과 실행 여부·헬스 등 상태 확인을 GUI에서 처리</li>
-          <li>서버 데이터 백업 및 복원을 앱 내에서 바로 수행</li>
-          <li>서버 포트 변경 등 실행 환경 설정도 앱에서 직접 조정</li>
-          <li>서버 로그 확인으로 동작 상태와 오류를 앱에서 바로 열람</li>
-        </ul>
-        <p class="tail">운영 주체가 개발자가 아니어도 서버를 안정적으로 켜고 끄고 관리할 수 있도록, 운영 인터페이스 자체를 하나의 데스크톱 앱으로 제품화했습니다.</p>
-      </div>
-    </article>
-  </section>
-</main>
+          <div class="prob-vis">
+            <div class="frame"><img src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드"></div>
+            <span class="cap">ONEPASS PRO 관리자 대시보드</span>
+          </div>
+        </article>
 
-<footer class="wrap closing" aria-labelledby="more-h">
-  <div class="grid">
-    <h2 id="more-h" data-rise>다른 프로젝트도 보기</h2>
-    <nav class="next" aria-label="다른 프로젝트" data-rise style="--d:1">
-      <a class="go" href="Project-iSchool.dc.html"><span>아이스쿨</span><span class="arr" aria-hidden="true">→</span></a>
-      <a href="agent-control.html"><span>AI 에이전트 통합 관제 시스템</span><span class="arr" aria-hidden="true">→</span></a>
-    </nav>
-    <p class="after" data-rise style="--d:2"><a href="index.html#work">← 포트폴리오</a><a href="mailto:zzsdsdsd@gmail.com">zzsdsdsd@gmail.com</a><a href="https://github.com/suman-kim">GitHub</a></p>
-  </div>
-</footer>
+        <article class="card c4 prob flip">
+          <div class="prob-text">
+            <span class="prob-no">PROBLEM 02</span>
+            <h3><span>이벤트 수신 안정성</span>누락 이벤트 자동 복구</h3>
+            <div class="prose">
+              <p>얼굴 인식 단말기의 인식 이벤트는 MQTT와 Socket.IO 두 경로로 서버에 전달됩니다. 실시간성은 좋지만, 네트워크 상황에 따라 가끔 이벤트가 누락되는 증상이 있었습니다. 근태·출입 기록의 정확성과 직결되는 문제라 그냥 둘 수 없었습니다.</p>
+            </div>
+            <h4 class="hd4">해결</h4>
+            <ul class="pts" style="gap:10px">
+              <li>단말기 자체에 저장된 이벤트 로그와 서버 DB에 적재된 이벤트를 백그라운드에서 주기적으로 대조</li>
+              <li>서버에 반영되지 않은(누락된) 이벤트를 찾아내 자동으로 재등록</li>
+              <li>실시간 수신(MQTT·Socket.IO)은 그대로 두고, 대조·복구는 별도 백그라운드 작업으로 분리해 안정성을 보강</li>
+            </ul>
+            <div class="note"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span>실시간 경로로 놓친 이벤트도 결국 기록에 반영되도록, <b>실시간 수신과 정합성 보정을 이중화</b>한 구조입니다.</span></div>
+          </div>
+          <div class="prob-vis">
+            <div class="mock">
+              <div class="mock-h"><b>이벤트 대조</b><small>단말기 로그와 서버 DB · 백그라운드 작업</small></div>
+              <table class="mt">
+                <thead><tr><th>인식 시각</th><th>이름</th><th>출입문</th><th class="r">서버 DB</th></tr></thead>
+                <tbody>
+                  <tr><td class="m">09:15:30</td><td>김민수</td><td>1층 메인 출입문</td><td class="r"><span class="chip ok">반영됨</span></td></tr>
+                  <tr class="hl"><td class="m">09:14:22</td><td>이영희</td><td>1층 메인 출입문</td><td class="r"><span class="chip bad">누락, 재등록</span></td></tr>
+                  <tr><td class="m">09:13:45</td><td>박철수</td><td>2층 서측 출입문</td><td class="r"><span class="chip ok">반영됨</span></td></tr>
+                  <tr class="hl"><td class="m">09:11:08</td><td>정현우</td><td>3층 동측 출입문</td><td class="r"><span class="chip bad">누락, 재등록</span></td></tr>
+                </tbody>
+              </table>
+              <div class="mock-f"><span>단말기 로그 4건 · 서버 DB 2건</span><b style="color:var(--accent)">2건 재등록</b></div>
+            </div>
+            <span class="ex">예시 화면</span>
+          </div>
+        </article>
 
+        <article class="card c4 prob">
+          <div class="prob-text">
+            <span class="prob-no">PROBLEM 03</span>
+            <h3><span>서버 운영</span>비개발자를 위한 데스크톱 서버 매니저</h3>
+            <div class="prose">
+              <p>Windows 기반 설치형 서버를 업장의 직원·관리자가 직접 실행해야 하는데, 이들을 터미널이나 CLI만 있는 환경에서 서버를 다루게 만들고 싶지 않았습니다. 비개발자도 화면을 보고 클릭 몇 번으로 서버를 켜고 끌 수 있어야 했습니다.</p>
+            </div>
+            <h4 class="hd4">해결</h4>
+            <ul class="pts" style="gap:10px">
+              <li>Node · Electron 데스크톱 앱으로 "서버 매니저" 실행 프로그램을 제작</li>
+              <li>서버 시작·중단과 실행 여부·헬스 등 상태 확인을 GUI에서 처리</li>
+              <li>서버 데이터 백업 및 복원을 앱 내에서 바로 수행</li>
+              <li>서버 포트 변경 등 실행 환경 설정도 앱에서 직접 조정</li>
+              <li>서버 로그 확인으로 동작 상태와 오류를 앱에서 바로 열람</li>
+            </ul>
+            <div class="note"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span>운영 주체가 개발자가 아니어도 서버를 안정적으로 켜고 끄고 관리할 수 있도록, <b>운영 인터페이스 자체를 하나의 데스크톱 앱으로 제품화</b>했습니다.</span></div>
+          </div>
+          <div class="prob-vis">
+            <div class="mock">
+              <div class="mock-h"><b>ONEPASS 서버 매니저</b><span class="chip ok">실행 중</span></div>
+              <div class="mgr">
+                <div class="mgr-row"><span>서버<small>실행 여부와 헬스 정상</small></span><span class="mbtns"><span class="mb dang">서버 중단</span></span></div>
+                <div class="mgr-row"><span>데이터<small>백업 및 복원</small></span><span class="mbtns"><span class="mb">백업</span><span class="mb">복원</span></span></div>
+                <div class="mgr-row"><span>실행 환경<small>서버 포트</small></span><span class="mbtns"><span class="mb pri">포트 변경</span></span></div>
+                <div class="log"><div><em>09:00:02</em>서버 시작</div><div><em>09:00:03</em>MySQL 연결 <span class="g">정상</span></div><div><em>09:00:03</em>Redis 연결 <span class="g">정상</span></div><div><em>09:00:04</em>단말기 이벤트 수신 대기</div></div>
+              </div>
+            </div>
+            <span class="ex">예시 화면</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="wrap sec" id="more">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">→ · More</span>
+          <h2 class="h2">다른 프로젝트도 보기</h2>
+        </div>
+      </div>
+      <div class="next">
+        <a class="card lift" href="Project-iSchool.dc.html">
+          <div class="vis photo"><img class="shot" src="images/is-full.jpg" alt="아이스쿨 기관 관리자 대시보드"></div>
+          <div class="pbody">
+            <div>
+              <span class="period">회사 · 통학버스 안전관리</span>
+              <h3 class="pt" style="margin-top:4px">아이스쿨</h3>
+            </div>
+            <span class="arr"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </div>
+        </a>
+        <a class="card lift" href="agent-control.html">
+          <div class="vis photo"><img class="shot" src="images/hub-card.jpg" alt="Hub 대시보드"></div>
+          <div class="pbody">
+            <div>
+              <span class="period">개인 · 2026</span>
+              <h3 class="pt" style="margin-top:4px">AI 에이전트 통합 관제 시스템</h3>
+            </div>
+            <span class="arr"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+          </div>
+        </a>
+      </div>
+      <div class="back-row"><a class="btn btn-out" href="index.html"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오로 돌아가기</a></div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© 2026 김수만 · Full-Stack Developer</span>
+    <span class="foot-links">
+      <a href="index.html"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>포트폴리오</a>
+      <a href="mailto:zzsdsdsd@gmail.com"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>zzsdsdsd@gmail.com</a>
+      <a href="https://github.com/suman-kim"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-4-2-6-2.5M15 21v-3.5a3 3 0 0 0-.9-2.3c3-.3 6-1.5 6-6.6a5.2 5.2 0 0 0-1.4-3.6 4.8 4.8 0 0 0-.1-3.6s-1.1-.3-3.6 1.4a12.4 12.4 0 0 0-6.6 0C5.9 1.1 4.8 1.4 4.8 1.4a4.8 4.8 0 0 0-.1 3.6A5.2 5.2 0 0 0 3.3 8.6c0 5.1 3 6.3 6 6.6a3 3 0 0 0-.9 2.3V21"></path></svg>GitHub</a>
+    </span>
+  </footer>
+</div>
 <script>
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // 테마: 다른 페이지와 같은 pf-theme 값을 쓴다
-  var themeBtn = document.getElementById('themeBtn');
-  function theme() { return document.documentElement.getAttribute('data-theme'); }
-  function setTheme(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    try { localStorage.setItem('pf-theme', t); } catch (e) {}
-    themeBtn.textContent = t === 'dark' ? '라이트 모드' : '다크 모드';
+(function(){
+  var root = document.getElementById('root');
+  var btn = document.getElementById('theme-btn');
+  function apply(dark){
+    root.classList.toggle('dark', dark);
+    btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+    btn.setAttribute('aria-pressed', String(dark));
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
   }
-  themeBtn.addEventListener('click', function () { setTheme(theme() === 'dark' ? 'light' : 'dark'); });
-  themeBtn.textContent = theme() === 'dark' ? '라이트 모드' : '다크 모드';
-
-  // 등장: 섹션 안 요소가 화면에 들어오면 한 번만
-  // 빠르게 건너뛰거나 링크로 이동해 화면을 지나친 요소도 보이도록, 화면 위쪽에 있는 것은 모두 연다
-  (function () {
-    var rest = Array.prototype.slice.call(document.querySelectorAll('[data-rise]'));
-    if (reduce) { rest.forEach(function (el) { el.classList.add('in'); }); return; }
-    var queued = false;
-    function check() {
-      queued = false;
-      var lim = window.innerHeight * 0.92;
-      rest = rest.filter(function (el) {
-        if (el.getBoundingClientRect().top < lim) { el.classList.add('in'); return false; }
-        return true;
-      });
-      if (!rest.length) { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
-    }
-    function onScroll() { if (!queued) { queued = true; requestAnimationFrame(check); } }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    check();
-  })();
-</script>
+  var dark = root.classList.contains('dark');
+  apply(dark);
+  btn.addEventListener('click', function(){
+    dark = !dark; apply(dark);
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+  });
+  window.__setDark = function(v){ dark = v; apply(v); try { localStorage.setItem('theme', v ? 'dark' : 'light'); } catch (e) {} };
+  var nav = document.getElementById('nav');
+  var hero = document.querySelector('.dhero');
+  function onScroll(){ nav.classList.toggle('solid', window.scrollY > (hero ? hero.offsetHeight - 72 : 400)); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();</script>
 </body>
 </html>
