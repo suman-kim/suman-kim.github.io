@@ -1,929 +1,2541 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>김수만 — Full-Stack Developer</title>
-<meta name="description" content="서버부터 화면까지, 한 흐름으로 설계합니다. 실시간 하드웨어 연동, 결제, IoT를 다뤄 온 풀스택 개발자 김수만의 포트폴리오.">
-<meta name="theme-color" content="#0A0B0E">
-<meta property="og:type" content="website">
-<meta property="og:title" content="김수만 — Full-Stack Developer">
-<meta property="og:description" content="서버부터 화면까지, 한 흐름으로 설계합니다.">
-<meta property="og:url" content="https://suman-kim.github.io/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23141416'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='monospace' font-size='24' font-weight='700' fill='%23F5F5F7'%3ESK%3C/text%3E%3Ccircle cx='52' cy='12' r='6' fill='%237D8CFF'/%3E%3C/svg%3E">
-<link rel="preload" as="image" href="images/op-full.jpg">
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;display=swap">
-<style>
-html{scroll-behavior:smooth}
-body{margin:0}
-*,*::before,*::after{box-sizing:border-box}
-[hidden]{display:none!important}
-.i-sun{display:none}.root.dark .i-sun{display:block}.root.dark .i-moon{display:none}
-section{scroll-margin-top:72px}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>김수만 — Full-Stack Developer</title>
+    <meta name="description" content="서버부터 화면까지, 한 흐름으로 설계합니다. 실시간 하드웨어 연동, 결제, IoT를 다뤄 온 풀스택 개발자 김수만의 포트폴리오.">
+    <meta name="theme-color" content="#0A0B0E">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="김수만 — Full-Stack Developer">
+    <meta property="og:description" content="서버부터 화면까지, 한 흐름으로 설계합니다.">
+    <meta property="og:url" content="https://suman-kim.github.io/">
+    <link rel="icon"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23141416'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='monospace' font-size='24' font-weight='700' fill='%23F5F5F7'%3ESK%3C/text%3E%3Ccircle cx='52' cy='12' r='6' fill='%237D8CFF'/%3E%3C/svg%3E">
+    <link rel="preload" as="image" href="images/op-full.jpg">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;display=swap">
+    <style>
+        html {
+            scroll-behavior: smooth
+        }
 
-/* ---------- theme ---------- */
-.root{--bg:#F5F5F7;--card:#FFFFFF;--line:#E5E5EA;--ink:#141416;--muted:#5A5B62;--soft:#EFEFF2;--accent:#2B47E8;--on-accent:#FFFFFF;--accent-soft:#E6EAFF;--hot:#FF7A3D;--panel:#121317;--panel-2:#1A1C21;--panel-line:#2A2D35;--panel-ink:#ECEDF0;--panel-muted:#9396A0;--glow:#7D8CFF;--on-glow:#0C0D10;
-  min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
-.root.dark{color-scheme:dark;--bg:#0C0D10;--card:#15161A;--line:#26282E;--ink:#ECEDF0;--muted:#A0A3AC;--soft:#1D1F24;--accent:#7D8CFF;--on-accent:#0C0D10;--accent-soft:#1F2547;--panel:#0E0F12;--panel-2:#17191E;--panel-line:#272A31}
-a{color:var(--accent);text-decoration:none}
-a:hover{color:var(--ink)}
-.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
-.sec{padding-top:104px}
-.lbl{font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.eyebrow{font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:10px}
-.eyebrow::before{content:"";width:20px;height:1px;background:currentColor}
-.h2{font-size:clamp(30px,3.6vw,44px);line-height:1.2;letter-spacing:-.035em;font-weight:740;margin:12px 0 0}
-.lead{margin:12px 0 0;color:var(--muted);font-size:17px;max-width:560px}
-.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px}
-.row-b{display:flex;justify-content:space-between;align-items:center;gap:12px}
+        body {
+            margin: 0
+        }
 
-/* ---------- nav (fixed, inverts over any background) ---------- */
-.nav{position:fixed;left:0;right:0;top:0;z-index:50;color:#FFFFFF;border-bottom:1px solid transparent;transition:background-color .3s,color .3s,border-color .3s}
-.nav.solid{background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);color:var(--ink);border-bottom-color:var(--line)}
-.nav-in{max-width:1200px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:12px;color:inherit;font-weight:720;letter-spacing:-.02em;font-size:17px;min-height:44px}
-.brand:hover{color:inherit}
-.logo{width:32px;height:32px;border-radius:10px;border:1.5px solid currentColor;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:12px;font-weight:600}
-.nav-links{display:flex;gap:2px}
-.nl{color:inherit;font-size:14.5px;font-weight:550;padding:10px 12px;border-radius:10px}
-.nl:hover{color:inherit;text-decoration:underline;text-underline-offset:6px}
-.nav-act{display:flex;align-items:center;gap:8px}
-.icon-btn{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer;padding:0}
-.nav-cta{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:99px;border:1px solid currentColor;color:inherit;font-weight:650;font-size:14px}
-.nav-cta:hover{color:#0A0B0E;background:#FFFFFF;border-color:#FFFFFF}
-.nav.solid .nav-cta:hover{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+        *, *::before, *::after {
+            box-sizing: border-box
+        }
 
-/* ---------- buttons ---------- */
-.btn{display:inline-flex;align-items:center;gap:8px;height:52px;padding:0 22px;border-radius:14px;font-weight:650;font-size:15.5px;border:1px solid transparent;white-space:nowrap;transition:background-color .2s,border-color .2s,color .2s}
-.btn-light{background:#FFFFFF;color:#0C0D10}
-.btn-light:hover{background:var(--glow);color:#0C0D10}
-.btn-ghost{color:#FFFFFF;border-color:rgba(255,255,255,.4)}
-.btn-ghost:hover{color:#FFFFFF;border-color:#FFFFFF}
-.cta-row{display:flex;flex-wrap:wrap;gap:10px}
+        [hidden] {
+            display: none !important
+        }
 
-/* ---------- HERO / INTRO ---------- */
-.hero{position:relative;height:clamp(640px,100svh,960px);overflow:hidden;background:#0A0B0E;color:#FFFFFF;isolation:isolate}
-.stage{position:absolute;inset:0}
-.wall-wrap{position:absolute;inset:0;overflow:hidden;perspective:1800px}
-.wall{position:absolute;left:-30%;right:-30%;top:-50%;bottom:-50%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px;transform:rotateX(26deg) rotateZ(-14deg)}
-.col{display:flex;flex-direction:column;gap:22px}
-.col.c-a{transform:translateY(-6%)}
-.col.c-b{transform:translateY(-20%)}
-.tile{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top left;border-radius:12px;box-shadow:0 40px 80px -30px rgba(0,0,0,.75)}
-.scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,10,13,.96) 0%,rgba(9,10,13,.86) 50%,rgba(9,10,13,.52) 100%),linear-gradient(0deg,rgba(9,10,13,.92) 0%,rgba(9,10,13,0) 50%)}
-.curtain{position:absolute;inset:0;z-index:3;pointer-events:none}
-/* real browser window: the hero is exactly one screen and the intro overlay is pinned to the viewport, so it covers the screen at any scroll position */
-.root.vp .hero{height:100vh;height:100svh;min-height:640px}
-.root.vp .curtain,.root.vp .hud{position:fixed}
-.root.vp.intro .hero{animation:heroTop 3.3s linear}
-@keyframes heroTop{from,to{z-index:60}}
-.half{position:absolute;left:0;right:0;height:50%;overflow:hidden;background:#0A0B0E}
-.half.top{top:0;transform:translateY(-101%)}
-.half.bottom{bottom:0;transform:translateY(101%)}
-.cname{position:absolute;left:0;right:0;height:200%;display:flex;align-items:center;justify-content:center;font-size:clamp(56px,14.5vw,232px);font-weight:820;letter-spacing:-.05em;line-height:1;color:#FFFFFF;white-space:nowrap}
-.half.top .cname{top:0}
-.half.bottom .cname{bottom:0}
-.cline{display:inline-flex;overflow:hidden;padding:0 .04em .1em}
-.c{display:inline-block}
-.c.sp{width:.26em}
-.seam{position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:#FFFFFF;transform-origin:left center;opacity:0}
-.hud{position:absolute;inset:0;z-index:4;pointer-events:none;color:#FFFFFF;font-family:'Geist Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;opacity:0}
-.hud>span{position:absolute}
-.hud-tl{left:28px;top:26px}
-.hud-tr{right:28px;top:26px}
-.hud-br{right:28px;bottom:30px}
-.prog{left:28px;bottom:30px;width:clamp(160px,26vw,340px);display:flex;flex-direction:column;gap:12px}
-.prog-bar{display:block;height:2px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden}
-.prog-bar i{display:block;height:100%;background:#FFFFFF;transform-origin:left center}
-.hero-in{position:absolute;left:0;right:0;bottom:112px;max-width:1200px;margin:0 auto;padding:0 24px;z-index:2}
-.h-eyebrow{font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);display:inline-flex;align-items:center;gap:10px}
-.h-eyebrow::before{content:"";width:28px;height:1px;background:currentColor}
-.hh{margin:22px 0 0;font-size:clamp(44px,7vw,108px);line-height:1.08;letter-spacing:-.05em;font-weight:800}
-.hh .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
-.hh .w>span{display:inline-block}
-.hh .acc{color:var(--glow)}
-.h-p{max-width:560px;margin:26px 0 0;font-size:18px;line-height:1.75;color:rgba(255,255,255,.78)}
-.hero-in .cta-row{margin-top:34px}
-.hero-foot{position:absolute;left:0;right:0;bottom:28px;max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:flex-end;align-items:center;gap:16px;z-index:2;font-family:'Geist Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.62)}
-.replay{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.86);border-radius:99px;height:44px;padding:0 16px;font:inherit;letter-spacing:.06em;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-.replay:hover{border-color:#FFFFFF;color:#FFFFFF}
+        .i-sun {
+            display: none
+        }
 
-/* intro timeline — base styles above are the END state */
-.intro .nav{animation:navIn .9s 3.6s cubic-bezier(.2,.8,.2,1) both}
-.intro .cname{animation:track 2s cubic-bezier(.2,.8,.2,1) both}
-.intro .cname .c{animation:upIn .9s cubic-bezier(.2,.8,.2,1) both}
-.intro .cname .c:nth-child(2){animation-delay:.05s}
-.intro .cname .c:nth-child(3){animation-delay:.1s}
-.intro .cname .c:nth-child(5){animation-delay:.18s}
-.intro .cname .c:nth-child(6){animation-delay:.23s}
-.intro .cname .c:nth-child(7){animation-delay:.28s}
-.intro .cname .c:nth-child(8){animation-delay:.33s}
-.intro .cname .c:nth-child(9){animation-delay:.38s}
-.intro .seam{animation:seam .8s 1.55s cubic-bezier(.7,0,.2,1) both}
-.intro .half.top{animation:openUp 1.05s 2.05s cubic-bezier(.77,0,.18,1) both}
-.intro .half.bottom{animation:openDown 1.05s 2.05s cubic-bezier(.77,0,.18,1) both}
-.intro .hud{animation:hud 2.2s linear both}
-.intro .prog-bar i{animation:prog 1.75s .15s cubic-bezier(.35,0,.25,1) both}
-.intro .wall{animation:wallIn 2.2s 2.1s cubic-bezier(.16,1,.3,1) both}
-.intro .col.c-a{animation:colA 2.8s 2.05s cubic-bezier(.16,1,.3,1) both}
-.intro .col.c-b{animation:colB 2.8s 2.05s cubic-bezier(.16,1,.3,1) both}
-.intro .scrim{animation:fadeIn 1s 2.45s ease both}
-.intro .h-eyebrow{animation:fadeUp .8s 3s cubic-bezier(.2,.8,.2,1) both}
-.intro .hh .w>span{animation:upIn 1.05s cubic-bezier(.2,.8,.2,1) both}
-.intro .h-p{animation:fadeUp .9s 3.65s cubic-bezier(.2,.8,.2,1) both}
-.intro .hero-in .cta-row{animation:fadeUp .9s 3.8s cubic-bezier(.2,.8,.2,1) both}
-.intro .hero-foot{animation:fadeIn 1s 4.1s ease both}
-@keyframes navIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:none}}
-@keyframes hud{0%{opacity:0}8%,86%{opacity:1}100%{opacity:0}}
-@keyframes upIn{from{transform:translateY(108%)}to{transform:none}}
-@keyframes track{from{letter-spacing:.06em}to{letter-spacing:-.05em}}
-@keyframes seam{0%{transform:scaleX(0);opacity:1}55%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
-@keyframes openUp{from{transform:none}to{transform:translateY(-101%)}}
-@keyframes openDown{from{transform:none}to{transform:translateY(101%)}}
-@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes wallIn{from{transform:rotateX(26deg) rotateZ(-14deg) scale(1.9);opacity:0}30%{opacity:1}to{transform:rotateX(26deg) rotateZ(-14deg) scale(1);opacity:1}}
-@keyframes colA{from{transform:translateY(-38%)}to{transform:translateY(-6%)}}
-@keyframes colB{from{transform:translateY(10%)}to{transform:translateY(-20%)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion: reduce){.root *,.root *::before,.root *::after{animation:none!important}}
+        .root.dark .i-sun {
+            display: block
+        }
 
-/* ---------- bento ---------- */
-.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;grid-auto-flow:dense}
-.c2{grid-column:span 2}
-.c4{grid-column:1/-1}
-.card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;overflow:hidden}
-.lift:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
-.stat{display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:196px}
-.num{font-size:clamp(48px,5vw,68px);font-weight:780;letter-spacing:-.055em;line-height:1;display:flex;align-items:flex-start;padding:4px 0 2px}
-.plus{font-size:.5em;color:var(--accent);margin-left:3px;line-height:1.1}
-.stat-cap{font-size:15px;color:var(--muted);line-height:1.5}
-.stat-cap b{display:block;color:var(--ink);font-size:16px;font-weight:650}
-.shipped{display:flex;flex-wrap:wrap;gap:24px;align-items:stretch}
-.ship-left{flex:0 0 220px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
-.ship-grid{flex:1 1 480px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.ship{display:flex;flex-direction:column;gap:12px;background:var(--soft);border-radius:16px;padding:8px 8px 16px;color:var(--ink)}
-.ship:hover{color:var(--ink);background:var(--accent-soft)}
-.ship-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px}
-.ship-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 8px}
-.ship b{font-size:17px;font-weight:740;letter-spacing:-.02em}
-.ship small{display:block;padding:0 8px;font-size:13.5px;line-height:1.55;color:var(--muted)}
-.gh{display:flex;flex-direction:column;justify-content:space-between;gap:18px;color:var(--ink);min-height:196px}
-.gh:hover{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
-.gh:hover .lbl,.gh:hover .gh-sub{color:var(--on-accent)}
-.gh-title{font-size:28px;font-weight:760;letter-spacing:-.03em;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.gh-arr{width:44px;height:44px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center}
-.gh-sub{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted);display:block;margin-top:6px}
+        .root.dark .i-moon {
+            display: none
+        }
 
-/* projects */
-.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:16px;background:var(--soft);border:1px solid var(--line)}
-.tab{height:44px;padding:0 16px;border-radius:12px;border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
-.tab span{font-family:'Geist Mono',monospace;font-size:12px;font-weight:500}
-.tab:hover{color:var(--ink)}
-.tab.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
-.pc{padding:10px;display:flex;flex-direction:column}
-.vis{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/10;flex:0 0 auto;background:var(--soft)}
-.pc.c1 .vis{aspect-ratio:16/11}
-.pc.feature{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:8px;align-items:center}
-.pc.feature .pbody{padding:24px 28px}
-.pc.feature.flip .vis{order:2}
-.vis.photo::after{content:"";position:absolute;inset:0;border-radius:16px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07);pointer-events:none}
-.shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top left;display:block}
-.vis-dark{background-color:var(--panel);color:var(--panel-ink)}
-.vis-soft{background-color:var(--soft);background-image:radial-gradient(color-mix(in srgb,var(--ink) 12%,transparent) 1px,transparent 1.4px);background-size:16px 16px}
-.pbody{padding:20px 16px 12px;display:flex;flex-direction:column;gap:12px;flex:1 1 auto}
-.pmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.period{font-family:'Geist Mono',monospace;font-size:12.5px;color:var(--muted)}
-.badge{font-size:12.5px;font-weight:600;color:var(--muted);padding:3px 10px;border-radius:99px;background:var(--soft)}
-.badge.on{color:var(--accent);background:var(--accent-soft)}
-.pt{font-size:24px;line-height:1.3;font-weight:740;letter-spacing:-.03em;margin:0}
-.pd{margin:0;color:var(--muted);font-size:15.5px;line-height:1.7}
-.pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
-.pts li{display:flex;gap:10px;font-size:14.5px;line-height:1.6}
-.pts li::before{content:"";flex:0 0 6px;height:6px;margin-top:9px;border-radius:1.5px;background:var(--accent);transform:rotate(45deg)}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-family:'Geist Mono',monospace;font-size:12px;color:var(--muted);padding:4px 10px;border-radius:8px;border:1px solid var(--line);line-height:1.5}
-.more{display:inline-flex;align-items:center;gap:6px;font-weight:650;font-size:14.5px;color:var(--ink);margin-top:auto;min-height:44px;align-self:flex-start}
-.more:hover{color:var(--accent)}
+        section {
+            scroll-margin-top: 72px
+        }
+
+        /* ---------- theme ---------- */
+        .root {
+            --bg: #F5F5F7;
+            --card: #FFFFFF;
+            --line: #E5E5EA;
+            --ink: #141416;
+            --muted: #5A5B62;
+            --soft: #EFEFF2;
+            --accent: #2B47E8;
+            --on-accent: #FFFFFF;
+            --accent-soft: #E6EAFF;
+            --hot: #FF7A3D;
+            --panel: #121317;
+            --panel-2: #1A1C21;
+            --panel-line: #2A2D35;
+            --panel-ink: #ECEDF0;
+            --panel-muted: #9396A0;
+            --glow: #7D8CFF;
+            --on-glow: #0C0D10;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            -webkit-font-smoothing: antialiased
+        }
+
+        .root.dark {
+            color-scheme: dark;
+            --bg: #0C0D10;
+            --card: #15161A;
+            --line: #26282E;
+            --ink: #ECEDF0;
+            --muted: #A0A3AC;
+            --soft: #1D1F24;
+            --accent: #7D8CFF;
+            --on-accent: #0C0D10;
+            --accent-soft: #1F2547;
+            --panel: #0E0F12;
+            --panel-2: #17191E;
+            --panel-line: #272A31
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none
+        }
+
+        a:hover {
+            color: var(--ink)
+        }
+
+        .ic {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex: 0 0 auto
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px
+        }
+
+        .sec {
+            padding-top: 104px
+        }
+
+        .lbl {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted)
+        }
+
+        .eyebrow {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 12.5px;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 20px;
+            height: 1px;
+            background: currentColor
+        }
+
+        .h2 {
+            font-size: clamp(30px, 3.6vw, 44px);
+            line-height: 1.2;
+            letter-spacing: -.035em;
+            font-weight: 740;
+            margin: 12px 0 0
+        }
+
+        .lead {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 17px;
+            max-width: 560px
+        }
+
+        .sec-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 36px
+        }
+
+        .row-b {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px
+        }
+
+        /* ---------- nav (fixed, inverts over any background) ---------- */
+        .nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 50;
+            color: #FFFFFF;
+            border-bottom: 1px solid transparent;
+            transition: background-color .3s, color .3s, border-color .3s
+        }
+
+        .nav.solid {
+            background: color-mix(in srgb, var(--bg) 86%, transparent);
+            backdrop-filter: saturate(1.4) blur(14px);
+            -webkit-backdrop-filter: saturate(1.4) blur(14px);
+            color: var(--ink);
+            border-bottom-color: var(--line)
+        }
+
+        .nav-in {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: inherit;
+            font-weight: 720;
+            letter-spacing: -.02em;
+            font-size: 17px;
+            min-height: 44px
+        }
+
+        .brand:hover {
+            color: inherit
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            border: 1.5px solid currentColor;
+            display: grid;
+            place-items: center;
+            font-family: 'Geist Mono', monospace;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2px
+        }
+
+        .nl {
+            color: inherit;
+            font-size: 14.5px;
+            font-weight: 550;
+            padding: 10px 12px;
+            border-radius: 10px
+        }
+
+        .nl:hover {
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 6px
+        }
+
+        .nav-act {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid currentColor;
+            background: transparent;
+            color: inherit;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            padding: 0
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 44px;
+            padding: 0 18px;
+            border-radius: 99px;
+            border: 1px solid currentColor;
+            color: inherit;
+            font-weight: 650;
+            font-size: 14px
+        }
+
+        .nav-cta:hover {
+            color: #0A0B0E;
+            background: #FFFFFF;
+            border-color: #FFFFFF
+        }
+
+        .nav.solid .nav-cta:hover {
+            color: var(--bg);
+            background: var(--ink);
+            border-color: var(--ink)
+        }
+
+        /* ---------- buttons ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 52px;
+            padding: 0 22px;
+            border-radius: 14px;
+            font-weight: 650;
+            font-size: 15.5px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            transition: background-color .2s, border-color .2s, color .2s
+        }
+
+        .btn-light {
+            background: #FFFFFF;
+            color: #0C0D10
+        }
+
+        .btn-light:hover {
+            background: var(--glow);
+            color: #0C0D10
+        }
+
+        .btn-ghost {
+            color: #FFFFFF;
+            border-color: rgba(255, 255, 255, .4)
+        }
+
+        .btn-ghost:hover {
+            color: #FFFFFF;
+            border-color: #FFFFFF
+        }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px
+        }
+
+        /* ---------- HERO / INTRO ---------- */
+        .hero {
+            position: relative;
+            height: clamp(640px, 100svh, 960px);
+            overflow: hidden;
+            background: #0A0B0E;
+            color: #FFFFFF;
+            isolation: isolate
+        }
+
+        .stage {
+            position: absolute;
+            inset: 0
+        }
+
+        .wall-wrap {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            perspective: 1800px
+        }
+
+        .wall {
+            position: absolute;
+            left: -30%;
+            right: -30%;
+            top: -50%;
+            bottom: -50%;
+            display: grid;
+            grid-template-columns:repeat(5, minmax(0, 1fr));
+            gap: 22px;
+            transform: rotateX(26deg) rotateZ(-14deg)
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 22px
+        }
+
+        .col.c-a {
+            transform: translateY(-6%)
+        }
+
+        .col.c-b {
+            transform: translateY(-20%)
+        }
+
+        .tile {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            object-position: top left;
+            border-radius: 12px;
+            box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .75)
+        }
+
+        .scrim {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(9, 10, 13, .96) 0%, rgba(9, 10, 13, .86) 50%, rgba(9, 10, 13, .52) 100%), linear-gradient(0deg, rgba(9, 10, 13, .92) 0%, rgba(9, 10, 13, 0) 50%)
+        }
+
+        .curtain {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none
+        }
+
+        /* real browser window: the hero is exactly one screen and the intro overlay is pinned to the viewport, so it covers the screen at any scroll position */
+        .root.vp .hero {
+            height: 100vh;
+            height: 100svh;
+            min-height: 640px
+        }
+
+        .root.vp .curtain, .root.vp .hud {
+            position: fixed
+        }
+
+        .root.vp.intro .hero {
+            animation: heroTop 3.3s linear
+        }
+
+        @keyframes heroTop {
+            from, to {
+                z-index: 60
+            }
+        }
+
+        .half {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 50%;
+            overflow: hidden;
+            background: #0A0B0E
+        }
+
+        .half.top {
+            top: 0;
+            transform: translateY(-101%)
+        }
+
+        .half.bottom {
+            bottom: 0;
+            transform: translateY(101%)
+        }
+
+        .cname {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 200%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(56px, 14.5vw, 232px);
+            font-weight: 820;
+            letter-spacing: -.05em;
+            line-height: 1;
+            color: #FFFFFF;
+            white-space: nowrap
+        }
+
+        .half.top .cname {
+            top: 0
+        }
+
+        .half.bottom .cname {
+            bottom: 0
+        }
+
+        .cline {
+            display: inline-flex;
+            overflow: hidden;
+            padding: 0 .04em .1em
+        }
+
+        .c {
+            display: inline-block
+        }
+
+        .c.sp {
+            width: .26em
+        }
+
+        .seam {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            margin-top: -.5px;
+            background: #FFFFFF;
+            transform-origin: left center;
+            opacity: 0
+        }
+
+        .hud {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+            color: #FFFFFF;
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 12.5px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            opacity: 0
+        }
+
+        .hud > span {
+            position: absolute
+        }
+
+        .hud-tl {
+            left: 28px;
+            top: 26px
+        }
+
+        .hud-tr {
+            right: 28px;
+            top: 26px
+        }
+
+        .hud-br {
+            right: 28px;
+            bottom: 30px
+        }
+
+        .prog {
+            left: 28px;
+            bottom: 30px;
+            width: clamp(160px, 26vw, 340px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .prog-bar {
+            display: block;
+            height: 2px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, .2);
+            overflow: hidden
+        }
+
+        .prog-bar i {
+            display: block;
+            height: 100%;
+            background: #FFFFFF;
+            transform-origin: left center
+        }
+
+        .hero-in {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 112px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            z-index: 2
+        }
+
+        .h-eyebrow {
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .72);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .h-eyebrow::before {
+            content: "";
+            width: 28px;
+            height: 1px;
+            background: currentColor
+        }
+
+        .hh {
+            margin: 22px 0 0;
+            font-size: clamp(44px, 7vw, 108px);
+            line-height: 1.08;
+            letter-spacing: -.05em;
+            font-weight: 800
+        }
+
+        .hh .w {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+            padding-bottom: .1em;
+            margin-bottom: -.1em
+        }
+
+        .hh .w > span {
+            display: inline-block
+        }
+
+        .hh .acc {
+            color: var(--glow)
+        }
+
+        .h-p {
+            max-width: 560px;
+            margin: 26px 0 0;
+            font-size: 18px;
+            line-height: 1.75;
+            color: rgba(255, 255, 255, .78)
+        }
+
+        .hero-in .cta-row {
+            margin-top: 34px
+        }
+
+        .hero-foot {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 28px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 16px;
+            z-index: 2;
+            font-family: 'Geist Mono', ui-monospace, monospace;
+            font-size: 12px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .62)
+        }
+
+        .replay {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .3);
+            color: rgba(255, 255, 255, .86);
+            border-radius: 99px;
+            height: 44px;
+            padding: 0 16px;
+            font: inherit;
+            letter-spacing: .06em;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .replay:hover {
+            border-color: #FFFFFF;
+            color: #FFFFFF
+        }
+
+        /* intro timeline — base styles above are the END state */
+        .intro .nav {
+            animation: navIn .9s 3.6s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .cname {
+            animation: track 2s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .cname .c {
+            animation: upIn .9s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .cname .c:nth-child(2) {
+            animation-delay: .05s
+        }
+
+        .intro .cname .c:nth-child(3) {
+            animation-delay: .1s
+        }
+
+        .intro .cname .c:nth-child(5) {
+            animation-delay: .18s
+        }
+
+        .intro .cname .c:nth-child(6) {
+            animation-delay: .23s
+        }
+
+        .intro .cname .c:nth-child(7) {
+            animation-delay: .28s
+        }
+
+        .intro .cname .c:nth-child(8) {
+            animation-delay: .33s
+        }
+
+        .intro .cname .c:nth-child(9) {
+            animation-delay: .38s
+        }
+
+        .intro .seam {
+            animation: seam .8s 1.55s cubic-bezier(.7, 0, .2, 1) both
+        }
+
+        .intro .half.top {
+            animation: openUp 1.05s 2.05s cubic-bezier(.77, 0, .18, 1) both
+        }
+
+        .intro .half.bottom {
+            animation: openDown 1.05s 2.05s cubic-bezier(.77, 0, .18, 1) both
+        }
+
+        .intro .hud {
+            animation: hud 2.2s linear both
+        }
+
+        .intro .prog-bar i {
+            animation: prog 1.75s .15s cubic-bezier(.35, 0, .25, 1) both
+        }
+
+        .intro .wall {
+            animation: wallIn 2.2s 2.1s cubic-bezier(.16, 1, .3, 1) both
+        }
+
+        .intro .col.c-a {
+            animation: colA 2.8s 2.05s cubic-bezier(.16, 1, .3, 1) both
+        }
+
+        .intro .col.c-b {
+            animation: colB 2.8s 2.05s cubic-bezier(.16, 1, .3, 1) both
+        }
+
+        .intro .scrim {
+            animation: fadeIn 1s 2.45s ease both
+        }
+
+        .intro .h-eyebrow {
+            animation: fadeUp .8s 3s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .hh .w > span {
+            animation: upIn 1.05s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .h-p {
+            animation: fadeUp .9s 3.65s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .hero-in .cta-row {
+            animation: fadeUp .9s 3.8s cubic-bezier(.2, .8, .2, 1) both
+        }
+
+        .intro .hero-foot {
+            animation: fadeIn 1s 4.1s ease both
+        }
+
+        @keyframes navIn {
+            from {
+                opacity: 0;
+                transform: translateY(-24px)
+            }
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @keyframes hud {
+            0% {
+                opacity: 0
+            }
+            8%, 86% {
+                opacity: 1
+            }
+            100% {
+                opacity: 0
+            }
+        }
+
+        @keyframes upIn {
+            from {
+                transform: translateY(108%)
+            }
+            to {
+                transform: none
+            }
+        }
+
+        @keyframes track {
+            from {
+                letter-spacing: .06em
+            }
+            to {
+                letter-spacing: -.05em
+            }
+        }
+
+        @keyframes seam {
+            0% {
+                transform: scaleX(0);
+                opacity: 1
+            }
+            55% {
+                transform: scaleX(1);
+                opacity: 1
+            }
+            100% {
+                transform: scaleX(1);
+                opacity: 0
+            }
+        }
+
+        @keyframes openUp {
+            from {
+                transform: none
+            }
+            to {
+                transform: translateY(-101%)
+            }
+        }
+
+        @keyframes openDown {
+            from {
+                transform: none
+            }
+            to {
+                transform: translateY(101%)
+            }
+        }
+
+        @keyframes prog {
+            from {
+                transform: scaleX(0)
+            }
+            to {
+                transform: scaleX(1)
+            }
+        }
+
+        @keyframes wallIn {
+            from {
+                transform: rotateX(26deg) rotateZ(-14deg) scale(1.9);
+                opacity: 0
+            }
+            30% {
+                opacity: 1
+            }
+            to {
+                transform: rotateX(26deg) rotateZ(-14deg) scale(1);
+                opacity: 1
+            }
+        }
+
+        @keyframes colA {
+            from {
+                transform: translateY(-38%)
+            }
+            to {
+                transform: translateY(-6%)
+            }
+        }
+
+        @keyframes colB {
+            from {
+                transform: translateY(10%)
+            }
+            to {
+                transform: translateY(-20%)
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .root *, .root *::before, .root *::after {
+                animation: none !important
+            }
+        }
+
+        /* ---------- bento ---------- */
+        .bento {
+            display: grid;
+            grid-template-columns:repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            grid-auto-flow: dense
+        }
+
+        .c2 {
+            grid-column: span 2
+        }
+
+        .c4 {
+            grid-column: 1/-1
+        }
+
+        .card {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 24px;
+            overflow: hidden
+        }
+
+        .lift:hover {
+            border-color: color-mix(in srgb, var(--accent) 50%, var(--line))
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 196px
+        }
+
+        .num {
+            font-size: clamp(48px, 5vw, 68px);
+            font-weight: 780;
+            letter-spacing: -.055em;
+            line-height: 1;
+            display: flex;
+            align-items: flex-start;
+            padding: 4px 0 2px
+        }
+
+        .plus {
+            font-size: .5em;
+            color: var(--accent);
+            margin-left: 3px;
+            line-height: 1.1
+        }
+
+        .stat-cap {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .stat-cap b {
+            display: block;
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 650
+        }
+
+        .shipped {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            align-items: stretch
+        }
+
+        .ship-left {
+            flex: 0 0 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px
+        }
+
+        .ship-grid {
+            flex: 1 1 480px;
+            display: grid;
+            grid-template-columns:repeat(3, minmax(0, 1fr));
+            gap: 10px
+        }
+
+        .ship {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--soft);
+            border-radius: 16px;
+            padding: 8px 8px 16px;
+            color: var(--ink)
+        }
+
+        .ship:hover {
+            color: var(--ink);
+            background: var(--accent-soft)
+        }
+
+        .ship-img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            border-radius: 10px
+        }
+
+        .ship-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 0 8px
+        }
+
+        .ship b {
+            font-size: 17px;
+            font-weight: 740;
+            letter-spacing: -.02em
+        }
+
+        .ship small {
+            display: block;
+            padding: 0 8px;
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: var(--muted)
+        }
+
+        .gh {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 18px;
+            color: var(--ink);
+            min-height: 196px
+        }
+
+        .gh:hover {
+            color: var(--on-accent);
+            background: var(--accent);
+            border-color: var(--accent)
+        }
+
+        .gh:hover .lbl, .gh:hover .gh-sub {
+            color: var(--on-accent)
+        }
+
+        .gh-title {
+            font-size: 28px;
+            font-weight: 760;
+            letter-spacing: -.03em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px
+        }
+
+        .gh-arr {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid currentColor;
+            display: grid;
+            place-items: center
+        }
+
+        .gh-sub {
+            font-family: 'Geist Mono', monospace;
+            font-size: 12.5px;
+            color: var(--muted);
+            display: block;
+            margin-top: 6px
+        }
+
+        /* projects */
+        .tabs {
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px;
+            border-radius: 16px;
+            background: var(--soft);
+            border: 1px solid var(--line)
+        }
+
+        .tab {
+            height: 44px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: inherit;
+            font-size: 15px;
+            font-weight: 650;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .tab span {
+            font-family: 'Geist Mono', monospace;
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .tab:hover {
+            color: var(--ink)
+        }
+
+        .tab.on {
+            background: var(--card);
+            color: var(--ink);
+            box-shadow: 0 0 0 1px var(--line)
+        }
+
+        .pc {
+            padding: 10px;
+            display: flex;
+            flex-direction: column
+        }
+
+        .vis {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            flex: 0 0 auto;
+            background: var(--soft)
+        }
+
+        .pc.c1 .vis {
+            aspect-ratio: 16/11
+        }
+
+        .pc.feature {
+            display: grid;
+            grid-template-columns:minmax(0, 1.35fr) minmax(0, 1fr);
+            gap: 8px;
+            align-items: center
+        }
+
+        .pc.feature .pbody {
+            padding: 24px 28px
+        }
+
+        .pc.feature.flip .vis {
+            order: 2
+        }
+
+        .vis.photo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .07);
+            pointer-events: none
+        }
+
+        .shot {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top left;
+            display: block
+        }
+
+        .vis-dark {
+            background-color: var(--panel);
+            color: var(--panel-ink)
+        }
+
+        .vis-soft {
+            background-color: var(--soft);
+            background-image: radial-gradient(color-mix(in srgb, var(--ink) 12%, transparent) 1px, transparent 1.4px);
+            background-size: 16px 16px
+        }
+
+        .pbody {
+            padding: 20px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1 1 auto
+        }
+
+        .pmeta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .period {
+            font-family: 'Geist Mono', monospace;
+            font-size: 12.5px;
+            color: var(--muted)
+        }
+
+        .badge {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--muted);
+            padding: 3px 10px;
+            border-radius: 99px;
+            background: var(--soft)
+        }
+
+        .badge.on {
+            color: var(--accent);
+            background: var(--accent-soft)
+        }
+
+        .pt {
+            font-size: 24px;
+            line-height: 1.3;
+            font-weight: 740;
+            letter-spacing: -.03em;
+            margin: 0
+        }
+
+        .pd {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15.5px;
+            line-height: 1.7
+        }
+
+        .pts {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .pts li {
+            display: flex;
+            gap: 10px;
+            font-size: 14.5px;
+            line-height: 1.6
+        }
+
+        .pts li::before {
+            content: "";
+            flex: 0 0 6px;
+            height: 6px;
+            margin-top: 9px;
+            border-radius: 1.5px;
+            background: var(--accent);
+            transform: rotate(45deg)
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .tag {
+            font-family: 'Geist Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            line-height: 1.5
+        }
+
+        .more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 650;
+            font-size: 14.5px;
+            color: var(--ink);
+            margin-top: auto;
+            min-height: 44px;
+            align-self: flex-start
+        }
+
+        .more:hover {
+            color: var(--accent)
+        }
 
 
-/* mini cards */
-.mini{display:flex;flex-direction:column;gap:12px;padding:24px 24px 14px}
-.mini-ic{width:48px;height:48px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
-.mini .pt{font-size:19px}
-.mini .pd{font-size:14.5px}
-.ph{color:var(--accent)}
+        /* mini cards */
+        .mini {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 24px 24px 14px
+        }
 
-/* stack + steps */
-.stack-card{display:flex;flex-direction:column;gap:18px;min-height:196px}
-.stack-card h3{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
-.sk{display:flex;flex-wrap:wrap;gap:8px}
-.sk span{font-size:14px;font-weight:600;padding:7px 12px;border-radius:10px;background:var(--soft);color:var(--ink)}
-.sub-head{display:flex;align-items:center;gap:12px;margin:56px 0 16px}
-.sub-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
-.sub-head::after{content:"";flex:1;height:1px;background:var(--line)}
-.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.step{display:flex;flex-direction:column;gap:14px}
-.step-ic{width:48px;height:48px;border-radius:14px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
-.step h4{margin:0;font-size:18px;font-weight:720;letter-spacing:-.02em}
-.step p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.75}
+        .mini-ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            display: grid;
+            place-items: center
+        }
 
-/* career */
-.timeline{position:relative;display:flex;flex-direction:column;gap:16px}
-.timeline::before{content:"";position:absolute;left:215px;top:20px;bottom:20px;width:1px;background:var(--line)}
-.tl-item{display:grid;grid-template-columns:200px 32px minmax(0,1fr);align-items:start}
-.tl-when{font-family:'Geist Mono',monospace;font-size:14px;color:var(--muted);padding-top:30px}
-.tl-dot{width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);margin:35px auto 0;position:relative;z-index:1}
-.tl-item:first-child .tl-dot{background:var(--accent)}
-.tl-card{padding:30px;display:flex;flex-direction:column;gap:14px}
-.tl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
-.tl-head h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em}
-.tl-role{font-size:14.5px;color:var(--muted);font-weight:550}
-.tl-card p{margin:0;font-size:16px;line-height:1.8}
+        .mini .pt {
+            font-size: 19px
+        }
 
-/* education */
-.edu{padding:30px}
-.edu h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:18px;font-weight:720}
-.edu h3 svg{color:var(--accent)}
-.list{display:flex;flex-direction:column}
-.li{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:15px 0;border-top:1px solid var(--line)}
-.li:first-child{border-top:0}
-.li b{display:block;font-size:16px;font-weight:650;line-height:1.5}
-.li small{display:block;font-size:14px;color:var(--muted);margin-top:2px}
-.yr{font-family:'Geist Mono',monospace;font-size:13px;color:var(--muted);white-space:nowrap;padding-top:2px}
-.yr.new{color:var(--accent);font-weight:600}
+        .mini .pd {
+            font-size: 14.5px
+        }
 
-/* contact */
-.cta{background:var(--accent);border-color:var(--accent);color:var(--on-accent);padding:clamp(32px,5vw,64px);display:flex;flex-direction:column;gap:30px;border-radius:32px}
-.cta .eyebrow{color:var(--on-accent)}
-.cta-h{margin:0;font-size:clamp(32px,4.6vw,60px);line-height:1.18;letter-spacing:-.045em;font-weight:780;max-width:820px}
-.btn-inv{background:var(--on-accent);color:var(--accent)}
-.btn-inv:hover{background:var(--on-accent);color:var(--accent)}
-.btn-line{color:var(--on-accent);border-color:color-mix(in srgb,var(--on-accent) 45%,transparent)}
-.btn-line:hover{color:var(--on-accent);border-color:var(--on-accent)}
-.foot{max-width:1200px;margin:0 auto;padding:44px 24px 52px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
-.foot a{color:var(--muted);display:inline-flex;align-items:center;gap:6px;min-height:44px}
-.foot a:hover{color:var(--ink)}
-.credit{display:block;margin-top:6px;font-size:12px;opacity:.75}
+        .ph {
+            color: var(--accent)
+        }
 
-/* ---------- responsive ---------- */
-@media (max-width: 1080px){.nav-links{display:none}}
-@media (max-width: 960px){
-  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width: 720px){
-  .pc.feature{grid-template-columns:minmax(0,1fr)}
-  .pc.feature.flip .vis{order:0}
-  .pc.feature .pbody{padding:20px 16px 12px}
-  .timeline::before,.tl-dot{display:none}
-  .tl-item{grid-template-columns:minmax(0,1fr)}
-  .tl-when{padding:0 0 8px 4px}
-  .ship-left{flex-basis:100%}
-  .ship-grid{grid-template-columns:minmax(0,1fr)}
-  .hero-foot .h-meta{display:none}
-  .wall{left:-90%;right:-90%;top:-25%;bottom:-25%;gap:14px}
-  .col{gap:14px}
-  .scrim{background:linear-gradient(180deg,rgba(9,10,13,.42) 0%,rgba(9,10,13,.8) 36%,rgba(9,10,13,.96) 60%)}
-}
-@media (max-width: 600px){
-  .bento,.steps{grid-template-columns:minmax(0,1fr)}
-  .c2{grid-column:auto}
-  .sec{padding-top:80px}
-  .hero-in{bottom:96px}
-  .h-p{font-size:16.5px}
-  .tabs{display:flex;width:100%}
-  .tab{flex:1 1 0;justify-content:center;padding:0 8px}
-  .li{flex-direction:column;gap:4px}
-  .nav-cta{padding:0 14px}
-}
-</style>
+        /* stack + steps */
+        .stack-card {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-height: 196px
+        }
+
+        .stack-card h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 720;
+            letter-spacing: -.02em
+        }
+
+        .sk {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px
+        }
+
+        .sk span {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 12px;
+            border-radius: 10px;
+            background: var(--soft);
+            color: var(--ink)
+        }
+
+        .sub-head {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 56px 0 16px
+        }
+
+        .sub-head h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 740;
+            letter-spacing: -.025em
+        }
+
+        .sub-head::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--line)
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns:repeat(2, minmax(0, 1fr));
+            gap: 16px
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .step-ic {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--ink);
+            color: var(--bg);
+            display: grid;
+            place-items: center
+        }
+
+        .step h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 720;
+            letter-spacing: -.02em
+        }
+
+        .step p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 15.5px;
+            line-height: 1.75
+        }
+
+        /* career */
+        .timeline {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 215px;
+            top: 20px;
+            bottom: 20px;
+            width: 1px;
+            background: var(--line)
+        }
+
+        .tl-item {
+            display: grid;
+            grid-template-columns:200px 32px minmax(0, 1fr);
+            align-items: start
+        }
+
+        .tl-when {
+            font-family: 'Geist Mono', monospace;
+            font-size: 14px;
+            color: var(--muted);
+            padding-top: 30px
+        }
+
+        .tl-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            margin: 35px auto 0;
+            position: relative;
+            z-index: 1
+        }
+
+        .tl-item:first-child .tl-dot {
+            background: var(--accent)
+        }
+
+        .tl-card {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .tl-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 6px 12px
+        }
+
+        .tl-head h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 740;
+            letter-spacing: -.025em
+        }
+
+        .tl-role {
+            font-size: 14.5px;
+            color: var(--muted);
+            font-weight: 550
+        }
+
+        .tl-card p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.8
+        }
+
+        /* education */
+        .edu {
+            padding: 30px
+        }
+
+        .edu h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 14px;
+            font-size: 18px;
+            font-weight: 720
+        }
+
+        .edu h3 svg {
+            color: var(--accent)
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column
+        }
+
+        .li {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 15px 0;
+            border-top: 1px solid var(--line)
+        }
+
+        .li:first-child {
+            border-top: 0
+        }
+
+        .li b {
+            display: block;
+            font-size: 16px;
+            font-weight: 650;
+            line-height: 1.5
+        }
+
+        .li small {
+            display: block;
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 2px
+        }
+
+        .yr {
+            font-family: 'Geist Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+            white-space: nowrap;
+            padding-top: 2px
+        }
+
+        .yr.new {
+            color: var(--accent);
+            font-weight: 600
+        }
+
+        /* contact */
+        .cta {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent);
+            padding: clamp(32px, 5vw, 64px);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            border-radius: 32px
+        }
+
+        .cta .eyebrow {
+            color: var(--on-accent)
+        }
+
+        .cta-h {
+            margin: 0;
+            font-size: clamp(32px, 4.6vw, 60px);
+            line-height: 1.18;
+            letter-spacing: -.045em;
+            font-weight: 780;
+            max-width: 820px
+        }
+
+        .btn-inv {
+            background: var(--on-accent);
+            color: var(--accent)
+        }
+
+        .btn-inv:hover {
+            background: var(--on-accent);
+            color: var(--accent)
+        }
+
+        .btn-line {
+            color: var(--on-accent);
+            border-color: color-mix(in srgb, var(--on-accent) 45%, transparent)
+        }
+
+        .btn-line:hover {
+            color: var(--on-accent);
+            border-color: var(--on-accent)
+        }
+
+        .foot {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 44px 24px 52px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .foot a {
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px
+        }
+
+        .foot a:hover {
+            color: var(--ink)
+        }
+
+        .credit {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            opacity: .75
+        }
+
+        /* ---------- responsive ---------- */
+        @media (max-width: 1080px) {
+            .nav-links {
+                display: none
+            }
+        }
+
+        @media (max-width: 960px) {
+            .bento {
+                grid-template-columns:repeat(2, minmax(0, 1fr))
+            }
+
+            .steps {
+                grid-template-columns:repeat(2, minmax(0, 1fr))
+            }
+        }
+
+        @media (max-width: 720px) {
+            .pc.feature {
+                grid-template-columns:minmax(0, 1fr)
+            }
+
+            .pc.feature.flip .vis {
+                order: 0
+            }
+
+            .pc.feature .pbody {
+                padding: 20px 16px 12px
+            }
+
+            .timeline::before, .tl-dot {
+                display: none
+            }
+
+            .tl-item {
+                grid-template-columns:minmax(0, 1fr)
+            }
+
+            .tl-when {
+                padding: 0 0 8px 4px
+            }
+
+            .ship-left {
+                flex-basis: 100%
+            }
+
+            .ship-grid {
+                grid-template-columns:minmax(0, 1fr)
+            }
+
+            .hero-foot .h-meta {
+                display: none
+            }
+
+            .wall {
+                left: -90%;
+                right: -90%;
+                top: -25%;
+                bottom: -25%;
+                gap: 14px
+            }
+
+            .col {
+                gap: 14px
+            }
+
+            .scrim {
+                background: linear-gradient(180deg, rgba(9, 10, 13, .42) 0%, rgba(9, 10, 13, .8) 36%, rgba(9, 10, 13, .96) 60%)
+            }
+        }
+
+        @media (max-width: 600px) {
+            .bento, .steps {
+                grid-template-columns:minmax(0, 1fr)
+            }
+
+            .c2 {
+                grid-column: auto
+            }
+
+            .sec {
+                padding-top: 80px
+            }
+
+            .hero-in {
+                bottom: 96px
+            }
+
+            .h-p {
+                font-size: 16.5px
+            }
+
+            .tabs {
+                display: flex;
+                width: 100%
+            }
+
+            .tab {
+                flex: 1 1 0;
+                justify-content: center;
+                padding: 0 8px
+            }
+
+            .li {
+                flex-direction: column;
+                gap: 4px
+            }
+
+            .nav-cta {
+                padding: 0 14px
+            }
+        }
+    </style>
 </head>
 <body style="background:#0A0B0E">
 <div class="root intro vp" id="root">
-<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}if(d)document.getElementById('root').classList.add('dark')})();</script>
+    <script>(function () {
+        var d = false;
+        try {
+            var s = localStorage.getItem('theme');
+            d = s ? s === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+        } catch (e) {
+        }
+        if (d) document.getElementById('root').classList.add('dark')
+    })();</script>
 
-  <header class="nav" id="nav">
-    <div class="nav-in">
-      <a class="brand" href="#top"><span class="logo">SK</span><span>김수만</span></a>
-      <nav class="nav-links" aria-label="주요 섹션">
-        <a class="nl" href="#projects">프로젝트</a>
-        <a class="nl" href="#stack">기술 스택</a>
-        <a class="nl" href="#career">경력</a>
-        <a class="nl" href="#education">학력·자격</a>
-      </nav>
-      <div class="nav-act">
-        <button class="icon-btn" type="button" id="theme-btn" aria-label="다크 모드로 전환" aria-pressed="false">
-          <svg class="ic i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
-          <svg class="ic i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>
-        </button>
-        <a class="nav-cta" href="#contact">연락하기</a>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO + INTRO -->
-    <section class="hero" id="top" aria-label="소개">
-              <div class="stage">
-
-          <div class="wall-wrap" aria-hidden="true">
-            <div class="wall">
-              <div class="col c-a">
-                <img class="tile" src="images/op-donut.jpg" alt="">
-                <img class="tile" src="images/ai-dash.jpg" alt="">
-                <img class="tile" src="images/cy-main.jpg" alt="">
-                <img class="tile" src="images/link-a.jpg" alt="">
-                <img class="tile" src="images/weather-a.jpg" alt="">
-                <img class="tile" src="images/op-doors.jpg" alt="">
-                <img class="tile" src="images/ai-autogen.jpg" alt="">
-              </div>
-              <div class="col c-b">
-                <img class="tile" src="images/is-route.jpg" alt="">
-                <img class="tile" src="images/op-full.jpg" alt="">
-                <img class="tile" src="images/ai-bar.jpg" alt="">
-                <img class="tile" src="images/link-b.jpg" alt="">
-                <img class="tile" src="images/lune-a.jpg" alt="">
-                <img class="tile" src="images/is-full.jpg" alt="">
-                <img class="tile" src="images/snap-a.jpg" alt="">
-              </div>
-              <div class="col c-a">
-                <img class="tile" src="images/cy-main.jpg" alt="">
-                <img class="tile" src="images/ai-chatlog.jpg" alt="">
-                <img class="tile" src="images/is-notice.jpg" alt="">
-                <img class="tile" src="images/snap-card.jpg" alt="">
-                <img class="tile" src="images/aslan-a.jpg" alt="">
-                <img class="tile" src="images/ai-chat.jpg" alt="">
-                <img class="tile" src="images/is-donut.jpg" alt="">
-              </div>
-              <div class="col c-b">
-                <img class="tile" src="images/op-bars.jpg" alt="">
-                <img class="tile" src="images/shelter-a.jpg" alt="">
-                <img class="tile" src="images/cook-b.jpg" alt="">
-                <img class="tile" src="images/op-full.jpg" alt="">
-                <img class="tile" src="images/lune-b.jpg" alt="">
-                <img class="tile" src="images/ai-bar.jpg" alt="">
-                <img class="tile" src="images/snap-b.jpg" alt="">
-              </div>
-              <div class="col c-a">
-                <img class="tile" src="images/cook-a.jpg" alt="">
-                <img class="tile" src="images/op-doors.jpg" alt="">
-                <img class="tile" src="images/weather-b.jpg" alt="">
-                <img class="tile" src="images/ai-chatlog.jpg" alt="">
-                <img class="tile" src="images/hub-a.jpg" alt="">
-                <img class="tile" src="images/ai-dash.jpg" alt="">
-                <img class="tile" src="images/ai-list.jpg" alt="">
-              </div>
+    <header class="nav" id="nav">
+        <div class="nav-in">
+            <a class="brand" href="#top"><span class="logo">SK</span><span>김수만</span></a>
+            <nav class="nav-links" aria-label="주요 섹션">
+                <a class="nl" href="#projects">프로젝트</a>
+                <a class="nl" href="#stack">기술 스택</a>
+                <a class="nl" href="#career">경력</a>
+                <a class="nl" href="#education">학력·자격</a>
+            </nav>
+            <div class="nav-act">
+                <button class="icon-btn" type="button" id="theme-btn" aria-label="다크 모드로 전환" aria-pressed="false">
+                    <svg class="ic i-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+                    </svg>
+                    <svg class="ic i-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path>
+                    </svg>
+                </button>
+                <a class="nav-cta" href="#contact">연락하기</a>
             </div>
-          </div>
-          <div class="scrim" aria-hidden="true"></div>
+        </div>
+    </header>
 
-          <div class="curtain" aria-hidden="true">
-            <div class="half top">
-              <div class="cname"><span class="cline"><span class="c">K</span><span class="c">I</span><span class="c">M</span><span class="c sp"></span><span class="c">S</span><span class="c">U</span><span class="c">M</span><span class="c">A</span><span class="c">N</span></span></div>
+    <main>
+        <!-- HERO + INTRO -->
+        <section class="hero" id="top" aria-label="소개">
+            <div class="stage">
+
+                <div class="wall-wrap" aria-hidden="true">
+                    <div class="wall">
+                        <div class="col c-a">
+                            <img class="tile" src="images/op-donut.jpg" alt="">
+                            <img class="tile" src="images/ai-dash.jpg" alt="">
+                            <img class="tile" src="images/cy-main.jpg" alt="">
+                            <img class="tile" src="images/link-a.jpg" alt="">
+                            <img class="tile" src="images/weather-a.jpg" alt="">
+                            <img class="tile" src="images/op-doors.jpg" alt="">
+                            <img class="tile" src="images/ai-autogen.jpg" alt="">
+                        </div>
+                        <div class="col c-b">
+                            <img class="tile" src="images/is-route.jpg" alt="">
+                            <img class="tile" src="images/op-full.jpg" alt="">
+                            <img class="tile" src="images/ai-bar.jpg" alt="">
+                            <img class="tile" src="images/link-b.jpg" alt="">
+                            <img class="tile" src="images/lune-a.jpg" alt="">
+                            <img class="tile" src="images/is-full.jpg" alt="">
+                            <img class="tile" src="images/snap-a.jpg" alt="">
+                        </div>
+                        <div class="col c-a">
+                            <img class="tile" src="images/cy-main.jpg" alt="">
+                            <img class="tile" src="images/ai-chatlog.jpg" alt="">
+                            <img class="tile" src="images/is-notice.jpg" alt="">
+                            <img class="tile" src="images/snap-card.jpg" alt="">
+                            <img class="tile" src="images/aslan-a.jpg" alt="">
+                            <img class="tile" src="images/ai-chat.jpg" alt="">
+                            <img class="tile" src="images/is-donut.jpg" alt="">
+                        </div>
+                        <div class="col c-b">
+                            <img class="tile" src="images/op-bars.jpg" alt="">
+                            <img class="tile" src="images/shelter-a.jpg" alt="">
+                            <img class="tile" src="images/cook-b.jpg" alt="">
+                            <img class="tile" src="images/op-full.jpg" alt="">
+                            <img class="tile" src="images/lune-b.jpg" alt="">
+                            <img class="tile" src="images/ai-bar.jpg" alt="">
+                            <img class="tile" src="images/snap-b.jpg" alt="">
+                        </div>
+                        <div class="col c-a">
+                            <img class="tile" src="images/cook-a.jpg" alt="">
+                            <img class="tile" src="images/op-doors.jpg" alt="">
+                            <img class="tile" src="images/weather-b.jpg" alt="">
+                            <img class="tile" src="images/ai-chatlog.jpg" alt="">
+                            <img class="tile" src="images/hub-a.jpg" alt="">
+                            <img class="tile" src="images/ai-dash.jpg" alt="">
+                            <img class="tile" src="images/ai-list.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="scrim" aria-hidden="true"></div>
+
+                <div class="curtain" aria-hidden="true">
+                    <div class="half top">
+                        <div class="cname"><span class="cline"><span class="c">K</span><span class="c">I</span><span
+                                class="c">M</span><span class="c sp"></span><span class="c">S</span><span
+                                class="c">U</span><span class="c">M</span><span class="c">A</span><span
+                                class="c">N</span></span></div>
+                    </div>
+                    <div class="half bottom">
+                        <div class="cname"><span class="cline"><span class="c">K</span><span class="c">I</span><span
+                                class="c">M</span><span class="c sp"></span><span class="c">S</span><span
+                                class="c">U</span><span class="c">M</span><span class="c">A</span><span
+                                class="c">N</span></span></div>
+                    </div>
+                    <span class="seam"></span>
+                </div>
+
+                <div class="hud" aria-hidden="true">
+                    <span class="hud-tl">Portfolio — 2026</span>
+                    <span class="hud-tr">Full-Stack Developer</span>
+                    <span class="prog"><span>Loading</span><span class="prog-bar"><i></i></span></span>
+                    <span class="hud-br">서버부터 화면까지</span>
+                </div>
+
+                <div class="hero-in">
+                    <span class="h-eyebrow">Full-Stack Developer · 김수만</span>
+                    <h1 class="hh">
+                        <span class="w"><span style="animation-delay: 3.1s">서버부터</span></span>
+                        <span class="w"><span style="animation-delay: 3.19s">화면까지,</span></span>
+                        <br>
+                        <span class="w"><span class="acc" style="animation-delay: 3.3s">한 흐름으로</span></span>
+                        <span class="w"><span style="animation-delay: 3.4s">설계합니다.</span></span>
+                    </h1>
+                    <p class="h-p">안녕하세요, 풀스택 개발자 김수만입니다. 여러가지 도메인을 다루며 경험을 쌓고 서비스 전반의 안정성과 확장성을 고려하며 개발해왔습니다.</p>
+                    <div class="cta-row">
+                        <a class="btn btn-light" href="#projects">프로젝트 보기
+                            <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"></path>
+                            </svg>
+                        </a>
+                        <a class="btn btn-ghost" href="mailto:zzsdsdsd@gmail.com">
+                            <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                                <path d="M3 7l9 6 9-6"></path>
+                            </svg>
+                            이메일 보내기
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-foot">
+                    <!--            <button type="button" class="replay" id="replay-btn">-->
+                    <!--              <svg class="ic" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>-->
+                    <!--              인트로 다시 보기-->
+                    <!--            </button>-->
+                </div>
+
             </div>
-            <div class="half bottom">
-              <div class="cname"><span class="cline"><span class="c">K</span><span class="c">I</span><span class="c">M</span><span class="c sp"></span><span class="c">S</span><span class="c">U</span><span class="c">M</span><span class="c">A</span><span class="c">N</span></span></div>
-            </div>
-            <span class="seam"></span>
-          </div>
 
-          <div class="hud" aria-hidden="true">
-            <span class="hud-tl">Portfolio — 2026</span>
-            <span class="hud-tr">Full-Stack Developer</span>
-            <span class="prog"><span>Loading</span><span class="prog-bar"><i></i></span></span>
-            <span class="hud-br">서버부터 화면까지</span>
-          </div>
+        </section>
 
-          <div class="hero-in">
-            <span class="h-eyebrow">Full-Stack Developer · 김수만</span>
-            <h1 class="hh">
-              <span class="w"><span style="animation-delay: 3.1s">서버부터</span></span>
-              <span class="w"><span style="animation-delay: 3.19s">화면까지,</span></span>
-              <br>
-              <span class="w"><span class="acc" style="animation-delay: 3.3s">한 흐름으로</span></span>
-              <span class="w"><span style="animation-delay: 3.4s">설계합니다.</span></span>
-            </h1>
-            <p class="h-p">안녕하세요, 풀스택 개발자 김수만입니다. 여러가지 도메인을 다루며 경험을 쌓고 서비스 전반의 안정성과 확장성을 고려하며 개발해왔습니다.</p>
-            <div class="cta-row">
-              <a class="btn btn-light" href="#projects">프로젝트 보기
-                <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-              </a>
-              <a class="btn btn-ghost" href="mailto:zzsdsdsd@gmail.com">
-                <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
-                이메일 보내기
-              </a>
-            </div>
-          </div>
-
-          <div class="hero-foot">
-            <button type="button" class="replay" id="replay-btn">
-              <svg class="ic" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
-              인트로 다시 보기
-            </button>
-          </div>
-
-        </div>
-      
-</section>
-
-    <!-- ABOUT -->
-    <section class="wrap" style="padding-top: 24px" aria-label="요약">
-      <div class="bento">
-        <div class="card stat">
-          <span class="lbl">Experience</span>
-          <div>
-            <div class="num">5<span class="plus">+</span></div>
-            <span class="stat-cap">년 실무 경력</span>
-          </div>
-        </div>
-        <div class="card stat">
-          <span class="lbl">Projects</span>
-          <div>
-            <div class="num">13</div>
-            <span class="stat-cap">설계·구현 프로젝트</span>
-          </div>
-        </div>
-        <div class="card stat">
-          <span class="lbl">Certificates</span>
-          <div>
-            <div class="num">5</div>
-            <span class="stat-cap"><b>보유 자격증</b>정보처리기사 · SQLD · AWS SAA 외</span>
-          </div>
-        </div>
-        <a class="card gh lift" href="https://github.com/suman-kim">
-          <span class="lbl">Code</span>
-          <div>
+        <!-- ABOUT -->
+        <section class="wrap" style="padding-top: 24px" aria-label="요약">
+            <div class="bento">
+                <div class="card stat">
+                    <span class="lbl">Experience</span>
+                    <div>
+                        <div class="num">5<span class="plus">+</span></div>
+                        <span class="stat-cap">년 실무 경력</span>
+                    </div>
+                </div>
+                <div class="card stat">
+                    <span class="lbl">Projects</span>
+                    <div>
+                        <div class="num">13</div>
+                        <span class="stat-cap">설계·구현 프로젝트</span>
+                    </div>
+                </div>
+                <div class="card stat">
+                    <span class="lbl">Certificates</span>
+                    <div>
+                        <div class="num">5</div>
+                        <span class="stat-cap"><b>보유 자격증</b>정보처리기사 · SQLD · AWS SAA 외</span>
+                    </div>
+                </div>
+                <a class="card gh lift" href="https://github.com/suman-kim">
+                    <span class="lbl">Code</span>
+                    <div>
             <span class="gh-title">GitHub
-              <span class="gh-arr"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></span>
+              <span class="gh-arr"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path
+                      d="M7 17L17 7M8 7h9v9"></path></svg></span>
             </span>
-            <span class="gh-sub">github.com/suman-kim</span>
-          </div>
+                        <span class="gh-sub">github.com/suman-kim</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="sub-head"><h3>일하는 방식</h3></div>
+            <div class="steps">
+                <div class="card step">
+                    <div class="row-b">
+                        <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"
+                                                   aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"></path><path
+                                d="M2 12l10 5 10-5M2 17l10 5 10-5"></path></svg></span>
+                    </div>
+                    <h4>설계</h4>
+                    <p>복잡하게 얽힌 비즈니스 문제를 만나면 도메인 주도 설계(DDD)와 클린 아키텍처를 활용해 차근차근 구조화하는 과정에서 큰 재미를 느낍니다.</p>
+                    <div class="tags"><span class="tag">DDD</span><span class="tag">Clean / Hexagonal</span><span
+                            class="tag">CQRS</span><span class="tag">TDD</span></div>
+                </div>
+                <div class="card step">
+                    <div class="row-b">
+                        <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"
+                                                   aria-hidden="true"><path
+                                d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 9.5a4.5 4.5 0 0 1-1.5 8.5"></path><path
+                                d="M12 12v8M9 15l3-3 3 3"></path></svg></span>
+                    </div>
+                    <h4>배포</h4>
+                    <p>클라우드 환경은 AWS를 주로 다루고 운영해 왔습니다. Jenkins, N8N, AWS CodePipeline 등으로 CI/CD 배포 파이프라인을 직접 구축해 개발부터 서비스
+                        운영까지 매끄럽게 이어지는 환경을 구성했습니다.</p>
+                    <div class="tags"><span class="tag">AWS</span><span class="tag">Jenkins</span><span
+                            class="tag">N8N</span><span class="tag">AWS CodePipeline</span><span
+                            class="tag">Docker</span></div>
+                </div>
+                <div class="card step">
+                    <div class="row-b">
+                        <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"
+                                                   aria-hidden="true"><path
+                                d="M3 12h4l3-8 4 16 3-8h4"></path></svg></span>
+                    </div>
+                    <h4>모니터링</h4>
+                    <p>애플리케이션의 실시간 상태를 다각도로 파악하기 위해 Prometheus와 Grafana, AWS CloudWatch와 CloudTrail을 연동한 모니터링 시스템을 직접
+                        구축했습니다. 핵심 서비스 지표와 인프라 상태를 실시간으로 추적하고, 장애가 생기면 즉시 감지해 대응할 수 있는 운영 환경을 만들었습니다.</p>
+                    <div class="tags"><span class="tag">Prometheus</span><span class="tag">Grafana</span><span
+                            class="tag">AWS CloudWatch</span><span class="tag">CloudTrail</span></div>
+                </div>
+                <div class="card step">
+                    <div class="row-b">
+                        <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"
+                                                   aria-hidden="true"><rect x="3" y="4" width="18" height="16"
+                                                                            rx="2"></rect><path
+                                d="M7 9l3 3-3 3M13 15h4"></path></svg></span>
+                    </div>
+                    <h4>AI 활용</h4>
+                    <p>최근에는 AI를 적극적으로 활용합니다. Claude Code를 매일 쓰는 개발 도구로 두고, 여러 세션을 동시에 돌릴 때 맥락이 끊기거나 규칙이 지켜지지 않는 문제를 막으려고
+                        task 관리, 작업 격리, PR 생성까지 이어지는 관제 서버를 직접 만들어 쓰고 있습니다. AI에게 맡길 일과 제가 판단할 일을 나누고, 결과는 항상 PR로 받아 직접
+                        검토한 뒤 반영합니다.</p>
+                    <div class="tags"><span class="tag">Claude Code</span><span class="tag">MCP</span><span class="tag">Hooks</span><span
+                            class="tag">Git worktree</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section class="wrap sec" id="projects">
+            <div class="sec-head">
+                <div>
+                    <span class="eyebrow">01 · Projects</span>
+                    <h2 class="h2">프로젝트</h2>
+                    <p class="lead">회사 4개, 개인 9개 — 직접 설계하고 구현한 서비스들입니다.</p>
+                </div>
+                <div class="tabs" role="group" aria-label="프로젝트 분류">
+                    <button type="button" class="tab on" data-filter="all" aria-pressed="true">전체 <span>13</span>
+                    </button>
+                    <button type="button" class="tab" data-filter="work" aria-pressed="false">회사 <span>4</span></button>
+                    <button type="button" class="tab" data-filter="personal" aria-pressed="false">개인 <span>9</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bento">
+                <article data-cat="work" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드 화면">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2021 — 2025</span><span
+                                class="badge">회사 · 포커스에이아이</span></div>
+                        <h3 class="pt">ONEPASS PRO</h3>
+                        <p class="pd">얼굴 인식 기반 출입통제·근태 관리 플랫폼. 단말에서 올라오는 이벤트를 실시간으로 처리하고 WebSocket으로 모니터링합니다.</p>
+                        <ul class="pts">
+                            <li>단말 이벤트 실시간 수집 서버 설계</li>
+                            <li>WebSocket 기반 실시간 모니터링 화면</li>
+                            <li>Redis 캐싱으로 출입 판정 지연 단축</li>
+                        </ul>
+                        <div class="tags"><span class="tag">Node.js</span><span class="tag">Express</span><span
+                                class="tag">Socket.IO</span><span class="tag">MySQL</span><span class="tag">Redis</span>
+                        </div>
+                        <a class="more" href="Project-ONEPASS-PRO.dc.html">자세히 보기
+                            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17L17 7M8 7h9v9"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article data-cat="work" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/is-full.jpg" alt="아이스쿨 원장용 대시보드 화면">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2021 — 2025</span><span
+                                class="badge">회사 · 포커스에이아이</span></div>
+                        <h3 class="pt">아이스쿨</h3>
+                        <p class="pd">GPS로 통학버스 위치를 추적하고, 승·하차 시 학부모에게 알림을 보내는 통학버스 안전 솔루션.</p>
+                        <ul class="pts">
+                            <li>GPS 스트림 수집과 실시간 위치 표시</li>
+                            <li>승·하차 이벤트 기반 학부모 알림 파이프라인</li>
+                            <li>운영 관리자용 대시보드</li>
+                        </ul>
+                        <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span
+                                class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">React</span>
+                        </div>
+                        <a class="more" href="Project-iSchool.dc.html">자세히 보기
+                            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17L17 7M8 7h9v9"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article data-cat="work" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/aslan-card.jpg" alt="아슬란 통합 관제 콘솔 — 1+5 분할 라이브 뷰와 실시간 이벤트"
+                             style="object-position: top left">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2021 — 2025</span><span
+                                class="badge">회사 · 포커스에이아이</span></div>
+                        <h3 class="pt">아슬란 (ASLAN)</h3>
+                        <p class="pd">CCTV·NVR을 하나의 웹에서 관제하는 통합 모니터링 서비스. 라이브 스트리밍, 녹화 관리, 이벤트 알림을 제공합니다.</p>
+                        <ul class="pts">
+                            <li>다채널 라이브 스트리밍과 이벤트 알림 통합</li>
+                            <li>녹화 영상 검색·관리 기능</li>
+                            <li>Next.js 프론트엔드와 NestJS 백엔드 전담</li>
+                        </ul>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span
+                                class="tag">Redis</span><span class="tag">WebSocket</span><span
+                                class="tag">Next.js</span></div>
+                    </div>
+                </article>
+
+                <article data-cat="work" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/shelter-card.jpg" alt="스마트쉘터 농장 현황 — 온실 평면도 위 구역별 토양 수분과 관수 상태"
+                             style="object-position: top left">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2021 — 2025</span><span
+                                class="badge">회사 · 포커스에이아이</span></div>
+                        <h3 class="pt">스마트쉘터</h3>
+                        <p class="pd">온·습도 센싱, 자동 관수, 환경 모니터링을 제공하는 IoT 스마트팜 시스템.</p>
+                        <ul class="pts">
+                            <li>MQTT 센서 데이터 수집부터 대시보드까지</li>
+                            <li>임계값 기반 자동 관수 로직</li>
+                        </ul>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">MySQL</span><span
+                                class="tag">MQTT</span><span class="tag">React</span></div>
+                    </div>
+                </article>
+
+
+                <article data-cat="personal" class="card c4 pc feature lift" id="p-snapmark">
+                    <div class="vis photo">
+                        <img class="shot" src="images/snap-card.jpg" alt="Snapmark 보관함·확인 후 저장·사이트 화면"
+                             style="object-position: center">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">출시</span></div>
+                        <h3 class="pt">Snapmark</h3>
+                        <p class="pd">스크린샷 속 주소와 글자를 읽어 북마크로 보관하는 Android 앱. 글자 인식은 기기 안에서만 처리하고, 북마크는 주소의 사이트별로 자동
+                            분류합니다.</p>
+                        <ul class="pts">
+                            <li>온디바이스 글자 인식으로 주소·제목 추출 — 이미지는 기기 밖으로 나가지 않음</li>
+                            <li>잘린 주소 감지와 직접 고치기·제목으로 찾기</li>
+                            <li>제목·주소·화면 속 글자까지 검색하고, 찾은 위치를 형광펜으로 표시</li>
+                        </ul>
+                        <div class="tags"><span class="tag">Flutter</span><span class="tag">Android</span></div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift" id="p-link">
+                    <div class="vis photo">
+                        <img class="shot" src="images/link-card.jpg" alt="Link 홈 피드·둘러보기·프로필 화면"
+                             style="object-position: center">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">출시</span></div>
+                        <h3 class="pt">Link</h3>
+                        <p class="pd">피드, 랜덤 1:1 채팅 매칭, 음성 채팅방을 중심으로 한 소셜 채팅 앱. NestJS 클린 아키텍처 백엔드와 Flutter 앱을
+                            Socket.IO로 연결해 Google Play에 출시했습니다.</p>
+                        <ul class="pts">
+                            <li>피드 · 스토리 · 관심사 기반 둘러보기와 필터</li>
+                            <li>휴대폰 본인인증, 신고·차단 등 운영 안전 장치</li>
+                            <li>코인과 프리미엄 구독으로 이어지는 결제 흐름</li>
+                        </ul>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">TypeORM</span><span
+                                class="tag">PostgreSQL</span><span class="tag">Flutter</span><span
+                                class="tag">Socket.IO</span></div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/hub-card.jpg" alt="Hub 대시보드 — 앱별 세션과 진행 중인 task 현황"
+                             style="object-position: top left">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge">개인</span></div>
+                        <h3 class="pt">AI 에이전트 통합 관제 시스템</h3>
+                        <p class="pd">Claude Code 세션에 작업 컨텍스트를 주입하고, worktree 격리부터 PR 생성까지 자동화하는 로컬 관제 서버.</p>
+                        <ul class="pts">
+                            <li>Hook·MCP로 task 컨텍스트 주입</li>
+                            <li>worktree → 에이전트 실행 → 검사 → PR 자동화</li>
+                            <li>task 없는 편집 차단, push는 서버가 전담</li>
+                        </ul>
+                        <div class="tags"><span class="tag">TypeScript</span><span class="tag">NestJS</span><span
+                                class="tag">PostgreSQL</span><span class="tag">pg-boss</span><span
+                                class="tag">MCP</span></div>
+                        <a class="more" href="agent-control.html">자세히 보기
+                            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17L17 7M8 7h9v9"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/ai-dash.jpg" alt="AI 캐릭터 채팅 관리자 콘솔 대시보드 화면">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">개발 중</span></div>
+                        <h3 class="pt">AI 캐릭터 채팅</h3>
+                        <p class="pd">AI 캐릭터와 1:1로 대화하는 채팅 서비스. 사용자 앱과 함께, 캐릭터 검토·자동 생성과 신고·매출을 다루는 운영자용 관리자 콘솔까지
+                            설계했습니다.</p>
+                        <ul class="pts">
+                            <li>무료 횟수 · 코인 · 구독을 묶은 과금 구조와 결제·환불 흐름</li>
+                            <li>일정·예산·검토 대기 한도로 비용을 통제하는 캐릭터 자동 생성</li>
+                            <li>역할별 권한, 위험 조치 사유 기록, 대화 열람 감사 기록</li>
+                        </ul>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span
+                                class="tag">Docker</span><span class="tag">Ollama</span><span class="tag">Flutter</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift">
+                    <div class="vis photo">
+                        <img class="shot" src="images/cook-card.jpg" alt="AI 쿠킹 홈·레시피 생성·완료 화면"
+                             style="object-position: center">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge">개인</span></div>
+                        <h3 class="pt">AI 쿠킹</h3>
+                        <p class="pd">냉장고 재료와 가족의 취향·알레르기를 이해하고, 메뉴 추천부터 AI 레시피 생성, 장보기, 요리 가이드까지 돕는 AI 요리 비서 앱.</p>
+                        <ul class="pts">
+                            <li>보유 재료와 유통기한을 고려한 오늘의 메뉴 추천</li>
+                            <li>사진·말로 재료 입력, 인원·맵기·알레르기에 맞춘 AI 레시피 생성</li>
+                            <li>장보기 목록과 냉장고 재고 연동</li>
+                        </ul>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span
+                                class="tag">Flutter</span></div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift" id="p-cyphers">
+                    <div class="vis photo">
+                        <img class="shot" src="images/cy-main.jpg" alt="사이퍼즈 메타 전적·통계 검색 화면">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">운영 중</span></div>
+                        <h3 class="pt">사이퍼즈 메타</h3>
+                        <p class="pd">네오플 오픈 API로 매치 데이터를 수집·집계해 캐릭터별 승률·픽률을 보여주는 게임 통계 서비스.</p>
+                        <div class="tags"><span class="tag">NestJS</span><span class="tag">Next.js</span><span
+                                class="tag">PostgreSQL</span><span class="tag">Redis</span></div>
+                        <a class="more" href="https://www.cyphers-meta.co.kr">사이트 방문
+                            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 17L17 7M8 7h9v9"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c2 pc lift" id="p-lune">
+                    <div class="vis photo">
+                        <img class="shot" src="images/lune-card.jpg" alt="Lune 다크 테마 탐색·프로필·대화 화면"
+                             style="object-position: center">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">비공개 테스트</span></div>
+                        <h3 class="pt">Lune</h3>
+                        <p class="pd">관심사와 지역으로 새로운 사람을 찾고, 채팅·음성·영상 통화로 대화하는 1:1 소셜 앱.</p>
+                        <ul class="pts">
+                            <li>WebRTC 1:1 음성·영상 통화, coturn TURN 서버와 분 단위 코인 과금</li>
+                            <li>CallKit VoIP 푸시·전체 화면 수신 알림과 FCM 메시지 알림</li>
+                            <li>휴대폰 본인인증, 신고·차단·금칙어 감지로 안전한 대화 환경</li>
+                        </ul>
+                        <div class="tags"><span class="tag">WebRTC</span><span class="tag">coturn</span><span
+                                class="tag">FCM</span><span class="tag">AWS</span><span class="tag">Terraform</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c4 pc feature flip lift" id="p-weather">
+                    <div class="vis photo">
+                        <img class="shot" src="images/weather-card.jpg" alt="오늘날씨 날씨별 다이내믹 테마 홈 화면 5종"
+                             style="object-position: center">
+                    </div>
+                    <div class="pbody">
+                        <div class="pmeta"><span class="period">2026</span><span class="badge on">개발 중</span></div>
+                        <h3 class="pt">오늘날씨</h3>
+                        <p class="pd">날씨와 시간대에 따라 화면 테마가 바뀌는 Android 날씨 앱. 예보·대기질·생활지수·특보에 AI 브리핑, 위젯·푸시, 레이더 지도까지 담아
+                            Play 스토어 출시를 준비하고 있습니다.</p>
+                        <ul class="pts">
+                            <li>맑음·비·눈·노을·밤 5가지 다이내믹 테마와 자체 디자인 시스템</li>
+                            <li>NestJS 모듈러 모놀리스 + 예약 수집, 아웃박스 기반 도메인 이벤트</li>
+                            <li>AI 브리핑은 생성기 포트로 분리해 LLM을 바꿔 끼울 수 있게 설계</li>
+                        </ul>
+                        <div class="tags"><span class="tag">Flutter</span><span class="tag">Riverpod</span><span
+                                class="tag">NestJS</span><span class="tag">TypeORM</span><span
+                                class="tag">MySQL</span><span class="tag">FCM</span></div>
+                    </div>
+                </article>
+
+                <article data-cat="personal" class="card c4 mini lift">
+                    <span class="mini-ic"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path
+                            d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg></span>
+                    <div class="pmeta"><span class="period">2025</span><span class="badge">개인</span></div>
+                    <h3 class="pt">주식 자동매매 시스템</h3>
+                    <p class="pd">전략 패턴으로 매매 로직을 교체할 수 있게 설계하고, 시세 수집 파이프라인과 실행 엔진을 분리했습니다.</p>
+                    <div class="tags"><span class="tag">TypeScript</span><span class="tag">NestJS</span><span
+                            class="tag">전략 패턴</span></div>
+                    <a class="more" href="https://github.com/suman-kim/auto-trade-server">GitHub
+                        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 17L17 7M8 7h9v9"></path>
+                        </svg>
+                    </a>
+                </article>
+
+
+            </div>
+        </section>
+
+        <!-- STACK -->
+        <section class="wrap sec" id="stack">
+            <div class="sec-head">
+                <div>
+                    <span class="eyebrow">02 · Tech Stack</span>
+                    <h2 class="h2">기술 스택</h2>
+                </div>
+            </div>
+            <div class="bento">
+                <div class="card stack-card">
+                    <span class="lbl">01</span>
+                    <h3>언어 · 프레임워크</h3>
+                    <div class="sk">
+                      <span>Java</span>
+                      <span>Spring Boot</span>
+                      <span>Node.js</span>
+                      <span>NestJS</span>
+                      <span>Python</span>
+                      <span>FastAPI</span>
+                      <span>React</span>
+                      <span>React Native</span>
+                      <span>Flutter</span>
+                    </div>
+                </div>
+                <div class="card stack-card">
+                    <span class="lbl">02</span>
+                    <h3>아키텍처</h3>
+                    <div class="sk">
+                        <span>DDD</span><span>Clean / Hexagonal</span><span>MSA</span><span>CQRS</span><span>TDD</span>
+                    </div>
+                </div>
+                <div class="card stack-card">
+                    <span class="lbl">03</span>
+                    <h3>데이터베이스</h3>
+                    <div class="sk"><span>MySQL</span><span>PostgreSQL</span><span>Redis</span><span>MongoDB</span>
+                    </div>
+                </div>
+                <div class="card stack-card">
+                    <span class="lbl">04</span>
+                    <h3>클라우드 · 실시간</h3>
+                    <div class="sk"><span>AWS</span><span>Docker</span><span>WebSocket</span><span>Kafka</span><span>MQTT</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CAREER -->
+        <section class="wrap sec" id="career">
+            <div class="sec-head">
+                <div>
+                    <span class="eyebrow">03 · Career</span>
+                    <h2 class="h2">경력</h2>
+                </div>
+            </div>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-when">2025.10 — 2026.01</div>
+                    <div class="tl-dot" aria-hidden="true"></div>
+                    <div class="card tl-card">
+                        <div class="tl-head"><h3>더블다운인터액티브</h3><span class="tl-role">Backend Developer</span></div>
+                        <p>Xsolla·Google Play·Apple Pay를 통합하는 결제 어댑터를 Strategy/Factory 패턴으로 설계하고, Resilience4j 기반
+                            Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
+                        <div class="tags"><span class="tag">Xsolla</span><span class="tag">Google Play</span><span
+                                class="tag">Apple Pay</span><span class="tag">Strategy · Factory</span><span
+                                class="tag">Resilience4j</span></div>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-when">2021.04 — 2025.09</div>
+                    <div class="tl-dot" aria-hidden="true"></div>
+                    <div class="card tl-card">
+                        <div class="tl-head"><h3>포커스에이아이</h3><span
+                                class="tl-role">Smart Access 팀 · Full-Stack Developer</span></div>
+                        <p>ONEPASS PRO 얼굴 인식 출입통제 시스템을 개발하고, 아이스쿨 통학버스, 아슬란 CCTV 관제, 스마트쉘터 IoT 스마트팜 등 실시간 하드웨어 연동 서버를
+                            구축했습니다.</p>
+                        <div class="tags"><span class="tag">ONEPASS PRO</span><span class="tag">아이스쿨</span><span
+                                class="tag">아슬란</span><span class="tag">스마트쉘터</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section class="wrap sec" id="education">
+            <div class="sec-head">
+                <div>
+                    <span class="eyebrow">04 · Education &amp; Certifications</span>
+                    <h2 class="h2">학력 · 자격</h2>
+                </div>
+            </div>
+            <div class="bento">
+                <div class="card c2 edu">
+                    <h3>
+                        <svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M22 9L12 4 2 9l10 5 10-5z"></path>
+                            <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path>
+                        </svg>
+                        학력
+                    </h3>
+                    <div class="list">
+                        <div class="li">
+                            <div><b>한국방송통신대학교</b><small>컴퓨터과학과 · 편입</small></div>
+                            <span class="yr">2023 — 2025</span></div>
+                        <div class="li">
+                            <div><b>이젠아카데미</b><small>Java 웹 &amp; 앱 개발자 과정</small></div>
+                            <span class="yr">2020 — 2021</span></div>
+                        <div class="li">
+                            <div><b>학점은행제</b><small>정보처리과</small></div>
+                            <span class="yr">2015 — 2017</span></div>
+                        <div class="li">
+                            <div><b>한세대학교</b><small>광고홍보학과 · 중퇴</small></div>
+                            <span class="yr">2011 — 2012</span></div>
+                    </div>
+                </div>
+                <div class="card c2 edu">
+                    <h3>
+                        <svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="9" r="6"></circle>
+                            <path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path>
+                        </svg>
+                        자격증
+                    </h3>
+                    <div class="list">
+                        <div class="li">
+                            <div><b>정보처리기사</b></div>
+                            <span class="yr new">2026</span></div>
+                        <div class="li">
+                            <div><b>SQLD</b><small>SQL 개발자</small></div>
+                            <span class="yr new">2026</span></div>
+                        <div class="li">
+                            <div><b>AWS Solutions Architect – Associate</b></div>
+                            <span class="yr">2023</span></div>
+                        <div class="li">
+                            <div><b>컴퓨터활용능력 2급</b></div>
+                            <span class="yr">2022</span></div>
+                        <div class="li">
+                            <div><b>정보기기운용기능사</b></div>
+                            <span class="yr">2010</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section class="wrap sec" id="contact">
+            <div class="card cta">
+                <span class="eyebrow">05 · Contact</span>
+                <h2 class="cta-h">함께 좋은 시스템을<br>만들어 나가고 싶습니다.</h2>
+                <div class="cta-row">
+                    <a class="btn btn-inv" href="mailto:zzsdsdsd@gmail.com">
+                        <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                            <path d="M3 7l9 6 9-6"></path>
+                        </svg>
+                        zzsdsdsd@gmail.com
+                    </a>
+                    <a class="btn btn-line" href="https://github.com/suman-kim">GitHub
+                        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 17L17 7M8 7h9v9"></path>
+                        </svg>
+                    </a>
+                    <a class="btn btn-line" href="https://ssirioops.tistory.com/">기술 블로그
+                        <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M7 17L17 7M8 7h9v9"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="foot">
+        <span>© 2026 김수만 · Full-Stack Developer<small class="credit">아슬란 화면 속 CCTV 영상: Intel IoT DevKit sample-videos (CC BY 4.0)</small></span>
+        <a href="#top">맨 위로
+            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 19V5M6 11l6-6 6 6"></path>
+            </svg>
         </a>
-      </div>
-
-      <div class="sub-head"><h3>일하는 방식</h3></div>
-      <div class="steps">
-        <div class="card step">
-          <div class="row-b">
-            <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"></path><path d="M2 12l10 5 10-5M2 17l10 5 10-5"></path></svg></span>
-          </div>
-          <h4>설계</h4>
-          <p>복잡하게 얽힌 비즈니스 문제를 만나면 도메인 주도 설계(DDD)와 클린 아키텍처를 활용해 차근차근 구조화하는 과정에서 큰 재미를 느낍니다.</p>
-          <div class="tags"><span class="tag">DDD</span><span class="tag">Clean / Hexagonal</span><span class="tag">CQRS</span><span class="tag">TDD</span></div>
-        </div>
-        <div class="card step">
-          <div class="row-b">
-            <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 9.5a4.5 4.5 0 0 1-1.5 8.5"></path><path d="M12 12v8M9 15l3-3 3 3"></path></svg></span>
-          </div>
-          <h4>배포</h4>
-          <p>클라우드 환경은 AWS를 주로 다루고 운영해 왔습니다. Jenkins, N8N, AWS CodePipeline 등으로 CI/CD 배포 파이프라인을 직접 구축해 개발부터 서비스 운영까지 매끄럽게 이어지는 환경을 구성했습니다.</p>
-          <div class="tags"><span class="tag">AWS</span><span class="tag">Jenkins</span><span class="tag">N8N</span><span class="tag">AWS CodePipeline</span><span class="tag">Docker</span></div>
-        </div>
-        <div class="card step">
-          <div class="row-b">
-            <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"></path></svg></span>
-          </div>
-          <h4>모니터링</h4>
-          <p>애플리케이션의 실시간 상태를 다각도로 파악하기 위해 Prometheus와 Grafana, AWS CloudWatch와 CloudTrail을 연동한 모니터링 시스템을 직접 구축했습니다. 핵심 서비스 지표와 인프라 상태를 실시간으로 추적하고, 장애가 생기면 즉시 감지해 대응할 수 있는 운영 환경을 만들었습니다.</p>
-          <div class="tags"><span class="tag">Prometheus</span><span class="tag">Grafana</span><span class="tag">AWS CloudWatch</span><span class="tag">CloudTrail</span></div>
-        </div>
-        <div class="card step">
-          <div class="row-b">
-            <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 9l3 3-3 3M13 15h4"></path></svg></span>
-          </div>
-          <h4>AI 활용</h4>
-          <p>최근에는 AI를 적극적으로 활용합니다. Claude Code를 매일 쓰는 개발 도구로 두고, 여러 세션을 동시에 돌릴 때 맥락이 끊기거나 규칙이 지켜지지 않는 문제를 막으려고 task 관리, 작업 격리, PR 생성까지 이어지는 관제 서버를 직접 만들어 쓰고 있습니다. AI에게 맡길 일과 제가 판단할 일을 나누고, 결과는 항상 PR로 받아 직접 검토한 뒤 반영합니다.</p>
-          <div class="tags"><span class="tag">Claude Code</span><span class="tag">MCP</span><span class="tag">Hooks</span><span class="tag">Git worktree</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section class="wrap sec" id="projects">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">01 · Projects</span>
-          <h2 class="h2">프로젝트</h2>
-          <p class="lead">회사 4개, 개인 9개 — 직접 설계하고 구현한 서비스들입니다.</p>
-        </div>
-        <div class="tabs" role="group" aria-label="프로젝트 분류">
-          <button type="button" class="tab on" data-filter="all" aria-pressed="true">전체 <span>13</span></button>
-          <button type="button" class="tab" data-filter="work" aria-pressed="false">회사 <span>4</span></button>
-          <button type="button" class="tab" data-filter="personal" aria-pressed="false">개인 <span>9</span></button>
-        </div>
-      </div>
-
-      <div class="bento">
-                  <article data-cat="work" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드 화면">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2021 — 2025</span><span class="badge">회사 · 포커스에이아이</span></div>
-              <h3 class="pt">ONEPASS PRO</h3>
-              <p class="pd">얼굴 인식 기반 출입통제·근태 관리 플랫폼. 단말에서 올라오는 이벤트를 실시간으로 처리하고 WebSocket으로 모니터링합니다.</p>
-              <ul class="pts">
-                <li>단말 이벤트 실시간 수집 서버 설계</li>
-                <li>WebSocket 기반 실시간 모니터링 화면</li>
-                <li>Redis 캐싱으로 출입 판정 지연 단축</li>
-              </ul>
-              <div class="tags"><span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">Socket.IO</span><span class="tag">MySQL</span><span class="tag">Redis</span></div>
-              <a class="more" href="Project-ONEPASS-PRO.dc.html">자세히 보기
-                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-              </a>
-            </div>
-          </article>
-
-          <article data-cat="work" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/is-full.jpg" alt="아이스쿨 원장용 대시보드 화면">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2021 — 2025</span><span class="badge">회사 · 포커스에이아이</span></div>
-              <h3 class="pt">아이스쿨</h3>
-              <p class="pd">GPS로 통학버스 위치를 추적하고, 승·하차 시 학부모에게 알림을 보내는 통학버스 안전 솔루션.</p>
-              <ul class="pts">
-                <li>GPS 스트림 수집과 실시간 위치 표시</li>
-                <li>승·하차 이벤트 기반 학부모 알림 파이프라인</li>
-                <li>운영 관리자용 대시보드</li>
-              </ul>
-              <div class="tags"><span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">MySQL</span><span class="tag">Redis</span><span class="tag">React</span></div>
-              <a class="more" href="Project-iSchool.dc.html">자세히 보기
-                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-              </a>
-            </div>
-          </article>
-
-          <article data-cat="work" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/aslan-card.jpg" alt="아슬란 통합 관제 콘솔 — 1+5 분할 라이브 뷰와 실시간 이벤트" style="object-position: top left">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2021 — 2025</span><span class="badge">회사 · 포커스에이아이</span></div>
-              <h3 class="pt">아슬란 (ASLAN)</h3>
-              <p class="pd">CCTV·NVR을 하나의 웹에서 관제하는 통합 모니터링 서비스. 라이브 스트리밍, 녹화 관리, 이벤트 알림을 제공합니다.</p>
-              <ul class="pts">
-                <li>다채널 라이브 스트리밍과 이벤트 알림 통합</li>
-                <li>녹화 영상 검색·관리 기능</li>
-                <li>Next.js 프론트엔드와 NestJS 백엔드 전담</li>
-              </ul>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span><span class="tag">WebSocket</span><span class="tag">Next.js</span></div>
-            </div>
-          </article>
-
-          <article data-cat="work" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/shelter-card.jpg" alt="스마트쉘터 농장 현황 — 온실 평면도 위 구역별 토양 수분과 관수 상태" style="object-position: top left">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2021 — 2025</span><span class="badge">회사 · 포커스에이아이</span></div>
-              <h3 class="pt">스마트쉘터</h3>
-              <p class="pd">온·습도 센싱, 자동 관수, 환경 모니터링을 제공하는 IoT 스마트팜 시스템.</p>
-              <ul class="pts">
-                <li>MQTT 센서 데이터 수집부터 대시보드까지</li>
-                <li>임계값 기반 자동 관수 로직</li>
-              </ul>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">MySQL</span><span class="tag">MQTT</span><span class="tag">React</span></div>
-            </div>
-          </article>
-
-        
-          <article data-cat="personal" class="card c4 pc feature lift" id="p-snapmark">
-            <div class="vis photo">
-              <img class="shot" src="images/snap-card.jpg" alt="Snapmark 보관함·확인 후 저장·사이트 화면" style="object-position: center">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">출시</span></div>
-              <h3 class="pt">Snapmark</h3>
-              <p class="pd">스크린샷 속 주소와 글자를 읽어 북마크로 보관하는 Android 앱. 글자 인식은 기기 안에서만 처리하고, 북마크는 주소의 사이트별로 자동 분류합니다.</p>
-              <ul class="pts">
-                <li>온디바이스 글자 인식으로 주소·제목 추출 — 이미지는 기기 밖으로 나가지 않음</li>
-                <li>잘린 주소 감지와 직접 고치기·제목으로 찾기</li>
-                <li>제목·주소·화면 속 글자까지 검색하고, 찾은 위치를 형광펜으로 표시</li>
-              </ul>
-              <div class="tags"><span class="tag">Flutter</span><span class="tag">Android</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift" id="p-link">
-            <div class="vis photo">
-              <img class="shot" src="images/link-card.jpg" alt="Link 홈 피드·둘러보기·프로필 화면" style="object-position: center">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">출시</span></div>
-              <h3 class="pt">Link</h3>
-              <p class="pd">피드, 랜덤 1:1 채팅 매칭, 음성 채팅방을 중심으로 한 소셜 채팅 앱. NestJS 클린 아키텍처 백엔드와 Flutter 앱을 Socket.IO로 연결해 Google Play에 출시했습니다.</p>
-              <ul class="pts">
-                <li>피드 · 스토리 · 관심사 기반 둘러보기와 필터</li>
-                <li>휴대폰 본인인증, 신고·차단 등 운영 안전 장치</li>
-                <li>코인과 프리미엄 구독으로 이어지는 결제 흐름</li>
-              </ul>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">TypeORM</span><span class="tag">PostgreSQL</span><span class="tag">Flutter</span><span class="tag">Socket.IO</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/hub-card.jpg" alt="Hub 대시보드 — 앱별 세션과 진행 중인 task 현황" style="object-position: top left">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge">개인</span></div>
-              <h3 class="pt">AI 에이전트 통합 관제 시스템</h3>
-              <p class="pd">Claude Code 세션에 작업 컨텍스트를 주입하고, worktree 격리부터 PR 생성까지 자동화하는 로컬 관제 서버.</p>
-              <ul class="pts">
-                <li>Hook·MCP로 task 컨텍스트 주입</li>
-                <li>worktree → 에이전트 실행 → 검사 → PR 자동화</li>
-                <li>task 없는 편집 차단, push는 서버가 전담</li>
-              </ul>
-              <div class="tags"><span class="tag">TypeScript</span><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span class="tag">pg-boss</span><span class="tag">MCP</span></div>
-              <a class="more" href="agent-control.html">자세히 보기
-                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-              </a>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/ai-dash.jpg" alt="AI 캐릭터 채팅 관리자 콘솔 대시보드 화면">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">개발 중</span></div>
-              <h3 class="pt">AI 캐릭터 채팅</h3>
-              <p class="pd">AI 캐릭터와 1:1로 대화하는 채팅 서비스. 사용자 앱과 함께, 캐릭터 검토·자동 생성과 신고·매출을 다루는 운영자용 관리자 콘솔까지 설계했습니다.</p>
-              <ul class="pts">
-                <li>무료 횟수 · 코인 · 구독을 묶은 과금 구조와 결제·환불 흐름</li>
-                <li>일정·예산·검토 대기 한도로 비용을 통제하는 캐릭터 자동 생성</li>
-                <li>역할별 권한, 위험 조치 사유 기록, 대화 열람 감사 기록</li>
-              </ul>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span class="tag">Docker</span><span class="tag">Ollama</span><span class="tag">Flutter</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift">
-            <div class="vis photo">
-              <img class="shot" src="images/cook-card.jpg" alt="AI 쿠킹 홈·레시피 생성·완료 화면" style="object-position: center">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge">개인</span></div>
-              <h3 class="pt">AI 쿠킹</h3>
-              <p class="pd">냉장고 재료와 가족의 취향·알레르기를 이해하고, 메뉴 추천부터 AI 레시피 생성, 장보기, 요리 가이드까지 돕는 AI 요리 비서 앱.</p>
-              <ul class="pts">
-                <li>보유 재료와 유통기한을 고려한 오늘의 메뉴 추천</li>
-                <li>사진·말로 재료 입력, 인원·맵기·알레르기에 맞춘 AI 레시피 생성</li>
-                <li>장보기 목록과 냉장고 재고 연동</li>
-              </ul>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">PostgreSQL</span><span class="tag">Flutter</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift" id="p-cyphers">
-            <div class="vis photo">
-              <img class="shot" src="images/cy-main.jpg" alt="사이퍼즈 메타 전적·통계 검색 화면">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">운영 중</span></div>
-              <h3 class="pt">사이퍼즈 메타</h3>
-              <p class="pd">네오플 오픈 API로 매치 데이터를 수집·집계해 캐릭터별 승률·픽률을 보여주는 게임 통계 서비스.</p>
-              <div class="tags"><span class="tag">NestJS</span><span class="tag">Next.js</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span></div>
-              <a class="more" href="https://www.cyphers-meta.co.kr">사이트 방문
-                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-              </a>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c2 pc lift" id="p-lune">
-            <div class="vis photo">
-              <img class="shot" src="images/lune-card.jpg" alt="Lune 다크 테마 탐색·프로필·대화 화면" style="object-position: center">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">비공개 테스트</span></div>
-              <h3 class="pt">Lune</h3>
-              <p class="pd">관심사와 지역으로 새로운 사람을 찾고, 채팅·음성·영상 통화로 대화하는 1:1 소셜 앱.</p>
-              <ul class="pts">
-                <li>WebRTC 1:1 음성·영상 통화, coturn TURN 서버와 분 단위 코인 과금</li>
-                <li>CallKit VoIP 푸시·전체 화면 수신 알림과 FCM 메시지 알림</li>
-                <li>휴대폰 본인인증, 신고·차단·금칙어 감지로 안전한 대화 환경</li>
-              </ul>
-              <div class="tags"><span class="tag">WebRTC</span><span class="tag">coturn</span><span class="tag">FCM</span><span class="tag">AWS</span><span class="tag">Terraform</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c4 pc feature flip lift" id="p-weather">
-            <div class="vis photo">
-              <img class="shot" src="images/weather-card.jpg" alt="오늘날씨 날씨별 다이내믹 테마 홈 화면 5종" style="object-position: center">
-            </div>
-            <div class="pbody">
-              <div class="pmeta"><span class="period">2026</span><span class="badge on">개발 중</span></div>
-              <h3 class="pt">오늘날씨</h3>
-              <p class="pd">날씨와 시간대에 따라 화면 테마가 바뀌는 Android 날씨 앱. 예보·대기질·생활지수·특보에 AI 브리핑, 위젯·푸시, 레이더 지도까지 담아 Play 스토어 출시를 준비하고 있습니다.</p>
-              <ul class="pts">
-                <li>맑음·비·눈·노을·밤 5가지 다이내믹 테마와 자체 디자인 시스템</li>
-                <li>NestJS 모듈러 모놀리스 + 예약 수집, 아웃박스 기반 도메인 이벤트</li>
-                <li>AI 브리핑은 생성기 포트로 분리해 LLM을 바꿔 끼울 수 있게 설계</li>
-              </ul>
-              <div class="tags"><span class="tag">Flutter</span><span class="tag">Riverpod</span><span class="tag">NestJS</span><span class="tag">TypeORM</span><span class="tag">MySQL</span><span class="tag">FCM</span></div>
-            </div>
-          </article>
-
-          <article data-cat="personal" class="card c4 mini lift">
-            <span class="mini-ic"><svg class="ic" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path></svg></span>
-            <div class="pmeta"><span class="period">2025</span><span class="badge">개인</span></div>
-            <h3 class="pt">주식 자동매매 시스템</h3>
-            <p class="pd">전략 패턴으로 매매 로직을 교체할 수 있게 설계하고, 시세 수집 파이프라인과 실행 엔진을 분리했습니다.</p>
-            <div class="tags"><span class="tag">TypeScript</span><span class="tag">NestJS</span><span class="tag">전략 패턴</span></div>
-            <a class="more" href="https://github.com/suman-kim/auto-trade-server">GitHub
-              <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-            </a>
-          </article>
-
-        
-</div>
-    </section>
-
-    <!-- STACK -->
-    <section class="wrap sec" id="stack">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">02 · Tech Stack</span>
-          <h2 class="h2">기술 스택</h2>
-        </div>
-      </div>
-      <div class="bento">
-        <div class="card stack-card">
-          <span class="lbl">01</span>
-          <h3>언어 · 프레임워크</h3>
-          <div class="sk"><span>Java</span><span>Spring Boot</span><span>Node.js</span><span>NestJS</span><span>Python</span><span>FastAPI</span><span>React</span></div>
-        </div>
-        <div class="card stack-card">
-          <span class="lbl">02</span>
-          <h3>아키텍처</h3>
-          <div class="sk"><span>DDD</span><span>Clean / Hexagonal</span><span>MSA</span><span>CQRS</span><span>TDD</span></div>
-        </div>
-        <div class="card stack-card">
-          <span class="lbl">03</span>
-          <h3>데이터베이스</h3>
-          <div class="sk"><span>MySQL</span><span>PostgreSQL</span><span>Redis</span><span>MongoDB</span></div>
-        </div>
-        <div class="card stack-card">
-          <span class="lbl">04</span>
-          <h3>클라우드 · 실시간</h3>
-          <div class="sk"><span>AWS</span><span>Docker</span><span>WebSocket</span><span>Kafka</span><span>MQTT</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CAREER -->
-    <section class="wrap sec" id="career">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">03 · Career</span>
-          <h2 class="h2">경력</h2>
-        </div>
-      </div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-when">2025.10 — 2026.01</div>
-          <div class="tl-dot" aria-hidden="true"></div>
-          <div class="card tl-card">
-            <div class="tl-head"><h3>더블다운인터액티브</h3><span class="tl-role">Backend Developer</span></div>
-            <p>Xsolla·Google Play·Apple Pay를 통합하는 결제 어댑터를 Strategy/Factory 패턴으로 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
-            <div class="tags"><span class="tag">Xsolla</span><span class="tag">Google Play</span><span class="tag">Apple Pay</span><span class="tag">Strategy · Factory</span><span class="tag">Resilience4j</span></div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-when">2021.04 — 2025.09</div>
-          <div class="tl-dot" aria-hidden="true"></div>
-          <div class="card tl-card">
-            <div class="tl-head"><h3>포커스에이아이</h3><span class="tl-role">Smart Access 팀 · Full-Stack Developer</span></div>
-            <p>ONEPASS PRO 얼굴 인식 출입통제 시스템을 개발하고, 아이스쿨 통학버스, 아슬란 CCTV 관제, 스마트쉘터 IoT 스마트팜 등 실시간 하드웨어 연동 서버를 구축했습니다.</p>
-            <div class="tags"><span class="tag">ONEPASS PRO</span><span class="tag">아이스쿨</span><span class="tag">아슬란</span><span class="tag">스마트쉘터</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- EDUCATION -->
-    <section class="wrap sec" id="education">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">04 · Education &amp; Certifications</span>
-          <h2 class="h2">학력 · 자격</h2>
-        </div>
-      </div>
-      <div class="bento">
-        <div class="card c2 edu">
-          <h3><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9L12 4 2 9l10 5 10-5z"></path><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path></svg>학력</h3>
-          <div class="list">
-            <div class="li"><div><b>한국방송통신대학교</b><small>컴퓨터과학과 · 편입</small></div><span class="yr">2023 — 2025</span></div>
-            <div class="li"><div><b>이젠아카데미</b><small>Java 웹 &amp; 앱 개발자 과정</small></div><span class="yr">2020 — 2021</span></div>
-            <div class="li"><div><b>학점은행제</b><small>정보처리과</small></div><span class="yr">2015 — 2017</span></div>
-            <div class="li"><div><b>한세대학교</b><small>광고홍보학과 · 중퇴</small></div><span class="yr">2011 — 2012</span></div>
-          </div>
-        </div>
-        <div class="card c2 edu">
-          <h3><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"></circle><path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path></svg>자격증</h3>
-          <div class="list">
-            <div class="li"><div><b>정보처리기사</b></div><span class="yr new">2026</span></div>
-            <div class="li"><div><b>SQLD</b><small>SQL 개발자</small></div><span class="yr new">2026</span></div>
-            <div class="li"><div><b>AWS Solutions Architect – Associate</b></div><span class="yr">2023</span></div>
-            <div class="li"><div><b>컴퓨터활용능력 2급</b></div><span class="yr">2022</span></div>
-            <div class="li"><div><b>정보기기운용기능사</b></div><span class="yr">2010</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="wrap sec" id="contact">
-      <div class="card cta">
-        <span class="eyebrow">05 · Contact</span>
-        <h2 class="cta-h">함께 좋은 시스템을<br>만들어 나가고 싶습니다.</h2>
-        <div class="cta-row">
-          <a class="btn btn-inv" href="mailto:zzsdsdsd@gmail.com">
-            <svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
-            zzsdsdsd@gmail.com
-          </a>
-          <a class="btn btn-line" href="https://github.com/suman-kim">GitHub
-            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-          </a>
-          <a class="btn btn-line" href="https://ssirioops.tistory.com/">기술 블로그
-            <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="foot">
-    <span>© 2026 김수만 · Full-Stack Developer<small class="credit">아슬란 화면 속 CCTV 영상: Intel IoT DevKit sample-videos (CC BY 4.0)</small></span>
-    <a href="#top">맨 위로
-      <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>
-    </a>
-  </footer>
+    </footer>
 
 </div>
 <script>
-(function(){
-  var root = document.getElementById('root');
-  var btn = document.getElementById('theme-btn');
-  var meta = document.querySelector('meta[name="theme-color"]');
-  function apply(dark){
-    root.classList.toggle('dark', dark);
-    btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
-    btn.setAttribute('aria-pressed', String(dark));
-    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-    if (meta) meta.setAttribute('content', dark ? '#0C0D10' : '#0A0B0E');
-  }
-  var dark = root.classList.contains('dark');
-  apply(dark);
-  btn.addEventListener('click', function(){
-    dark = !dark; apply(dark);
-    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
-  });
+    (function () {
+        var root = document.getElementById('root');
+        var btn = document.getElementById('theme-btn');
+        var meta = document.querySelector('meta[name="theme-color"]');
 
-  // replay the intro: restart every animation inside the hero and the nav
-  var replay = document.getElementById('replay-btn');
-  if (replay) replay.addEventListener('click', function(){
-    var els = [document.querySelector('.hero'), document.querySelector('.nav')];
-    els.forEach(function(el){
-      if (!el || !el.getAnimations) return;
-      el.getAnimations({ subtree: true }).forEach(function(a){ a.cancel(); a.play(); });
-    });
-    window.scrollTo({ top: 0 });
-  });
+        function apply(dark) {
+            root.classList.toggle('dark', dark);
+            btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환');
+            btn.setAttribute('aria-pressed', String(dark));
+            document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+            if (meta) meta.setAttribute('content', dark ? '#0C0D10' : '#0A0B0E');
+        }
 
-  // nav: transparent over the hero, solid once the page scrolls past it
-  var nav = document.getElementById('nav');
-  var hero = document.querySelector('.hero');
-  function onScroll(){
-    var limit = hero ? hero.offsetHeight - 72 : 600;
-    nav.classList.toggle('solid', window.scrollY > limit);
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+        var dark = root.classList.contains('dark');
+        apply(dark);
+        btn.addEventListener('click', function () {
+            dark = !dark;
+            apply(dark);
+            try {
+                localStorage.setItem('theme', dark ? 'dark' : 'light');
+            } catch (e) {
+            }
+        });
 
-  var tabs = document.querySelectorAll('[data-filter]');
-  var cards = document.querySelectorAll('[data-cat]');
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(){
-      var f = tab.getAttribute('data-filter');
-      tabs.forEach(function(t){
-        var on = t === tab;
-        t.classList.toggle('on', on);
-        t.setAttribute('aria-pressed', String(on));
-      });
-      cards.forEach(function(c){
-        c.hidden = !(f === 'all' || c.getAttribute('data-cat') === f);
-      });
-    });
-  });
-})();
+        // replay the intro: restart every animation inside the hero and the nav
+        var replay = document.getElementById('replay-btn');
+        if (replay) replay.addEventListener('click', function () {
+            var els = [document.querySelector('.hero'), document.querySelector('.nav')];
+            els.forEach(function (el) {
+                if (!el || !el.getAnimations) return;
+                el.getAnimations({subtree: true}).forEach(function (a) {
+                    a.cancel();
+                    a.play();
+                });
+            });
+            window.scrollTo({top: 0});
+        });
+
+        // nav: transparent over the hero, solid once the page scrolls past it
+        var nav = document.getElementById('nav');
+        var hero = document.querySelector('.hero');
+
+        function onScroll() {
+            var limit = hero ? hero.offsetHeight - 72 : 600;
+            nav.classList.toggle('solid', window.scrollY > limit);
+        }
+
+        window.addEventListener('scroll', onScroll, {passive: true});
+        onScroll();
+
+        var tabs = document.querySelectorAll('[data-filter]');
+        var cards = document.querySelectorAll('[data-cat]');
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var f = tab.getAttribute('data-filter');
+                tabs.forEach(function (t) {
+                    var on = t === tab;
+                    t.classList.toggle('on', on);
+                    t.setAttribute('aria-pressed', String(on));
+                });
+                cards.forEach(function (c) {
+                    c.hidden = !(f === 'all' || c.getAttribute('data-cat') === f);
+                });
+            });
+        });
+    })();
 </script>
 </body>
 </html>
