@@ -147,14 +147,8 @@
    MAIN PAGE
    ===================================================================== */
 
-/* manifesto: words light up line by line as they scroll through */
-.cx-manifesto { padding: clamp(140px, 16vw, 230px) 0 clamp(100px, 12vw, 170px) }
-.cx-manifesto p { margin: 0; max-width: 1120px; font-size: clamp(30px, 4.3vw, 62px); line-height: 1.3; letter-spacing: -.04em; font-weight: 740 }
-.cx-wd { color: color-mix(in srgb, var(--ink) 16%, transparent); transition: color .5s }
-.cx-wd.k { --cx-c: var(--accent) }
-.cx-wd.on { color: var(--cx-c, var(--ink)) }
-
-/* stats row */
+/* stats row — the first block after the hero */
+.root .cx-about { padding-top: clamp(96px, 11vw, 160px) }
 .cx-about .bento { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, .9fr); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line) }
 .cx-about .stat { background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0; box-shadow: none; padding: 44px 32px 40px; min-height: 0 }
 .cx-about .stat:first-child { border-left: 0; padding-left: 0 }
@@ -174,6 +168,14 @@
 .cx-about .step h4 { font-size: 24px; letter-spacing: -.035em }
 .cx-about .step p { font-size: 15px; line-height: 1.75 }
 .cx-about .step .row-b { order: -1; position: absolute; top: 26px; right: 22px }
+/* 도메인 이해 — the principle the four practices rest on: a full-width lead card above them */
+.cx-about .step.step-lead { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-areas: "num text" "title text" "icon tags"; grid-template-rows: auto 1fr auto; column-gap: clamp(32px, 6vw, 96px); row-gap: 14px; padding: clamp(34px, 4vw, 54px) clamp(30px, 4vw, 54px); background: radial-gradient(80% 160% at 0% 0%, var(--cx-glow), transparent 62%), var(--card) }
+.cx-about .step-lead::before { grid-area: num }
+.cx-about .step-lead h4 { grid-area: title; align-self: start; font-size: clamp(32px, 3.4vw, 50px); line-height: 1.1; letter-spacing: -.05em }
+.cx-about .step-lead p { grid-area: text; margin: 0; color: var(--ink); font-size: clamp(17px, 1.35vw, 19.5px); line-height: 1.85; letter-spacing: -.01em }
+.cx-about .step-lead .tags { grid-area: tags; align-self: end }
+.cx-about .step-lead .row-b { grid-area: icon; position: static; align-self: end; margin-top: 18px }
+.cx-about .step-lead .step-ic { width: 56px; height: 56px; border-radius: 16px }
 
 /* stack: spec-sheet rows */
 #stack .bento { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 1px solid var(--line) }
@@ -319,18 +321,28 @@
 .cx-cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform }
 .cx-grid { position: absolute; display: grid; grid-template-columns: repeat(3, var(--cx-cw)); gap: 56px var(--cx-gap) }
 
-.cx-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; opacity: var(--cx-dim, 1); transition: opacity .5s var(--cx-ease) }
+.cx-card { position: relative; display: flex; flex-direction: column; min-width: 0; color: var(--ink); opacity: var(--cx-dim, 1); transition: opacity .5s var(--cx-ease) }
+.cx-hit { display: flex; flex-direction: column; width: 100%; min-width: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent }
+.cx-hit:focus-visible { outline: none }
 .cx-card.on { opacity: 1 }
 .cx-card.off { opacity: .14 }
 .cx-card .cx-img { position: relative; overflow: hidden; aspect-ratio: 16 / 10; border-radius: 14px; background: var(--soft); box-shadow: 0 0 0 1px var(--line), 0 30px 60px -36px rgba(0, 0, 0, .55); transition: box-shadow .45s var(--cx-ease) }
 .cx-card .cx-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: transform 1s var(--cx-ease) }
-.cx-card:hover .cx-img, .cx-card:focus-visible .cx-img { box-shadow: 0 0 0 1.5px var(--accent), 0 30px 70px -28px var(--cx-glow) }
-.cx-card:hover .cx-img img { transform: scale(1.04) }
+.cx-hit:hover .cx-img, .cx-hit:focus-visible .cx-img { box-shadow: 0 0 0 1.5px var(--accent), 0 30px 70px -28px var(--cx-glow) }
+.cx-hit:hover .cx-img img { transform: scale(1.04) }
 .cx-card .cx-cap { display: flex; flex-direction: column; gap: 8px; padding: 20px 2px 0; opacity: var(--cx-over, 0) }
 .cx-card .cx-cap small { display: flex; gap: 10px; font-family: var(--cx-mono); font-size: 12px; letter-spacing: .04em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .cx-card .cx-cap small i { font-style: normal; color: var(--accent) }
 .cx-card .cx-cap b { font-size: clamp(20px, 1.7vw, 26px); line-height: 1.2; font-weight: 800; letter-spacing: -.04em }
 .cx-card .cx-cap em { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: normal; font-size: 15px; line-height: 1.65; color: var(--muted) }
+/* the project's own links, right on the overview card */
+.cx-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; opacity: var(--cx-over, 0); visibility: hidden }
+.cx-live .cx-acts { visibility: visible }
+.cx-act { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: 99px; background: var(--ink); color: var(--bg); font-size: 13.5px; font-weight: 650; letter-spacing: -.01em; transition: background-color .25s, color .25s, border-color .25s, transform .35s var(--cx-ease) }
+.cx-act:hover { background: var(--accent); color: var(--on-accent); transform: translateY(-2px) }
+.cx-act.alt { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 28%, transparent) }
+.cx-act.alt:hover { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink) }
+.cx-card.off .cx-acts { pointer-events: none }
 .cx-poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8% 9%; background: radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%), var(--panel, #121317); color: #fff }
 .cx-poster span { font-family: var(--cx-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .7 }
 .cx-poster b { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.04em }
@@ -359,6 +371,9 @@
 .cx-panel .pts li { font-size: 15px }
 .cx-panel .cx-more { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; height: 48px; padding: 0 22px; border-radius: 99px; background: var(--ink); color: var(--bg); font-weight: 650; font-size: 14.5px; transition: background-color .25s, color .25s, transform .35s var(--cx-ease) }
 .cx-panel .cx-more:hover { background: var(--accent); color: var(--on-accent); transform: translateY(-2px) }
+.cx-panel .cx-links { display: flex; flex-wrap: wrap; gap: 10px }
+.cx-panel .cx-more.alt { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 28%, transparent) }
+.cx-panel .cx-more.alt:hover { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink) }
 .cx-panel .cx-swap { display: flex; flex-direction: column; gap: 18px; animation: cxSwap .6s var(--cx-ease) both }
 @keyframes cxSwap { from { opacity: 0; transform: translateY(18px) } }
 
@@ -429,6 +444,8 @@
 
 @media (max-width: 600px) {
     .cx-about .bento, .cx-about .steps { grid-template-columns: minmax(0, 1fr) }
+    .cx-about .step.step-lead { grid-template-columns: minmax(0, 1fr); grid-template-areas: "num" "title" "text" "tags"; grid-template-rows: none }
+    .cx-about .step-lead .row-b { position: absolute; top: 26px; right: 22px; margin: 0 }
     .cx-about .stat { border-left: 0 !important; padding-left: 0 }
     .cx-about .stat:nth-child(2) { border-top: 1px solid var(--line) }
 }

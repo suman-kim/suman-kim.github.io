@@ -159,7 +159,7 @@ a:hover{color:var(--ink)}
 @media (prefers-reduced-motion: reduce){.root *,.root *::before,.root *::after{animation:none!important}}
 
 /* ---------- intro video ----------
-   A 41s "걸어온 길" sequence shown as a full-screen overlay on the first visit (and from the hero's
+   A 28s "걸어온 길" sequence shown as a full-screen overlay on the first visit (and from the hero's
    replay button). It is drawn on a fixed stage — 1920×1080 landscape, 1080×2160 portrait — that the
    script scales to fit the window. Base styles are the END state of every animation, as above. */
 .iv { display: none; position: fixed; inset: 0; z-index: 1000; overflow: hidden; color: #FFFFFF; line-height: 1.4; background-color: #0A0B0E; background-image: linear-gradient(rgba(255, 255, 255, .028) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .028) 1px, transparent 1px); background-size: 120px 120px; background-position: center; transition: opacity .4s ease }
@@ -175,10 +175,10 @@ a:hover{color:var(--ink)}
 .iv-sc.iv-play .iv-dx { animation: ivDrawX .45s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
 .iv-sc.iv-play .iv-dy { animation: ivDrawY .45s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
 .iv-sc.iv-play .iv-pop { animation: ivPop .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
-.iv-sc.iv-play .iv-type { animation: ivType 1.5s steps(36) var(--d, 0s) both }
+.iv-sc.iv-play .iv-type { animation: ivType 1.1s steps(36) var(--d, 0s) both }
 .iv-sc.iv-play .iv-wallw { animation: ivFade 1.4s ease .1s both }
-.iv-sc.iv-play .iv-wd { animation: ivDriftA 4.4s linear both }
-.iv-sc.iv-play .iv-drift { animation: ivDriftB 6s linear both }
+.iv-sc.iv-play .iv-wd { animation: ivDriftA 3.2s linear both }
+.iv-sc.iv-play .iv-drift { animation: ivDriftB 4.4s linear both }
 .iv-caret { animation: ivCaret 1s steps(1) infinite }
 @keyframes ivRise { from { opacity: 0; transform: translateY(36px) } to { opacity: 1; transform: none } }
 @keyframes ivWipe { from { transform: translateY(110%) } to { transform: none } }
@@ -235,7 +235,7 @@ a:hover{color:var(--ink)}
 .iv-phone::before { content: ""; position: absolute; top: 14px; left: 50%; width: 36px; height: 6px; margin-left: -18px; border-radius: 3px; background: rgba(255, 255, 255, .35) }
 .iv-app { aspect-ratio: 1; border-radius: 12px; background: rgba(255, 255, 255, .14) }
 .iv-app.on { background: #7D8CFF }
-.iv-sc.iv-play .iv-app.on { animation: ivPop .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both, ivGlow 1.6s ease-out calc(var(--d, 0s) + .5s) 2 }
+.iv-sc.iv-play .iv-app.on { animation: ivPop .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both, ivGlow 1.3s ease-out calc(var(--d, 0s) + .4s) 2 }
 @keyframes ivGlow { from { box-shadow: 0 0 0 0 rgba(125, 140, 255, .6) } to { box-shadow: 0 0 0 26px rgba(125, 140, 255, 0) } }
 
 /* two-column scenes */
@@ -643,14 +643,14 @@ a:hover{color:var(--ink)}
         }
     })();</script>
 
-    <!-- INTRO VIDEO: 걸어온 길 (41.5s) → then the site's own KIM SUMAN intro -->
+    <!-- INTRO VIDEO: 걸어온 길 (28s) → then the site's own KIM SUMAN intro -->
     <div class="iv" id="iv" role="dialog" aria-modal="true" aria-label="인트로 영상: 개발자 김수만, 걸어온 길">
         <button type="button" class="iv-skip" id="iv-skip">건너뛰기
             <svg class="ic" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </button>
         <div class="iv-stage">
 
-            <section class="iv-sc" data-dur="4" data-label="00 — Intro" aria-hidden="true">
+            <section class="iv-sc" data-dur="2.6" data-label="00 — Intro" aria-hidden="true">
                 <div class="iv-wallw" aria-hidden="true">
                     <div class="iv-wd">
                         <div class="iv-wg">
@@ -665,136 +665,136 @@ a:hover{color:var(--ink)}
                 </div>
                 <div class="iv-scrim" aria-hidden="true"></div>
                 <div class="iv-open">
-                    <div class="iv-eb iv-r" style="--d: .3s">2010 — 2026</div>
-                    <h2 class="iv-h"><span class="iv-w" style="--d: .5s"><span>개발자 김수만,</span></span><br><span class="iv-w" style="--d: .66s"><span class="iv-acc">걸어온 길</span></span></h2>
+                    <div class="iv-eb iv-r" style="--d: .22s">2010 — 2026</div>
+                    <h2 class="iv-h"><span class="iv-w" style="--d: .36s"><span>개발자 김수만,</span></span><br><span class="iv-w" style="--d: .48s"><span class="iv-acc">걸어온 길</span></span></h2>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="4.5" data-range="2010-2012" data-label="01 — 시작" aria-hidden="true">
+            <section class="iv-sc" data-dur="3" data-range="2010-2012" data-label="01 — 시작" aria-hidden="true">
                 <div class="iv-split">
                     <div class="iv-col">
-                        <div class="iv-eb iv-r" style="--d: .15s">01 — 시작</div>
-                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>출발은</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">조금 달랐습니다.</span></span></h2>
+                        <div class="iv-eb iv-r" style="--d: .11s">01 — 시작</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .22s"><span>출발은</span></span><br><span class="iv-w" style="--d: .3s"><span class="iv-acc">조금 달랐습니다.</span></span></h2>
                     </div>
                     <div class="iv-list">
-                        <div class="iv-row iv-r" style="--d: .7s"><span class="y">2010</span><div><span class="t">정보기기운용기능사</span><span class="s">자격 취득</span></div></div>
-                        <div class="iv-row iv-r" style="--d: .9s"><span class="y">2011 — 2012</span><div><span class="t">한세대학교</span><span class="s">광고홍보학과</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .5s"><span class="y">2010</span><div><span class="t">정보기기운용기능사</span><span class="s">자격 취득</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .65s"><span class="y">2011 — 2012</span><div><span class="t">한세대학교</span><span class="s">광고홍보학과</span></div></div>
                     </div>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="5" data-range="2016-2016" data-label="02 — 계기" aria-hidden="true">
+            <section class="iv-sc" data-dur="3.6" data-range="2016-2016" data-label="02 — 계기" aria-hidden="true">
                 <div class="iv-turn">
-                    <div class="iv-phone iv-r" style="--d: .1s" aria-hidden="true">
+                    <div class="iv-phone iv-r" style="--d: .07s" aria-hidden="true">
                         <span class="iv-app"></span><span class="iv-app"></span>
-                        <span class="iv-app on" style="--d: .7s"></span><span class="iv-app"></span>
+                        <span class="iv-app on" style="--d: .5s"></span><span class="iv-app"></span>
                         <span class="iv-app"></span><span class="iv-app"></span>
                     </div>
-                    <div class="iv-eb iv-r" style="--d: .25s">02 — 계기 · 2016</div>
-                    <h2 class="iv-h"><span class="iv-w" style="--d: .45s"><span>우연히 본</span></span> <span class="iv-w" style="--d: .53s"><span>지인이 개발한</span></span> <span class="iv-w" style="--d: .61s"><span>앱을 보고,</span></span><br><span class="iv-w" style="--d: 1s"><span class="iv-acc">개발자가 되기로</span></span> <span class="iv-w" style="--d: 1.1s"><span class="iv-acc">결심했습니다.</span></span></h2>
+                    <div class="iv-eb iv-r" style="--d: .18s">02 — 계기 · 2016</div>
+                    <h2 class="iv-h"><span class="iv-w" style="--d: .32s"><span>우연히 본</span></span> <span class="iv-w" style="--d: .38s"><span>지인이 개발한</span></span> <span class="iv-w" style="--d: .44s"><span>앱을 보고,</span></span><br><span class="iv-w" style="--d: .72s"><span class="iv-acc">개발자가 되기로</span></span> <span class="iv-w" style="--d: .79s"><span class="iv-acc">결심했습니다.</span></span></h2>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="4.5" data-range="2017-2021" data-label="03 — 전환" aria-hidden="true">
+            <section class="iv-sc" data-dur="3.4" data-range="2017-2021" data-label="03 — 전환" aria-hidden="true">
                 <div class="iv-split">
                     <div class="iv-col">
-                        <div class="iv-eb iv-r" style="--d: .15s">03 — 전환</div>
-                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>그리고,</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">코드를 선택했습니다.</span></span></h2>
-                        <div class="iv-term iv-r" style="--d: 1.1s" aria-hidden="true"><span class="ln">01</span><span class="iv-type" style="--d: 1.5s">System.out.println("Hello, World!");</span><span class="iv-caret"></span></div>
+                        <div class="iv-eb iv-r" style="--d: .11s">03 — 전환</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .22s"><span>그리고,</span></span><br><span class="iv-w" style="--d: .3s"><span class="iv-acc">코드를 선택했습니다.</span></span></h2>
+                        <div class="iv-term iv-r" style="--d: .79s" aria-hidden="true"><span class="ln">01</span><span class="iv-type" style="--d: 1.08s">System.out.println("Hello, World!");</span><span class="iv-caret"></span></div>
                     </div>
                     <div class="iv-list">
-                        <div class="iv-row iv-r" style="--d: .7s"><span class="y">2017 — 2020</span><div><span class="t">학점은행제</span><span class="s">정보처리과</span></div></div>
-                        <div class="iv-row iv-r" style="--d: .9s"><span class="y">2020 — 2021</span><div><span class="t">이젠아카데미</span><span class="s">Java 웹 &amp; 앱 개발자 과정</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .5s"><span class="y">2017 — 2020</span><div><span class="t">학점은행제</span><span class="s">정보처리과</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .65s"><span class="y">2020 — 2021</span><div><span class="t">이젠아카데미</span><span class="s">Java 웹 &amp; 앱 개발자 과정</span></div></div>
                     </div>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="7" data-range="2021-2025" data-label="04 — 현장" aria-hidden="true">
+            <section class="iv-sc" data-dur="4.4" data-range="2021-2025" data-label="04 — 현장" aria-hidden="true">
                 <div class="iv-s4">
                     <div class="iv-s4-head">
                         <div class="iv-col" style="gap: 24px">
-                            <div class="iv-eb iv-r" style="--d: .15s">04 — 현장</div>
-                            <h2 class="iv-h iv-s4-h"><span class="iv-w" style="--d: .3s"><span>포커스에이아이</span></span></h2>
+                            <div class="iv-eb iv-r" style="--d: .11s">04 — 현장</div>
+                            <h2 class="iv-h iv-s4-h"><span class="iv-w" style="--d: .22s"><span>포커스에이아이</span></span></h2>
                         </div>
-                        <div class="iv-meta iv-r" style="--d: .55s"><span class="d">2021.04 — 2025.09</span><span class="r">Smart Access 팀 · Full-Stack Developer</span></div>
+                        <div class="iv-meta iv-r" style="--d: .4s"><span class="d">2021.04 — 2025.09</span><span class="r">Smart Access 팀 · Full-Stack Developer</span></div>
                     </div>
-                    <p class="iv-p iv-r" style="--d: .7s">출입통제 · 통학버스 · CCTV 관제 · 스마트팜 — 실시간 하드웨어와 연동되는 서버를 구축했습니다.</p>
+                    <p class="iv-p iv-r" style="--d: .5s">출입통제 · 통학버스 · CCTV 관제 · 스마트팜 — 실시간 하드웨어와 연동되는 서버를 구축했습니다.</p>
                     <div class="iv-cards">
-                        <div class="iv-card iv-r" style="--d: 1s"><img src="images/op-full.jpg" alt="ONEPASS PRO 출입·근태 대시보드 화면"><span class="n">ONEPASS PRO</span><span class="x">얼굴 인식 출입통제·근태 관리</span><span class="k">Node.js · Socket.IO · Redis</span></div>
-                        <div class="iv-card iv-r" style="--d: 1.15s"><img src="images/is-route.jpg" alt="아이스쿨 통학버스 노선 현황 화면"><span class="n">아이스쿨</span><span class="x">GPS 통학버스 위치 추적·승하차 알림</span><span class="k">Spring Boot · MySQL · React</span></div>
-                        <div class="iv-card iv-r" style="--d: 1.3s"><img src="images/aslan-a.jpg" alt="아슬란 CCTV 다채널 관제 화면"><span class="n">아슬란</span><span class="x">CCTV·NVR 통합 관제</span><span class="k">NestJS · WebSocket · Next.js</span></div>
-                        <div class="iv-card iv-r" style="--d: 1.45s"><img src="images/shelter-a.jpg" alt="스마트쉘터 구역별 환경 모니터링 화면"><span class="n">스마트쉘터</span><span class="x">IoT 스마트팜 환경 모니터링</span><span class="k">NestJS · MQTT · React</span></div>
+                        <div class="iv-card iv-r" style="--d: .72s"><img src="images/op-full.jpg" alt="ONEPASS PRO 출입·근태 대시보드 화면"><span class="n">ONEPASS PRO</span><span class="x">얼굴 인식 출입통제·근태 관리</span><span class="k">Node.js · Socket.IO · Redis</span></div>
+                        <div class="iv-card iv-r" style="--d: .83s"><img src="images/is-route.jpg" alt="아이스쿨 통학버스 노선 현황 화면"><span class="n">아이스쿨</span><span class="x">GPS 통학버스 위치 추적·승하차 알림</span><span class="k">Spring Boot · MySQL · React</span></div>
+                        <div class="iv-card iv-r" style="--d: .94s"><img src="images/aslan-a.jpg" alt="아슬란 CCTV 다채널 관제 화면"><span class="n">아슬란</span><span class="x">CCTV·NVR 통합 관제</span><span class="k">NestJS · WebSocket · Next.js</span></div>
+                        <div class="iv-card iv-r" style="--d: 1.04s"><img src="images/shelter-a.jpg" alt="스마트쉘터 구역별 환경 모니터링 화면"><span class="n">스마트쉘터</span><span class="x">IoT 스마트팜 환경 모니터링</span><span class="k">NestJS · MQTT · React</span></div>
                     </div>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="5.5" data-range="2025-2026" data-label="05 — 결제" aria-hidden="true">
+            <section class="iv-sc" data-dur="3.9" data-range="2025-2026" data-label="05 — 결제" aria-hidden="true">
                 <div class="iv-split iv-wide">
                     <div class="iv-col iv-s5" style="gap: 0">
-                        <div class="iv-eb iv-r" style="--d: .15s">05 — 결제</div>
-                        <span class="iv-co iv-r" style="--d: .25s">더블다운인터액티브</span>
-                        <span class="iv-ro iv-r" style="--d: .35s">Backend Developer · 2025.10 — 2026.01</span>
-                        <h2 class="iv-h"><span class="iv-w" style="--d: .45s"><span>세 개의 결제,</span></span><br><span class="iv-w" style="--d: .57s"><span class="iv-acc">하나의 어댑터.</span></span></h2>
-                        <p class="iv-p iv-r" style="--d: .9s">Strategy/Factory 패턴으로 결제 어댑터를 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
+                        <div class="iv-eb iv-r" style="--d: .11s">05 — 결제</div>
+                        <span class="iv-co iv-r" style="--d: .18s">더블다운인터액티브</span>
+                        <span class="iv-ro iv-r" style="--d: .25s">Backend Developer · 2025.10 — 2026.01</span>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .32s"><span>세 개의 결제,</span></span><br><span class="iv-w" style="--d: .41s"><span class="iv-acc">하나의 어댑터.</span></span></h2>
+                        <p class="iv-p iv-r" style="--d: .65s">Strategy/Factory 패턴으로 결제 어댑터를 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
                     </div>
                     <div class="iv-dia">
-                        <div class="iv-pill iv-r" style="top: 40px; --d: .6s">Xsolla</div>
-                        <div class="iv-pill iv-r" style="top: 204px; --d: .75s">Google Play</div>
-                        <div class="iv-pill iv-r" style="top: 368px; --d: .9s">Apple Pay</div>
-                        <div class="iv-dx" style="left: 240px; top: 75px; width: 100px; --d: 1.15s" aria-hidden="true"></div>
-                        <div class="iv-dx" style="left: 240px; top: 239px; width: 100px; --d: 1.2s" aria-hidden="true"></div>
-                        <div class="iv-dx" style="left: 240px; top: 403px; width: 100px; --d: 1.25s" aria-hidden="true"></div>
-                        <div class="iv-dy" style="left: 339px; top: 75px; height: 330px; --d: 1.5s" aria-hidden="true"></div>
-                        <div class="iv-dx hot" style="left: 340px; top: 239px; width: 80px; --d: 1.85s" aria-hidden="true"></div>
-                        <div class="iv-adp iv-pop" style="--d: 2s"><b>Payment Adapter</b><span>STRATEGY · FACTORY</span></div>
-                        <div class="iv-dy" style="left: 589px; top: 320px; height: 32px; --d: 2.5s" aria-hidden="true"></div>
-                        <div class="iv-cb iv-r" style="--d: 2.65s"><span>RESILIENCE4J</span><b>Circuit Breaker · Retry</b></div>
+                        <div class="iv-pill iv-r" style="top: 40px; --d: .43s">Xsolla</div>
+                        <div class="iv-pill iv-r" style="top: 204px; --d: .54s">Google Play</div>
+                        <div class="iv-pill iv-r" style="top: 368px; --d: .65s">Apple Pay</div>
+                        <div class="iv-dx" style="left: 240px; top: 75px; width: 100px; --d: .83s" aria-hidden="true"></div>
+                        <div class="iv-dx" style="left: 240px; top: 239px; width: 100px; --d: .86s" aria-hidden="true"></div>
+                        <div class="iv-dx" style="left: 240px; top: 403px; width: 100px; --d: .9s" aria-hidden="true"></div>
+                        <div class="iv-dy" style="left: 339px; top: 75px; height: 330px; --d: 1.08s" aria-hidden="true"></div>
+                        <div class="iv-dx hot" style="left: 340px; top: 239px; width: 80px; --d: 1.33s" aria-hidden="true"></div>
+                        <div class="iv-adp iv-pop" style="--d: 1.44s"><b>Payment Adapter</b><span>STRATEGY · FACTORY</span></div>
+                        <div class="iv-dy" style="left: 589px; top: 320px; height: 32px; --d: 1.8s" aria-hidden="true"></div>
+                        <div class="iv-cb iv-r" style="--d: 1.91s"><span>RESILIENCE4J</span><b>Circuit Breaker · Retry</b></div>
                     </div>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="5" data-range="2022-2026" data-label="06 — 배움" aria-hidden="true">
+            <section class="iv-sc" data-dur="3.4" data-range="2022-2026" data-label="06 — 배움" aria-hidden="true">
                 <div class="iv-split">
                     <div class="iv-col">
-                        <div class="iv-eb iv-r" style="--d: .15s">06 — 배움</div>
-                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>일하면서도,</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">배움은 계속.</span></span></h2>
+                        <div class="iv-eb iv-r" style="--d: .11s">06 — 배움</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .22s"><span>일하면서도,</span></span><br><span class="iv-w" style="--d: .3s"><span class="iv-acc">배움은 계속.</span></span></h2>
                     </div>
                     <div class="iv-stack">
-                        <div class="iv-edu iv-r" style="--d: .6s">
+                        <div class="iv-edu iv-r" style="--d: .43s">
                             <div class="top"><span class="iv-lb">EDUCATION</span><span class="yy">2023 — 2025</span></div>
                             <span class="n">한국방송통신대학교</span>
                             <span class="x">컴퓨터과학과 · 편입</span>
                         </div>
                         <div class="iv-certs">
-                            <span class="iv-lb iv-r" style="--d: .85s">CERTIFICATIONS</span>
-                            <div class="iv-cert iv-r" style="--d: 1s"><span class="yy">2022</span><span class="n">컴퓨터활용능력 2급</span></div>
-                            <div class="iv-cert iv-r" style="--d: 1.15s"><span class="yy">2023</span><span class="n">AWS Solutions Architect – Associate</span></div>
-                            <div class="iv-cert iv-r" style="--d: 1.3s"><span class="yy">2026</span><span class="n">SQLD</span></div>
-                            <div class="iv-cert iv-r" style="--d: 1.45s"><span class="yy">2026</span><span class="n">정보처리기사</span></div>
+                            <span class="iv-lb iv-r" style="--d: .61s">CERTIFICATIONS</span>
+                            <div class="iv-cert iv-r" style="--d: .72s"><span class="yy">2022</span><span class="n">컴퓨터활용능력 2급</span></div>
+                            <div class="iv-cert iv-r" style="--d: .83s"><span class="yy">2023</span><span class="n">AWS Solutions Architect – Associate</span></div>
+                            <div class="iv-cert iv-r" style="--d: .94s"><span class="yy">2026</span><span class="n">SQLD</span></div>
+                            <div class="iv-cert iv-r" style="--d: 1.04s"><span class="yy">2026</span><span class="n">정보처리기사</span></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="iv-sc" data-dur="6" data-range="2026-2026" data-label="07 — 지금" aria-hidden="true">
+            <section class="iv-sc" data-dur="4" data-range="2026-2026" data-label="07 — 지금" aria-hidden="true">
                 <div class="iv-split iv-wide">
                     <div class="iv-col iv-s7" style="gap: 0">
-                        <div class="iv-eb iv-r" style="--d: .15s">07 — 지금</div>
-                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>만들고,</span></span> <br><span class="iv-w" style="--d: .4s"><span>출시하고,</span></span><br><span class="iv-w" style="--d: .5s"><span class="iv-acc">운영합니다.</span></span></h2>
-                        <p class="iv-p iv-r" style="--d: .9s">회사 밖에서도 개인 프로젝트 9개를 직접 설계하고 구현했습니다.</p>
+                        <div class="iv-eb iv-r" style="--d: .11s">07 — 지금</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .22s"><span>만들고,</span></span> <br><span class="iv-w" style="--d: .29s"><span>출시하고,</span></span><br><span class="iv-w" style="--d: .36s"><span class="iv-acc">운영합니다.</span></span></h2>
+                        <p class="iv-p iv-r" style="--d: .65s">회사 밖에서도 개인 프로젝트 9개를 직접 설계하고 구현했습니다.</p>
                         <div class="iv-stats">
-                            <div class="iv-stat iv-r" style="--d: 1.2s"><b>5<span class="iv-acc">+</span></b><span>년 실무 경력</span></div>
-                            <div class="iv-stat iv-r" style="--d: 1.35s"><b>13</b><span>설계·구현 프로젝트</span></div>
-                            <div class="iv-stat iv-r" style="--d: 1.5s"><b>5</b><span>보유 자격증</span></div>
+                            <div class="iv-stat iv-r" style="--d: .86s"><b>5<span class="iv-acc">+</span></b><span>년 실무 경력</span></div>
+                            <div class="iv-stat iv-r" style="--d: .97s"><b>13</b><span>설계·구현 프로젝트</span></div>
+                            <div class="iv-stat iv-r" style="--d: 1.08s"><b>5</b><span>보유 자격증</span></div>
                         </div>
                     </div>
                     <div class="iv-shots">
                         <div class="iv-drift">
                             <div class="iv-shots-in">
-                                <div class="iv-shot iv-r" style="--d: .5s"><img src="images/link-a.jpg" alt="Link 앱 스플래시와 게시글 화면"><div class="cap"><span class="n">Link</span><span class="iv-tag">Google Play 출시</span></div></div>
-                                <div class="iv-shot iv-r" style="--d: .65s"><img src="images/snap-a.jpg" alt="Snapmark 북마크 목록 화면"><div class="cap"><span class="n">Snapmark</span><span class="iv-tag">출시</span></div></div>
-                                <div class="iv-shot iv-r" style="--d: .8s"><img src="images/cy-main.jpg" alt="사이퍼즈 메타 전적·통계 검색 화면"><div class="cap"><span class="n">사이퍼즈 메타</span><span class="iv-tag">운영 중</span></div></div>
-                                <div class="iv-shot iv-r" style="--d: .95s"><img src="images/hub-a.jpg" alt="AI 에이전트 통합 관제 시스템 대시보드 화면"><div class="cap"><span class="n">AI 에이전트 관제</span><span class="iv-tag dim">개인 · 2026</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .36s"><img src="images/link-a.jpg" alt="Link 앱 스플래시와 게시글 화면"><div class="cap"><span class="n">Link</span><span class="iv-tag">Google Play 출시</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .47s"><img src="images/snap-a.jpg" alt="Snapmark 북마크 목록 화면"><div class="cap"><span class="n">Snapmark</span><span class="iv-tag">출시</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .58s"><img src="images/cy-main.jpg" alt="사이퍼즈 메타 전적·통계 검색 화면"><div class="cap"><span class="n">사이퍼즈 메타</span><span class="iv-tag">운영 중</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .68s"><img src="images/hub-a.jpg" alt="AI 에이전트 통합 관제 시스템 대시보드 화면"><div class="cap"><span class="n">AI 에이전트 관제</span><span class="iv-tag dim">개인 · 2026</span></div></div>
                             </div>
                         </div>
                     </div>
@@ -939,12 +939,7 @@ a:hover{color:var(--ink)}
 </section>
 
     <!-- ABOUT -->
-    <!-- MANIFESTO -->
-    <section class="wrap cx-manifesto" aria-label="소개 문장">
-      <p class="cx-words">실시간 하드웨어 연동, 결제, IoT까지. <b>여러 도메인을</b> 다루며 서비스 전반의 <b>안정성과 확장성</b>을 먼저 생각하는 개발을 해왔습니다.</p>
-    </section>
-
-    <section class="wrap cx-about" style="padding-top: 0" aria-label="요약">
+    <section class="wrap cx-about" aria-label="요약">
       <div class="bento">
         <div class="card stat">
           <span class="lbl">Experience</span>
@@ -980,6 +975,14 @@ a:hover{color:var(--ink)}
 
       <div class="sub-head"><h3>일하는 방식</h3></div>
       <div class="steps">
+        <div class="card step step-lead">
+          <div class="row-b">
+            <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg></span>
+          </div>
+          <h4>도메인 이해</h4>
+          <p>어떤 비즈니스를 개발하든, 그 도메인을 깊이 이해하는 것이 좋은 설계의 출발점이라고 생각합니다. 출입통제와 통학버스, CCTV 관제, 스마트팜, 결제까지 새로운 도메인을 맡을 때마다 용어와 업무 흐름부터 익히며 이해를 쌓아 왔습니다.</p>
+          <div class="tags"><span class="tag">출입통제</span><span class="tag">통학버스</span><span class="tag">CCTV 관제</span><span class="tag">스마트팜</span><span class="tag">결제</span></div>
+        </div>
         <div class="card step">
           <div class="row-b">
             <span class="step-ic"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"></path><path d="M2 12l10 5 10-5M2 17l10 5 10-5"></path></svg></span>
@@ -1290,7 +1293,7 @@ a:hover{color:var(--ink)}
       </div>
     </section>
 
-    <!-- CAREER · EDUCATION · CERTIFICATES (기본 보기 / 타임라인 tabs are added by js/cinematic.js) -->
+    <!-- CAREER · EDUCATION · CERTIFICATES (타임라인 — default — / 기본 보기 tabs are added by js/cinematic.js) -->
     <section class="wrap sec cx-path" id="career">
         <div class="sec-head">
             <div>

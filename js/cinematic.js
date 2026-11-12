@@ -83,19 +83,30 @@
         this.sec = sec;
         this.src = $('.bento', sec);
         this.items = $$('article.pc, article.mini', sec).map(function (a) {
-            var img = $('.vis img', a), more = $('a.more', a);
+            var img = $('.vis img', a);
+            var links = $$('a[href]', a).map(function (l) {
+                var href = l.getAttribute('href');
+                return {href: href, text: txt(l) || '자세히 보기', ext: /^https?:/.test(href)};
+            });
             return {
                 cat: a.getAttribute('data-cat') || '',
                 img: img ? img.getAttribute('src') : '',
                 title: txt($('.pt', a)), period: txt($('.period', a)), badge: txt($('.badge', a)),
                 desc: txt($('.pd', a)), pts: $$('.pts li', a).map(txt), tags: $$('.tag', a).map(txt),
-                href: more ? more.getAttribute('href') : '', moreText: more ? txt(more) : '',
-                ext: more ? /^https?:/.test(more.getAttribute('href')) : false
+                links: links
             };
         });
         this.n = this.items.length;
         this.cur = -1;
         this.build();
+    }
+
+    // 자세히 보기 → (same site) · GitHub ↗ / 사이트 방문 ↗ (new tab)
+    function linkHtml(links, cls) {
+        return links.map(function (l, k) {
+            return '<a class="' + cls + (k ? ' alt' : '') + '" href="' + esc(l.href) + '"' + (l.ext ? ' target="_blank" rel="noopener"' : '') + '>' +
+                esc(l.text) + ' <span aria-hidden="true">' + (l.ext ? '↗' : '→') + '</span></a>';
+        }).join('');
     }
 
     Deck.prototype.build = function () {
@@ -129,13 +140,15 @@
             d.tabs.addEventListener('click', d.onTab);
         }
 
+        // each card: the picture + caption is one button (→ that project's scene);
+        // the project's own links sit under it and work straight from the overview
         d.cards = d.items.map(function (it, i) {
-            var c = el('button', 'cx-card');
-            c.type = 'button';
-            c.setAttribute('aria-label', it.title + ' — 이 장면으로 이동');
-            c.innerHTML = '<span class="cx-img">' + (it.img ? '<img src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">' : '<span class="cx-poster"><span>' + esc(it.badge || 'Project') + '</span><b>' + esc(it.title) + '</b></span>') + '</span>' +
-                '<span class="cx-cap"><small><i>' + pad2(i + 1) + '</i>' + esc([it.period, it.badge].filter(Boolean).join(' · ')) + '</small><b>' + esc(it.title) + '</b>' + (it.desc ? '<em>' + esc(it.desc) + '</em>' : '') + '</span>';
-            c.addEventListener('click', function () { d.jump(i); });
+            var c = el('div', 'cx-card');
+            c.innerHTML = '<button type="button" class="cx-hit" aria-label="' + esc(it.title) + ' — 이 장면으로 이동">' +
+                '<span class="cx-img">' + (it.img ? '<img src="' + esc(it.img) + '" alt="" loading="lazy" decoding="async">' : '<span class="cx-poster"><span>' + esc(it.badge || 'Project') + '</span><b>' + esc(it.title) + '</b></span>') + '</span>' +
+                '<span class="cx-cap"><small><i>' + pad2(i + 1) + '</i>' + esc([it.period, it.badge].filter(Boolean).join(' · ')) + '</small><b>' + esc(it.title) + '</b>' + (it.desc ? '<em>' + esc(it.desc) + '</em>' : '') + '</span>' +
+                '</button>' + (it.links.length ? '<div class="cx-acts">' + linkHtml(it.links, 'cx-act') + '</div>' : '');
+            $('.cx-hit', c).addEventListener('click', function () { d.jump(i); });
             d.grid.appendChild(c);
             return c;
         });
@@ -247,6 +260,8 @@
         st.setProperty('--cx-dim', (c.z ? .2 + .8 * (c.e || 0) : .2).toFixed(3));
         st.setProperty('--cx-p', (q / d.T).toFixed(4));
         d.overh.classList.toggle('live', over > .5);
+        d.wrap.classList.toggle('cx-live', over > .5);   // the overview's links only take clicks/focus once it is shown
+        d.panel.style.visibility = (c.z || 0) > .4 ? 'hidden' : '';   // faded out by then — and it must not sit over the grid's right column
         if (c.active !== d.cur) {
             if (d.cur >= 0) d.cards[d.cur].classList.remove('on');
             d.cards[c.active].classList.add('on');
@@ -273,7 +288,7 @@
         if (it.desc) h += '<p>' + esc(it.desc) + '</p>';
         if (it.pts.length) h += '<ul class="pts">' + it.pts.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
         if (it.tags.length) h += '<div class="tags">' + it.tags.map(function (x) { return '<span class="tag">' + esc(x) + '</span>'; }).join('') + '</div>';
-        if (it.href) h += '<a class="cx-more" href="' + esc(it.href) + '"' + (it.ext ? ' target="_blank" rel="noopener"' : '') + '>' + esc(it.moreText || '자세히 보기') + ' →</a>';
+        if (it.links.length) h += '<div class="cx-links">' + linkHtml(it.links, 'cx-more') + '</div>';
         this.panel.innerHTML = h + '</div>';
     };
 
@@ -348,8 +363,8 @@
         list.parentNode.insertBefore(tl, list.nextSibling);
 
         // the switch, in the section head
-        var tabs = el('div', 'tabs cx-vtabs', '<button type="button" class="tab on" role="tab" aria-selected="true" data-view="list">기본 보기</button>' +
-            '<button type="button" class="tab" role="tab" aria-selected="false" data-view="timeline">타임라인 <span>최신순</span></button>');
+        var tabs = el('div', 'tabs cx-vtabs', '<button type="button" class="tab on" role="tab" aria-selected="true" data-view="timeline">타임라인 <span>최신순</span></button>' +
+            '<button type="button" class="tab" role="tab" aria-selected="false" data-view="list">기본 보기</button>');
         tabs.setAttribute('role', 'tablist');
         tabs.setAttribute('aria-label', '보기 방식');
         $('.sec-head', path).appendChild(tabs);
@@ -362,15 +377,18 @@
             });
             Object.keys(views).forEach(function (k) { views[k].hidden = k !== v; });
             reveal($$(v === 'timeline' ? '.cx-gh, .cx-yr' : '.tl-item, .li', views[v]));
-            try { localStorage.setItem('path-view', v); } catch (e) {}
         };
+        // 타임라인 is the default; only a view the visitor actually picked is remembered
+        // (a new key: the old one was written on every load, so it holds no real choice)
         tabs.addEventListener('click', function (e) {
             var b = e.target.closest('[data-view]');
-            if (b) show(b.getAttribute('data-view'));
+            if (!b) return;
+            show(b.getAttribute('data-view'));
+            try { localStorage.setItem('path-view-pick', b.getAttribute('data-view')); } catch (e2) {}
         });
         var saved = null;
-        try { saved = localStorage.getItem('path-view'); } catch (e) {}
-        show(saved === 'timeline' ? 'timeline' : 'list');
+        try { saved = localStorage.getItem('path-view-pick'); localStorage.removeItem('path-view'); } catch (e) {}
+        show(saved === 'list' ? 'list' : 'timeline');
 
         // the nav's 학력·자격 link targets the list view; in the timeline, go to the section
         document.addEventListener('click', function (e) {
