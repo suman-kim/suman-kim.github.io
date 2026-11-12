@@ -6,7 +6,7 @@
 <title>AI 에이전트 통합 관제 시스템 · 김수만</title>
 <meta name="description" content="Claude Code 세션 여러 개를 task 기준으로 묶어 관리하고, task를 PR까지 자동으로 진행하는 로컬 관제 서버 케이스 스터디.">
 <meta name="theme-color" content="#0A0B0E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23141416'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='monospace' font-size='24' font-weight='700' fill='%23F5F5F7'%3ESK%3C/text%3E%3Ccircle cx='52' cy='12' r='6' fill='%237D8CFF'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='2' y='2' width='44' height='44' rx='14' fill='%23141416'/%3E%3Cpath d='M31 13H20a5.5 5.5 0 0 0 0 11H28a5.5 5.5 0 0 1 0 11H17' fill='none' stroke='%23fff' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='35' cy='13' r='3' fill='none' stroke='%23fff' stroke-width='2.4'/%3E%3Ccircle cx='13' cy='35' r='3.4' fill='%237D8CFF'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,12 @@ a:hover{color:var(--ink)}
 .nav-in{max-width:1200px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{display:flex;align-items:center;gap:12px;color:inherit;font-weight:720;letter-spacing:-.02em;font-size:17px;min-height:44px}
 .brand:hover{color:inherit}
-.logo{width:32px;height:32px;border-radius:10px;border:1.5px solid currentColor;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:12px;font-weight:600}
+.logo{width:32px;height:32px;display:block;flex:0 0 auto}
+.logo .mk-t{fill:currentColor;transition:fill .3s}
+.logo .mk-s{stroke:var(--mk-bg);transition:stroke .3s}
+.logo .mk-a{fill:var(--mk-acc)}
+.nav{--mk-bg:#0A0B0E;--mk-acc:#7D8CFF}
+.nav.solid{--mk-bg:var(--bg);--mk-acc:var(--accent)}
 .nav-links{display:flex;gap:2px}
 .nl{color:inherit;font-size:14.5px;font-weight:550;padding:10px 12px;border-radius:10px}
 .nl:hover{color:inherit;text-decoration:underline;text-underline-offset:6px}
@@ -176,7 +181,91 @@ a:hover{color:var(--ink)}
 .foot{max-width:1200px;margin:0 auto;padding:44px 24px 52px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
 .foot a{color:var(--muted);display:inline-flex;align-items:center;gap:6px;min-height:44px}
 .foot a:hover{color:var(--ink)}
-.credit{display:block;margin-top:6px;font-size:12px;opacity:.75}
+
+
+/* ---------- print / PDF: every piece in place, no fixed chrome, cards never split ---------- */
+@media print{
+  @page{margin:0}
+  html{scroll-behavior:auto}
+  body{background:#F5F5F7!important}
+  .nav{position:absolute!important}
+  .icon-btn,.replay,.hero-foot,.dl,.tabs,.ftabs,.back-row,.term-f,.hint{display:none!important}
+  .pz-on .pz,.pz{opacity:1!important;transform:none!important;transition:none!important}
+  .hero{height:900px!important;min-height:0!important}
+  .curtain,.hud{display:none!important}
+  .prob-vis{position:static!important}
+  .card,.tl-item,.pstep,.feat,.ps,.op,.ln,.brc,.mock,.fact,.step,.why,.layer,.dec{break-inside:avoid}
+  .sec-head,.sub-head{break-inside:avoid;break-after:avoid}
+  [data-flow-panel]{break-inside:avoid}
+  [data-flow-panel]{display:block!important;margin:0 0 28px}
+  [data-flow-panel]::before{content:attr(data-title);display:block;margin:0 0 12px;font-size:19px;font-weight:740;letter-spacing:-.02em}
+}
+
+/* ---------- view tabs + year-rail timeline ---------- */
+.vtabs .tab svg{opacity:.8}
+.yrl{padding:clamp(28px,4vw,52px) clamp(22px,4vw,56px) clamp(24px,3vw,40px)}
+.yr-row{display:grid;grid-template-columns:132px 28px minmax(0,1fr);column-gap:28px}
+.yr-y{font-size:40px;line-height:1;font-weight:760;letter-spacing:-.045em;color:var(--ink);padding-top:1px;font-variant-numeric:tabular-nums}
+.yr-y.dim{color:color-mix(in srgb,var(--ink) 30%,transparent)}
+.yr-y.now{font-family:'Geist Mono',ui-monospace,monospace;font-size:15px;font-weight:600;letter-spacing:.12em;padding-top:4px}
+.yr-rail{position:relative}
+.yr-rail::before{content:"";position:absolute;left:13px;top:0;bottom:0;width:2px;background:var(--line)}
+.yr-row:first-child .yr-rail::before{top:14px}
+.yr-row.end .yr-rail::before{bottom:auto;height:14px}
+.yr-node{position:absolute;left:6px;top:7px;width:16px;height:16px;border-radius:50%;background:var(--card);border:2px solid var(--ink);z-index:1}
+.yr-node.k-work{background:var(--accent);border-color:var(--accent)}
+.yr-node.k-edu{background:var(--ink)}
+.yr-node.k-cert{border-radius:3px;transform:rotate(45deg) scale(.86)}
+.yr-node.k-now{border-color:var(--ink);background:var(--card)}
+.yr-node.k-now::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--ink)}
+.yr-seg{position:absolute;left:11px;top:22px;bottom:0;width:6px;border-radius:99px;transform-origin:center top}
+.yr-seg.k-work{background:var(--accent)}
+.yr-seg.k-edu{background:color-mix(in srgb,var(--ink) 22%,transparent)}
+.yr-body{padding-bottom:44px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.yr-row.end .yr-body{padding-bottom:0}
+.yr-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;color:var(--muted)}
+.yr-kind{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink);letter-spacing:0}
+.yr-kind.k-edu{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.yr-dur{font-family:'Pretendard Variable','Pretendard',sans-serif;font-size:12.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:2px 9px;border-radius:99px;letter-spacing:0}
+.yr-t{margin:0;font-size:22px;line-height:1.35;font-weight:760;letter-spacing:-.03em;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.yr-t small{font-size:15px;font-weight:550;color:var(--muted);letter-spacing:-.005em}
+.yr-p{margin:0;font-size:16px;line-height:1.8;max-width:760px}
+.yr-now{font-family:'Geist Mono',ui-monospace,monospace;font-size:13px;color:var(--muted);padding-top:5px}
+.yr-pair{display:flex;flex-direction:column;gap:22px}
+.car{display:flex;flex-direction:column;gap:14px;padding:28px}
+.car-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.car .period{font-size:13px}
+.car h3{margin:0;font-size:22px;font-weight:740;letter-spacing:-.025em;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px}
+.car h3 small{font-size:14.5px;color:var(--muted);font-weight:550;letter-spacing:0}
+.car p{margin:0;font-size:15.5px;line-height:1.8}
+@media (max-width: 720px){
+  .yr-row{grid-template-columns:56px 24px minmax(0,1fr);column-gap:12px}
+  .yr-y{font-size:21px;letter-spacing:-.03em;padding-top:4px}
+  .yr-y.now{font-size:11px;letter-spacing:.08em;padding-top:7px}
+  .yr-rail::before{left:11px}
+  .yr-node{left:4px}
+  .yr-seg{left:9px}
+  .yr-t{font-size:19px}
+  .yr-t small{font-size:14px;width:100%}
+  .yr-p{font-size:15px}
+  .yr-body{padding-bottom:34px}
+}
+/* ---------- natural reveal on scroll ---------- */
+.rv-on .rv{opacity:0;transform:translate3d(0,40px,0);transition:opacity .85s cubic-bezier(.4,0,.2,1) var(--rd,0ms),transform 1.3s cubic-bezier(.19,1,.22,1) var(--rd,0ms)}
+.rv-on .rv.in{opacity:1;transform:none}
+.rv-on .h2.rv,.rv-on .dh-title.rv{opacity:1;transform:translate3d(0,.32em,0);clip-path:inset(0 -8% 100% -8%);transition:clip-path 1.2s cubic-bezier(.19,1,.22,1) var(--rd,0ms),transform 1.2s cubic-bezier(.19,1,.22,1) var(--rd,0ms)}
+.rv-on .h2.rv.in,.rv-on .dh-title.rv.in{clip-path:inset(-20% -8% -20% -8%);transform:none}
+.rv-on .eyebrow.rv{transform:translate3d(0,10px,0)}
+.rv-on .lead.rv,.rv-on .tabs.rv{transform:translate3d(0,14px,0)}
+.rv-on .rv .shot{scale:1.07;transition:scale 1.7s cubic-bezier(.2,.7,.2,1) var(--rd,0ms)}
+.rv-on .rv.in .shot{scale:1}
+.rv-on .rv .yr-seg{scale:1 0;transition:scale 1.2s cubic-bezier(.3,.6,.2,1) calc(var(--rd,0ms) + 280ms)}
+.rv-on .rv.in .yr-seg{scale:1 1}
+.rv-on .rv .yr-node{scale:.2;transition:scale .55s cubic-bezier(.3,1.5,.5,1) calc(var(--rd,0ms) + 140ms)}
+.rv-on .rv.in .yr-node{scale:1}
+/* while the hidden state is first applied, nothing animates (so it does not fade out first) */
+.rv-prep .rv,.rv-prep .rv *{transition:none!important}
+@media print{.rv-on .rv{opacity:1!important;transform:none!important;clip-path:none!important}.rv-on .rv .shot,.rv-on .rv .yr-seg,.rv-on .rv .yr-node{scale:none!important}}
 
 
 /* ---------- detail hero ---------- */
@@ -309,7 +398,7 @@ a:hover{color:var(--ink)}
 .next .pbody{flex-direction:row;align-items:center;justify-content:space-between}
 .next .arr{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
 .next a.card:hover .arr{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.back-row{display:flex;justify-content:center;margin-top:28px}
+.back-row{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
 .btn-out{color:var(--ink);border-color:var(--line);background:var(--card)}
 .btn-out:hover{border-color:var(--ink);color:var(--ink)}
 .foot-links{display:flex;gap:6px 18px;flex-wrap:wrap}
@@ -531,7 +620,7 @@ a:hover{color:var(--ink)}
 
   <header class="nav" id="nav">
     <div class="nav-in">
-      <a class="brand" href="index.html"><span class="logo">SK</span><span>김수만</span></a>
+      <a class="brand" href="index.html" aria-label="김수만 포트폴리오 홈"><svg class="logo" width="32" height="32" viewBox="0 0 48 48" aria-hidden="true"><rect class="mk-t" x="2" y="2" width="44" height="44" rx="14"></rect><path class="mk-s" d="M31 13H20a5.5 5.5 0 0 0 0 11H28a5.5 5.5 0 0 1 0 11H17" fill="none" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path><circle class="mk-s" cx="35" cy="13" r="3" fill="none" stroke-width="2.4"></circle><circle class="mk-a" cx="13" cy="35" r="3.4"></circle></svg><span>김수만</span></a>
       <nav class="nav-links" aria-label="페이지 섹션">
         <a class="nl" href="#why">만든 이유</a>
         <a class="nl" href="#process">실행 과정</a>
@@ -642,7 +731,7 @@ a:hover{color:var(--ink)}
       </div>
       <div class="ftabs" role="group" aria-label="흐름 선택"><button type="button" class="tab on" data-flow="0" aria-pressed="true">전체 구조</button><button type="button" class="tab" data-flow="1" aria-pressed="false">세션 연결과 가드</button><button type="button" class="tab" data-flow="2" aria-pressed="false">task 실행</button><button type="button" class="tab" data-flow="3" aria-pressed="false">기획과 새 앱</button></div>
       <div class="legend"><span class="ac p">사람</span><span class="ac c">Claude 세션</span><span class="ac h">hook</span><span class="ac s">관제 서버</span><span class="ac r">runner</span><span class="ac g">GitHub</span></div>
-      <div data-flow-panel="0"><div class="layers"><div class="layer"><span>요청이 들어오는 곳</span><div class="lnodes"><div class="ln"><span class="ac c">Claude 세션</span><b>직접 연 세션</b><small>터미널이나 백그라운드에서 연 세션</small></div><div class="ln"><span class="ac r">runner</span><b>시스템이 띄운 에이전트</b><small>task 실행, 기획 생성, 새 앱 시작</small></div><div class="ln"><span class="ac p">사람</span><b>웹 대시보드</b><small>승인, 답변, 실행, 설정</small></div><div class="ln"><span class="ac g">GitHub</span><b>저장소</b><small>배포 기록, Actions 결과, PR 머지</small></div></div></div><div class="layer"><span>입구<small>(얇게 유지)</small></span><div class="lnodes"><div class="ln"><span class="ac h">hook</span><b>hook API</b><small>세션 시작, 도구 사용 전후를 받아 맥락을 주고 가드를 판정</small></div><div class="ln"><span class="ac s">관제 서버</span><b>MCP 서버</b><small>세션이 쓰는 도구 12개: task, 명세, 실수, 버그, 배포 기록</small></div><div class="ln"><span class="ac s">관제 서버</span><b>REST와 WebSocket</b><small>대시보드 조회, 실행 로그 실시간 전송</small></div><div class="ln"><span class="ac s">관제 서버</span><b>주기 작업</b><small>5분마다 GitHub 가져오기, 기획 자동 생성</small></div></div></div><div class="layer"><span>규칙과 상태 관리</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>앱과 저장소</b><small>작업 폴더로 앱을 판별, 앱 하나에 저장소 여러 개</small></div><div class="ln"><span class="ac s">관제 서버</span><b>task 상태 전이</b><small>허용된 전이만 통과, 어느 입구로 와도 같은 규칙</small></div><div class="ln"><span class="ac s">관제 서버</span><b>세션, 실수, 명세</b><small>세션 기록, 맥락 조립, 인수인계 문서</small></div><div class="ln"><span class="ac s">관제 서버</span><b>실행, 기획, 배포</b><small>실행과 비용, 기획 버전, 배포와 히스토리</small></div></div></div><div class="layer"><span>저장과 실행</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>PostgreSQL</b><small>task, 기획, 실행 로그, 히스토리를 한 곳에</small></div><div class="ln"><span class="ac r">runner</span><b>pg-boss 큐</b><small>실행 대기열, 재시도, 동시 실행 제한, cron</small></div><div class="ln"><span class="ac r">runner</span><b>git worktree</b><small>task마다 격리된 작업 공간과 전용 브랜치</small></div><div class="ln"><span class="ac g">GitHub</span><b>gh CLI</b><small>push와 PR 생성은 시스템만</small></div></div></div></div></div><div data-flow-panel="1" hidden><div class="fgroups"><div class="card fg"><h3>세션이 시작될 때</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>세션 시작</b></div><p>터미널에서 연 세션이든 백그라운드 세션이든 똑같이 처리됩니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>세션 정보 전달</b></div><p>작업 폴더와 세션 ID를 관제 서버로 보냅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>앱 판별과 task 연결</b></div><p>작업 폴더로 앱을 찾고, 이 세션에 연결된 task를 확인합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>맥락 블록 조립</b></div><p>앱, 이 세션의 task, 열린 task, 실수 기록 순서로 8,000자 안에 담습니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>맥락을 받은 채로 시작</b></div><p>하던 task와 지난 실수 기록을 알고 대화를 시작합니다.</p></li></ol></div><div class="card fg"><h3>코드를 고치기 직전</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>수정이나 셸 실행 시도</b></div><p>파일 수정과 Bash만 검사합니다. 읽기는 늘 허용합니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>실행 전 확인</b></div><p>도구를 실행하기 전에 관제 서버에 통과 여부를 묻습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>가드 판정</b></div><div class="brs"><div class="brc"><span class="chip ok">통과</span><ul><li>진행 중 task가 연결된 세션</li><li>시스템이 띄운 세션</li><li>관제 서버가 꺼져 있을 때</li></ul></div><div class="brc"><span class="chip bad">차단</span><ul><li>진행 중 task 없음</li><li>등록되지 않은 프로젝트 폴더</li><li>이유와 푸는 법을 세션에 안내</li></ul></div></div></li></ol></div><div class="card fg"><h3>도구를 쓴 직후</h3><ol class="sts"><li><div class="t"><span class="ac h">hook</span><b>사용 기록 전달</b></div><p>명령과 도구 사용이 자동으로 쌓입니다. 토큰과 키는 가려서 저장합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>task 상태를 바꿨나?</b></div><p>응답이 아니라 DB의 실제 상태로 판단해, 거부된 변경은 무시합니다.</p><div class="brs"><div class="brc"><span class="chip info">진행 중, 답변 대기</span><ul><li>세션과 task 연결</li><li>수정이 풀림</li></ul></div><div class="brc"><span class="chip ">리뷰, 완료</span><ul><li>연결 해제</li><li>다음 일은 새 task로</li></ul></div></div></li></ol></div></div></div><div data-flow-panel="2" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac p">사람</span><b>task 실행</b></div><p>대시보드에서 실행을 누르거나 API를 한 번 부릅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>대기열에 등록</b></div><p>pg-boss 큐가 동시에 2개까지 꺼냅니다. 맥북 CPU와 디스크를 지키기 위한 제한입니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>격리된 작업 공간</b></div><p>git worktree와 전용 브랜치를 만들고, 앱별 준비 명령을 실행합니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>Claude 실행</b></div><p>task 설명, 기획 명세, 완료 조건을 담아 실행합니다. 허용한 도구만 쓰고 push 권한은 없습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>로그 저장과 실시간 전송</b></div><p>출력 이벤트를 DB에 남기고 대시보드로 보냅니다. 원본도 그대로 보관합니다.</p></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>결과 판정</b></div><p>에이전트의 마지막 구조화된 출력으로 어떻게 끝났는지 가립니다.</p><div class="brs"><div class="brc"><span class="chip ok">완료</span><ul><li>커밋 확인</li><li>사전 검사, 실패하면 PR 없음</li><li>시스템이 push하고 PR 생성</li><li>task를 리뷰로</li></ul></div><div class="brc"><span class="chip wait">질문</span><ul><li>task를 답변 대기로</li><li>사람이 대시보드에서 답변</li><li>같은 세션으로 이어서 실행</li></ul></div><div class="brc"><span class="chip bad">실패</span><ul><li>오류, 사용량 한도, 중지를 구분해 기록</li><li>사유를 대시보드에 표시</li><li>다시 실행해 끝나면 실패 표시 정리</li></ul></div></div></li><li><div class="t"><span class="ac p">사람</span><b>PR 리뷰와 머지</b></div><p>머지는 언제나 사람이 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>머지 감지</b></div><p>5분마다 GitHub를 확인해 머지된 PR을 찾습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>완료와 정리</b></div><p>task를 완료로 바꾸고 worktree를 지웁니다. 실행 비용은 앱별, 월별로 합산됩니다.</p></li></ol></div></div></div><div data-flow-panel="3" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>기획 생성 시작</b></div><p>앱별 주기에 맞춰 자동으로, 또는 즉시. 구독 사용량이 80%를 넘으면 건너뜁니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>읽기 전용 에이전트가 기획 작성</b></div><p>방향성 메모, 열린 task, 이전 반려 사유를 읽고 정해진 형식으로 냅니다. 새 앱 기획은 비슷한 서비스와 시장도 웹에서 조사합니다.</p></li><li><div class="t"><span class="ac p">사람</span><b>검토</b></div><div class="brs"><div class="brc"><span class="chip ok">승인</span><ul><li>task와 기획 명세 생성</li><li>기존 앱이면 task 실행으로</li></ul></div><div class="brc"><span class="chip wait">수정 요청</span><ul><li>요청을 더해 새 버전 작성</li></ul></div><div class="brc"><span class="chip bad">반려</span><ul><li>사유를 다음 기획에 반영</li></ul></div></div></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac r">runner</span><b>새 앱이면 프로젝트 만들기</b></div><p>폴더를 만들고 git을 시작한 뒤, README와 기획 문서로 첫 커밋을 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>비공개 저장소 생성</b></div><p>같은 이름이 있으면 덮어쓰지 않고 멈춥니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>작업 폴더 신뢰 등록</b></div><p>방금 만든 폴더만 Claude Code 신뢰 목록에 올립니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>백그라운드 세션 시작</b></div><p>기획 읽기, UI 시안, 첫 task 구현, PR 순서로 진행합니다. 원격으로 이어 볼 수 있습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>실패하면 이어서</b></div><p>끝난 단계는 건너뛰고 실패한 단계부터 다시 합니다.</p></li></ol></div></div></div>
+      <div data-flow-panel="0" data-title="전체 구조"><div class="layers"><div class="layer"><span>요청이 들어오는 곳</span><div class="lnodes"><div class="ln"><span class="ac c">Claude 세션</span><b>직접 연 세션</b><small>터미널이나 백그라운드에서 연 세션</small></div><div class="ln"><span class="ac r">runner</span><b>시스템이 띄운 에이전트</b><small>task 실행, 기획 생성, 새 앱 시작</small></div><div class="ln"><span class="ac p">사람</span><b>웹 대시보드</b><small>승인, 답변, 실행, 설정</small></div><div class="ln"><span class="ac g">GitHub</span><b>저장소</b><small>배포 기록, Actions 결과, PR 머지</small></div></div></div><div class="layer"><span>입구<small>(얇게 유지)</small></span><div class="lnodes"><div class="ln"><span class="ac h">hook</span><b>hook API</b><small>세션 시작, 도구 사용 전후를 받아 맥락을 주고 가드를 판정</small></div><div class="ln"><span class="ac s">관제 서버</span><b>MCP 서버</b><small>세션이 쓰는 도구 12개: task, 명세, 실수, 버그, 배포 기록</small></div><div class="ln"><span class="ac s">관제 서버</span><b>REST와 WebSocket</b><small>대시보드 조회, 실행 로그 실시간 전송</small></div><div class="ln"><span class="ac s">관제 서버</span><b>주기 작업</b><small>5분마다 GitHub 가져오기, 기획 자동 생성</small></div></div></div><div class="layer"><span>규칙과 상태 관리</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>앱과 저장소</b><small>작업 폴더로 앱을 판별, 앱 하나에 저장소 여러 개</small></div><div class="ln"><span class="ac s">관제 서버</span><b>task 상태 전이</b><small>허용된 전이만 통과, 어느 입구로 와도 같은 규칙</small></div><div class="ln"><span class="ac s">관제 서버</span><b>세션, 실수, 명세</b><small>세션 기록, 맥락 조립, 인수인계 문서</small></div><div class="ln"><span class="ac s">관제 서버</span><b>실행, 기획, 배포</b><small>실행과 비용, 기획 버전, 배포와 히스토리</small></div></div></div><div class="layer"><span>저장과 실행</span><div class="lnodes"><div class="ln"><span class="ac s">관제 서버</span><b>PostgreSQL</b><small>task, 기획, 실행 로그, 히스토리를 한 곳에</small></div><div class="ln"><span class="ac r">runner</span><b>pg-boss 큐</b><small>실행 대기열, 재시도, 동시 실행 제한, cron</small></div><div class="ln"><span class="ac r">runner</span><b>git worktree</b><small>task마다 격리된 작업 공간과 전용 브랜치</small></div><div class="ln"><span class="ac g">GitHub</span><b>gh CLI</b><small>push와 PR 생성은 시스템만</small></div></div></div></div></div><div data-flow-panel="1" data-title="세션 연결과 가드" hidden><div class="fgroups"><div class="card fg"><h3>세션이 시작될 때</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>세션 시작</b></div><p>터미널에서 연 세션이든 백그라운드 세션이든 똑같이 처리됩니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>세션 정보 전달</b></div><p>작업 폴더와 세션 ID를 관제 서버로 보냅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>앱 판별과 task 연결</b></div><p>작업 폴더로 앱을 찾고, 이 세션에 연결된 task를 확인합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>맥락 블록 조립</b></div><p>앱, 이 세션의 task, 열린 task, 실수 기록 순서로 8,000자 안에 담습니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>맥락을 받은 채로 시작</b></div><p>하던 task와 지난 실수 기록을 알고 대화를 시작합니다.</p></li></ol></div><div class="card fg"><h3>코드를 고치기 직전</h3><ol class="sts"><li><div class="t"><span class="ac c">Claude 세션</span><b>수정이나 셸 실행 시도</b></div><p>파일 수정과 Bash만 검사합니다. 읽기는 늘 허용합니다.</p></li><li><div class="t"><span class="ac h">hook</span><b>실행 전 확인</b></div><p>도구를 실행하기 전에 관제 서버에 통과 여부를 묻습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>가드 판정</b></div><div class="brs"><div class="brc"><span class="chip ok">통과</span><ul><li>진행 중 task가 연결된 세션</li><li>시스템이 띄운 세션</li><li>관제 서버가 꺼져 있을 때</li></ul></div><div class="brc"><span class="chip bad">차단</span><ul><li>진행 중 task 없음</li><li>등록되지 않은 프로젝트 폴더</li><li>이유와 푸는 법을 세션에 안내</li></ul></div></div></li></ol></div><div class="card fg"><h3>도구를 쓴 직후</h3><ol class="sts"><li><div class="t"><span class="ac h">hook</span><b>사용 기록 전달</b></div><p>명령과 도구 사용이 자동으로 쌓입니다. 토큰과 키는 가려서 저장합니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>task 상태를 바꿨나?</b></div><p>응답이 아니라 DB의 실제 상태로 판단해, 거부된 변경은 무시합니다.</p><div class="brs"><div class="brc"><span class="chip info">진행 중, 답변 대기</span><ul><li>세션과 task 연결</li><li>수정이 풀림</li></ul></div><div class="brc"><span class="chip ">리뷰, 완료</span><ul><li>연결 해제</li><li>다음 일은 새 task로</li></ul></div></div></li></ol></div></div></div><div data-flow-panel="2" data-title="task 실행" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac p">사람</span><b>task 실행</b></div><p>대시보드에서 실행을 누르거나 API를 한 번 부릅니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>대기열에 등록</b></div><p>pg-boss 큐가 동시에 2개까지 꺼냅니다. 맥북 CPU와 디스크를 지키기 위한 제한입니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>격리된 작업 공간</b></div><p>git worktree와 전용 브랜치를 만들고, 앱별 준비 명령을 실행합니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>Claude 실행</b></div><p>task 설명, 기획 명세, 완료 조건을 담아 실행합니다. 허용한 도구만 쓰고 push 권한은 없습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>로그 저장과 실시간 전송</b></div><p>출력 이벤트를 DB에 남기고 대시보드로 보냅니다. 원본도 그대로 보관합니다.</p></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>결과 판정</b></div><p>에이전트의 마지막 구조화된 출력으로 어떻게 끝났는지 가립니다.</p><div class="brs"><div class="brc"><span class="chip ok">완료</span><ul><li>커밋 확인</li><li>사전 검사, 실패하면 PR 없음</li><li>시스템이 push하고 PR 생성</li><li>task를 리뷰로</li></ul></div><div class="brc"><span class="chip wait">질문</span><ul><li>task를 답변 대기로</li><li>사람이 대시보드에서 답변</li><li>같은 세션으로 이어서 실행</li></ul></div><div class="brc"><span class="chip bad">실패</span><ul><li>오류, 사용량 한도, 중지를 구분해 기록</li><li>사유를 대시보드에 표시</li><li>다시 실행해 끝나면 실패 표시 정리</li></ul></div></div></li><li><div class="t"><span class="ac p">사람</span><b>PR 리뷰와 머지</b></div><p>머지는 언제나 사람이 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>머지 감지</b></div><p>5분마다 GitHub를 확인해 머지된 PR을 찾습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>완료와 정리</b></div><p>task를 완료로 바꾸고 worktree를 지웁니다. 실행 비용은 앱별, 월별로 합산됩니다.</p></li></ol></div></div></div><div data-flow-panel="3" data-title="기획과 새 앱" hidden><div class="flow-cols"><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac s">관제 서버</span><b>기획 생성 시작</b></div><p>앱별 주기에 맞춰 자동으로, 또는 즉시. 구독 사용량이 80%를 넘으면 건너뜁니다.</p></li><li><div class="t"><span class="ac r">runner</span><b>읽기 전용 에이전트가 기획 작성</b></div><p>방향성 메모, 열린 task, 이전 반려 사유를 읽고 정해진 형식으로 냅니다. 새 앱 기획은 비슷한 서비스와 시장도 웹에서 조사합니다.</p></li><li><div class="t"><span class="ac p">사람</span><b>검토</b></div><div class="brs"><div class="brc"><span class="chip ok">승인</span><ul><li>task와 기획 명세 생성</li><li>기존 앱이면 task 실행으로</li></ul></div><div class="brc"><span class="chip wait">수정 요청</span><ul><li>요청을 더해 새 버전 작성</li></ul></div><div class="brc"><span class="chip bad">반려</span><ul><li>사유를 다음 기획에 반영</li></ul></div></div></li></ol></div><div class="card fg"><ol class="sts"><li><div class="t"><span class="ac r">runner</span><b>새 앱이면 프로젝트 만들기</b></div><p>폴더를 만들고 git을 시작한 뒤, README와 기획 문서로 첫 커밋을 합니다.</p></li><li><div class="t"><span class="ac g">GitHub</span><b>비공개 저장소 생성</b></div><p>같은 이름이 있으면 덮어쓰지 않고 멈춥니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>작업 폴더 신뢰 등록</b></div><p>방금 만든 폴더만 Claude Code 신뢰 목록에 올립니다.</p></li><li><div class="t"><span class="ac c">Claude 세션</span><b>백그라운드 세션 시작</b></div><p>기획 읽기, UI 시안, 첫 task 구현, PR 순서로 진행합니다. 원격으로 이어 볼 수 있습니다.</p></li><li><div class="t"><span class="ac s">관제 서버</span><b>실패하면 이어서</b></div><p>끝난 단계는 건너뛰고 실패한 단계부터 다시 합니다.</p></li></ol></div></div></div>
     </section>
 
     <section class="wrap sec" id="features">
@@ -971,6 +1060,58 @@ a:hover{color:var(--ink)}
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 })();
+(function(main){
+  if (!main || main.__rv) return;
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  main.__rv = true;
+  var SEL = '.bento,.steps,.yrl,.timeline,.sec-head,.sub-head,.feats,.pipe,.next,.ops,.proc,.layers,.fgroups,.flow-cols,.back-row,#contact';
+  var groups = [].slice.call(main.querySelectorAll(SEL)).filter(function(g){
+    return !(g.parentElement && g.parentElement.closest(SEL));
+  });
+  var items = [];
+  groups.forEach(function(g){
+    var kids = [];
+    if (g.classList.contains('sec-head')) kids = [].slice.call(g.querySelectorAll('.eyebrow,.h2,.lead,.tabs'));
+    else if (g.id === 'contact') kids = [g.firstElementChild].filter(Boolean);
+    else (function walk(el){
+      [].forEach.call(el.children, function(c){
+        if (c.tagName === 'SCRIPT') return;
+        if (getComputedStyle(c).display === 'contents') walk(c); else kids.push(c);
+      });
+    })(g);
+    kids.forEach(function(k){ k.classList.add('rv'); items.push(k); });
+  });
+  if (!items.length) return;
+  function show(el, delay){ el.style.setProperty('--rd', delay + 'ms'); el.classList.add('in'); }
+  // a masked title is fully clipped at first and IntersectionObserver honours clip-path,
+  // so titles are watched through their (unclipped) parent
+  function watchOf(el){ return el.classList.contains('h2') || el.classList.contains('dh-title') ? el.parentElement : el; }
+  function targets(w){ return w.__rvT || [w]; }
+  items.forEach(function(el){ var w = watchOf(el); if (w !== el) (w.__rvT = w.__rvT || []).push(el); });
+  var first = true;
+  var io = new IntersectionObserver(function(entries){
+    var go = [];
+    entries.forEach(function(en){
+      var w = en.target, br = en.boundingClientRect;
+      if (en.isIntersecting && en.intersectionRect.height >= Math.min(70, br.height * 0.15)) go.push(en);
+      else if (first && !en.isIntersecting && br.bottom <= 0) {
+        targets(w).forEach(function(el){ el.style.transition = 'none'; show(el, 0); el.offsetWidth; el.style.transition = ''; });
+        io.unobserve(w);
+      }
+    });
+    first = false;
+    // whatever arrives together plays in reading order: top to bottom, then left to right
+    go.sort(function(a, b){ return (Math.round(a.boundingClientRect.top / 40) - Math.round(b.boundingClientRect.top / 40)) || (a.boundingClientRect.left - b.boundingClientRect.left); })
+      .forEach(function(en, n){ targets(en.target).forEach(function(el){ show(el, Math.min(n * 90, 450)); }); io.unobserve(en.target); });
+  }, { threshold: [0, 0.06, 0.15, 0.3] });
+  main.classList.add('rv-prep', 'rv-on');
+  main.offsetWidth;
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ main.classList.remove('rv-prep'); }); });
+  var seen = [];
+  items.forEach(function(el){ var w = watchOf(el); if (seen.indexOf(w) < 0) { seen.push(w); io.observe(w); } });
+})(document.querySelector('main'));
+
 (function(){
   var linked = false;
   var badge = document.getElementById('g-badge'), link = document.getElementById('g-link'), send = document.getElementById('g-send');
