@@ -169,10 +169,10 @@
 .cx-about .step p { font-size: 15px; line-height: 1.75 }
 .cx-about .step .row-b { order: -1; position: absolute; top: 26px; right: 22px }
 /* 도메인 이해 — the principle the four practices rest on: a full-width lead card above them */
-.cx-about .step.step-lead { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-areas: "num text" "title text" "icon tags"; grid-template-rows: auto 1fr auto; column-gap: clamp(32px, 6vw, 96px); row-gap: 14px; padding: clamp(34px, 4vw, 54px) clamp(30px, 4vw, 54px); background: radial-gradient(80% 160% at 0% 0%, var(--cx-glow), transparent 62%), var(--card) }
+.cx-about .step.step-lead { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-areas: "num text" "title text" "icon text"; grid-template-rows: auto 1fr auto; column-gap: clamp(32px, 6vw, 96px); row-gap: 14px; padding: clamp(34px, 4vw, 54px) clamp(30px, 4vw, 54px); background: radial-gradient(80% 160% at 0% 0%, var(--cx-glow), transparent 62%), var(--card) }
 .cx-about .step-lead::before { grid-area: num }
 .cx-about .step-lead h4 { grid-area: title; align-self: start; font-size: clamp(32px, 3.4vw, 50px); line-height: 1.1; letter-spacing: -.05em }
-.cx-about .step-lead p { grid-area: text; margin: 0; color: var(--ink); font-size: clamp(17px, 1.35vw, 19.5px); line-height: 1.85; letter-spacing: -.01em }
+.cx-about .step-lead p { grid-area: text; align-self: center; margin: 0; max-width: 560px; color: var(--ink); font-size: clamp(20px, 1.9vw, 28px); line-height: 1.55; font-weight: 600; letter-spacing: -.035em; text-wrap: balance }
 .cx-about .step-lead .tags { grid-area: tags; align-self: end }
 .cx-about .step-lead .row-b { grid-area: icon; position: static; align-self: end; margin-top: 18px }
 .cx-about .step-lead .step-ic { width: 56px; height: 56px; border-radius: 16px }
@@ -444,7 +444,7 @@
 
 @media (max-width: 600px) {
     .cx-about .bento, .cx-about .steps { grid-template-columns: minmax(0, 1fr) }
-    .cx-about .step.step-lead { grid-template-columns: minmax(0, 1fr); grid-template-areas: "num" "title" "text" "tags"; grid-template-rows: none }
+    .cx-about .step.step-lead { grid-template-columns: minmax(0, 1fr); grid-template-areas: "num" "title" "text"; grid-template-rows: none }
     .cx-about .step-lead .row-b { position: absolute; top: 26px; right: 22px; margin: 0 }
     .cx-about .stat { border-left: 0 !important; padding-left: 0 }
     .cx-about .stat:nth-child(2) { border-top: 1px solid var(--line) }
