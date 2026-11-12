@@ -158,6 +158,219 @@ a:hover{color:var(--ink)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.root *,.root *::before,.root *::after{animation:none!important}}
 
+/* ---------- intro video ----------
+   A 41s "걸어온 길" sequence shown as a full-screen overlay on the first visit (and from the hero's
+   replay button). It is drawn on a fixed stage — 1920×1080 landscape, 1080×2160 portrait — that the
+   script scales to fit the window. Base styles are the END state of every animation, as above. */
+.iv { display: none; position: fixed; inset: 0; z-index: 1000; overflow: hidden; color: #FFFFFF; line-height: 1.4; background-color: #0A0B0E; background-image: linear-gradient(rgba(255, 255, 255, .028) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .028) 1px, transparent 1px); background-size: 120px 120px; background-position: center; transition: opacity .4s ease }
+.root.iv-on .iv { display: block }
+.root.iv-out .iv { opacity: 0; pointer-events: none }
+.iv-stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform: translate(-50%, -50%) scale(var(--iv-s, .5)) }
+.iv.portrait .iv-stage { width: 1080px; height: 2160px }
+.iv-sc { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s }
+.iv-sc.iv-vis { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s }
+
+.iv-sc.iv-play .iv-r { animation: ivRise .8s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
+.iv-sc.iv-play .iv-w > span { animation: ivWipe .9s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
+.iv-sc.iv-play .iv-dx { animation: ivDrawX .45s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
+.iv-sc.iv-play .iv-dy { animation: ivDrawY .45s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
+.iv-sc.iv-play .iv-pop { animation: ivPop .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both }
+.iv-sc.iv-play .iv-type { animation: ivType 1.5s steps(36) var(--d, 0s) both }
+.iv-sc.iv-play .iv-wallw { animation: ivFade 1.4s ease .1s both }
+.iv-sc.iv-play .iv-wd { animation: ivDriftA 4.4s linear both }
+.iv-sc.iv-play .iv-drift { animation: ivDriftB 6s linear both }
+.iv-caret { animation: ivCaret 1s steps(1) infinite }
+@keyframes ivRise { from { opacity: 0; transform: translateY(36px) } to { opacity: 1; transform: none } }
+@keyframes ivWipe { from { transform: translateY(110%) } to { transform: none } }
+@keyframes ivDrawX { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes ivDrawY { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@keyframes ivPop { from { opacity: 0; transform: scale(.9) } to { opacity: 1; transform: none } }
+@keyframes ivType { from { width: 0 } }
+@keyframes ivCaret { 0%, 49% { opacity: 1 } 50%, 100% { opacity: 0 } }
+@keyframes ivFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes ivDriftA { from { transform: translate3d(0, 0, 0) } to { transform: translate3d(-80px, -50px, 0) } }
+@keyframes ivDriftB { from { transform: translate3d(0, 24px, 0) } to { transform: translate3d(-24px, -24px, 0) } }
+
+/* type */
+.iv-mono { font-family: 'Geist Mono', ui-monospace, monospace }
+.iv-eb { display: flex; align-items: center; gap: 14px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 20px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .72) }
+.iv-eb::before { content: ""; flex: 0 0 auto; width: 40px; height: 1px; background: currentColor }
+.iv-h { margin: 0; font-size: 88px; line-height: 1.12; letter-spacing: -.05em; font-weight: 800 }
+.iv-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em }
+.iv-w > span { display: inline-block }
+.iv-acc { color: #7D8CFF }
+.iv-p { margin: 0; font-size: 26px; line-height: 1.6; color: rgba(255, 255, 255, .72) }
+.iv-lb { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 16px; letter-spacing: .08em; color: rgba(255, 255, 255, .62) }
+
+/* HUD: corner label, year ruler, skip */
+.iv-tl { position: absolute; left: 56px; top: 44px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 18px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .72) }
+.iv-ruler { position: absolute; left: 56px; right: 56px; bottom: 40px; display: flex; flex-direction: column; gap: 16px; font-family: 'Geist Mono', ui-monospace, monospace }
+.iv-rm { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; font-size: 18px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .78) }
+.iv-hint { font-size: 14px; font-weight: 400; letter-spacing: .04em; text-transform: none; color: rgba(255, 255, 255, .5) }
+.iv-track { position: relative; height: 2px; background: rgba(255, 255, 255, .14) }
+.iv-hl { position: absolute; top: 0; left: 0; width: 0; height: 2px; background: #7D8CFF; opacity: 0; transition: left .9s cubic-bezier(.2, .7, .2, 1), width .9s cubic-bezier(.2, .7, .2, 1), opacity .4s ease }
+.iv-dot { position: absolute; top: -5px; left: 0; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 0 0 5px rgba(125, 140, 255, .32); opacity: 0; transition: left .9s cubic-bezier(.2, .7, .2, 1), opacity .4s ease }
+.iv-yrs { display: flex; justify-content: space-between; margin: -10px -32px 0; font-size: 15px }
+.iv-yr { width: 64px; height: 44px; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 8px; background: transparent; font: inherit; color: rgba(255, 255, 255, .5); cursor: pointer; transition: color .6s ease, background-color .2s ease }
+.iv-yr:hover { color: #FFFFFF; background: rgba(255, 255, 255, .08) }
+.iv-yr:focus-visible { outline: 2px solid #7D8CFF; outline-offset: 0 }
+.iv-yr.on { color: #FFFFFF }
+.iv-skip { position: absolute; top: 20px; right: 20px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 99px; border: 1px solid rgba(255, 255, 255, .3); background: rgba(10, 11, 14, .55); color: rgba(255, 255, 255, .86); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 13px; letter-spacing: .06em; cursor: pointer }
+.iv-skip:hover { border-color: #FFFFFF; color: #FFFFFF }
+.iv-skip:focus-visible { outline: 2px solid #7D8CFF; outline-offset: 3px }
+
+/* 01 opening */
+.iv-wallw { position: absolute; inset: -20%; overflow: hidden; perspective: 1800px }
+.iv-wd { position: absolute; inset: 0 }
+.iv-wg { position: absolute; left: -10%; right: -10%; top: -20%; bottom: -20%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; align-content: center; transform: rotateX(26deg) rotateZ(-14deg); opacity: .55 }
+.iv-wg img, .iv-card img, .iv-shot img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; border-radius: 14px }
+.iv-scrim { position: absolute; inset: -20%; background: radial-gradient(ellipse 50% 46% at 50% 50%, rgba(10, 11, 14, .62) 0%, rgba(10, 11, 14, .95) 100%) }
+.iv-open { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; padding: 0 160px 60px; text-align: center }
+.iv-open .iv-h { font-size: 120px; line-height: 1.1 }
+
+/* 02 turning point */
+.iv-turn { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 0 160px 60px; text-align: center }
+.iv-turn .iv-h { line-height: 1.16 }
+.iv-phone { position: relative; width: 132px; height: 236px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 14px; padding: 40px 22px 0; border: 3px solid rgba(255, 255, 255, .55); border-radius: 30px }
+.iv-phone::before { content: ""; position: absolute; top: 14px; left: 50%; width: 36px; height: 6px; margin-left: -18px; border-radius: 3px; background: rgba(255, 255, 255, .35) }
+.iv-app { aspect-ratio: 1; border-radius: 12px; background: rgba(255, 255, 255, .14) }
+.iv-app.on { background: #7D8CFF }
+.iv-sc.iv-play .iv-app.on { animation: ivPop .6s cubic-bezier(.2, .7, .2, 1) var(--d, 0s) both, ivGlow 1.6s ease-out calc(var(--d, 0s) + .5s) 2 }
+@keyframes ivGlow { from { box-shadow: 0 0 0 0 rgba(125, 140, 255, .6) } to { box-shadow: 0 0 0 26px rgba(125, 140, 255, 0) } }
+
+/* two-column scenes */
+.iv-split { position: absolute; inset: 0; display: grid; grid-template-columns: 820px 720px; justify-content: space-between; align-items: center; padding: 0 160px }
+.iv-col { display: flex; flex-direction: column; gap: 32px }
+.iv-list { display: flex; flex-direction: column; border-bottom: 1px solid rgba(255, 255, 255, .14) }
+.iv-row { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 24px; align-items: baseline; padding: 34px 0; border-top: 1px solid rgba(255, 255, 255, .14) }
+.iv-row .y { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 26px; font-weight: 500; color: #7D8CFF }
+.iv-row .t { display: block; font-size: 46px; font-weight: 700; letter-spacing: -.03em; line-height: 1.2 }
+.iv-row .s { display: block; margin-top: 6px; font-size: 24px; color: rgba(255, 255, 255, .62) }
+.iv-term { display: flex; align-items: center; gap: 18px; width: max-content; margin-top: 12px; padding: 22px 28px; background: #121317; border: 1px solid #2A2D35; border-radius: 14px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 26px; color: #ECEDF0 }
+.iv-term .ln { color: rgba(255, 255, 255, .5) }
+.iv-type { display: inline-block; overflow: hidden; white-space: nowrap; width: 36ch }
+.iv-caret { display: inline-block; width: 3px; height: 1.15em; background: #FFFFFF }
+
+/* 04 focus ai */
+.iv-s4 { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 160px 80px }
+.iv-s4-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 48px }
+.iv-s4-h { font-size: 104px; line-height: 1.08 }
+.iv-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-bottom: 14px }
+.iv-meta .d { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 30px; font-weight: 500 }
+.iv-meta .r { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 18px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .62) }
+.iv-s4 .iv-p { margin-top: 28px; font-size: 30px; line-height: 1.5 }
+.iv-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; margin-top: 56px }
+.iv-card { display: flex; flex-direction: column }
+.iv-card img, .iv-shot img { border: 1px solid #2A2D35 }
+.iv-card .n { margin-top: 22px; font-size: 34px; font-weight: 700; letter-spacing: -.02em }
+.iv-card .x { margin-top: 6px; font-size: 22px; color: rgba(255, 255, 255, .66) }
+.iv-card .k { margin-top: 14px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 16px; color: #7D8CFF }
+
+/* 05 payments */
+.iv-wide { grid-template-columns: 780px 760px }
+.iv-co { margin-top: 32px; font-size: 44px; font-weight: 700; letter-spacing: -.03em }
+.iv-ro { margin-top: 10px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 18px; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .62) }
+.iv-s5 .iv-h { margin-top: 40px }
+.iv-s5 .iv-p { margin-top: 32px; max-width: 720px }
+.iv-dia { position: relative; width: 760px; height: 480px }
+.iv-dia > * { position: absolute }
+.iv-pill { left: 0; width: 240px; height: 72px; display: flex; align-items: center; justify-content: center; background: #121317; border: 1px solid #2A2D35; border-radius: 999px; font-size: 28px; font-weight: 600 }
+.iv-dx, .iv-dy { background: rgba(255, 255, 255, .4) }
+.iv-dx { height: 2px; transform-origin: left center }
+.iv-dy { width: 2px; transform-origin: center top }
+.iv-dx.hot { background: #7D8CFF }
+.iv-adp { left: 420px; top: 160px; width: 340px; height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: #7D8CFF; color: #0C0D10; border-radius: 18px }
+.iv-adp b { font-size: 36px; font-weight: 800; letter-spacing: -.03em }
+.iv-adp span { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 16px; font-weight: 600; letter-spacing: .08em; color: rgba(12, 13, 16, .78) }
+.iv-cb { left: 420px; top: 352px; width: 340px; height: 104px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: #121317; border: 1px solid #2A2D35; border-radius: 18px }
+.iv-cb span { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 15px; letter-spacing: .08em; color: rgba(255, 255, 255, .62) }
+.iv-cb b { font-size: 28px; font-weight: 700; letter-spacing: -.02em }
+
+/* 06 learning */
+.iv-stack { display: flex; flex-direction: column; gap: 36px }
+.iv-edu { display: flex; flex-direction: column; gap: 10px; padding: 34px 40px; background: #121317; border: 1px solid #2A2D35; border-radius: 20px }
+.iv-edu .top { display: flex; justify-content: space-between; align-items: baseline }
+.iv-edu .yy, .iv-cert .yy { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 22px; color: #7D8CFF }
+.iv-edu .n { font-size: 48px; font-weight: 800; letter-spacing: -.03em; line-height: 1.2 }
+.iv-edu .x { font-size: 26px; color: rgba(255, 255, 255, .66) }
+.iv-certs { display: flex; flex-direction: column }
+.iv-certs .iv-lb { padding-bottom: 14px }
+.iv-cert { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 20px; align-items: baseline; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, .14) }
+.iv-cert:last-child { border-bottom: 1px solid rgba(255, 255, 255, .14) }
+.iv-cert .n { font-size: 28px; font-weight: 600; letter-spacing: -.02em }
+
+/* 07 now */
+.iv-s7 .iv-h { margin-top: 32px }
+.iv-s7 .iv-p { margin-top: 30px }
+.iv-stats { display: flex; gap: 64px; margin-top: 52px }
+.iv-stat { display: flex; flex-direction: column; gap: 6px }
+.iv-stat b { font-size: 84px; font-weight: 800; letter-spacing: -.04em; line-height: 1 }
+.iv-stat span { font-size: 20px; color: rgba(255, 255, 255, .66) }
+.iv-shots { position: relative; height: 740px }
+.iv-drift { position: absolute; inset: 0 }
+.iv-shots-in { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-content: center; transform: rotate(-5deg) }
+.iv-shot { display: flex; flex-direction: column; gap: 14px }
+.iv-shot .cap { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+.iv-shot .n { font-size: 26px; font-weight: 700; letter-spacing: -.02em }
+.iv-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid #2A2D35; border-radius: 999px; font-size: 15px; color: rgba(255, 255, 255, .82); white-space: nowrap }
+.iv-tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #FF7A3D }
+.iv-tag.dim::before { background: rgba(255, 255, 255, .5) }
+
+/* portrait stage (phones, tall windows): one column, larger type for the smaller scale */
+.iv.portrait .iv-tl { left: 64px; top: 64px; font-size: 28px }
+.iv.portrait .iv-ruler { left: 64px; right: 64px; bottom: 80px; gap: 22px }
+.iv.portrait .iv-rm { font-size: 28px }
+.iv.portrait .iv-yrs { margin: -16px -52px 0; font-size: 24px }
+.iv.portrait .iv-yr { width: 104px; height: 80px }
+.iv.portrait .iv-hint { font-size: 20px }
+.iv.portrait .iv-yr:nth-child(even) { visibility: hidden }
+.iv.portrait .iv-open { padding: 0 90px 160px }
+.iv.portrait .iv-open .iv-h { font-size: 112px }
+.iv.portrait .iv-eb { gap: 18px; font-size: 30px }
+.iv.portrait .iv-eb::before { width: 48px }
+.iv.portrait .iv-h { font-size: 112px }
+.iv.portrait .iv-p { font-size: 38px }
+.iv.portrait .iv-lb { font-size: 24px }
+.iv.portrait .iv-turn { gap: 48px; padding: 0 90px 160px }
+.iv.portrait .iv-phone { width: 172px; height: 306px; gap: 18px; padding: 52px 28px 0; border-radius: 38px }
+.iv.portrait .iv-app { border-radius: 14px }
+.iv.portrait .iv-split { grid-template-columns: minmax(0, 1fr); justify-content: stretch; align-content: center; gap: 96px; padding: 0 90px 160px }
+.iv.portrait .iv-col { gap: 40px }
+.iv.portrait .iv-row { grid-template-columns: 270px minmax(0, 1fr); padding: 40px 0 }
+.iv.portrait .iv-row .y { font-size: 34px }
+.iv.portrait .iv-row .t { font-size: 56px }
+.iv.portrait .iv-row .s { font-size: 36px }
+.iv.portrait .iv-term { font-size: 30px }
+.iv.portrait .iv-s4 { padding: 0 90px 160px }
+.iv.portrait .iv-s4-head { flex-direction: column; align-items: flex-start; gap: 28px }
+.iv.portrait .iv-s4-h { font-size: 112px }
+.iv.portrait .iv-meta { align-items: flex-start; padding: 0 }
+.iv.portrait .iv-meta .d { font-size: 38px }
+.iv.portrait .iv-meta .r { font-size: 26px }
+.iv.portrait .iv-s4 .iv-p { margin-top: 36px; font-size: 38px }
+.iv.portrait .iv-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 32px; margin-top: 56px }
+.iv.portrait .iv-card .n { font-size: 44px }
+.iv.portrait .iv-card .x { font-size: 30px }
+.iv.portrait .iv-card .k { display: none }
+.iv.portrait .iv-co { font-size: 52px }
+.iv.portrait .iv-ro { font-size: 26px }
+.iv.portrait .iv-s5 .iv-p { max-width: none }
+.iv.portrait .iv-dia { justify-self: center; transform: scale(1.15); transform-origin: center top }
+.iv.portrait .iv-edu { padding: 44px 48px }
+.iv.portrait .iv-edu .yy, .iv.portrait .iv-cert .yy { font-size: 30px }
+.iv.portrait .iv-edu .n { font-size: 60px }
+.iv.portrait .iv-edu .x { font-size: 34px }
+.iv.portrait .iv-cert { grid-template-columns: 130px minmax(0, 1fr); padding: 24px 0 }
+.iv.portrait .iv-cert .n { font-size: 38px }
+.iv.portrait .iv-stat b { font-size: 104px }
+.iv.portrait .iv-stat span { font-size: 30px }
+.iv.portrait .iv-s7 .iv-h br:first-of-type { display: none }
+.iv.portrait .iv-shots { justify-self: center; width: 760px; height: 640px }
+.iv.portrait .iv-shots-in { transform: rotate(-4deg) }
+.iv.portrait .iv-shot .n { font-size: 36px }
+.iv.portrait .iv-tag { padding: 8px 16px; font-size: 22px }
+@media print{.iv{display:none!important}}
+
 /* ---------- bento ---------- */
 .bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;grid-auto-flow:dense}
 .c2{grid-column:span 2}
@@ -409,10 +622,197 @@ a:hover{color:var(--ink)}
   .nav-cta{padding:0 14px}
 }
 </style>
+<link rel="stylesheet" href="css/cinematic.css">
 </head>
 <body style="background:#0A0B0E">
 <div class="root intro" id="root">
-<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}var r=document.getElementById('root');if(d)r.classList.add('dark');if(innerHeight>=400&&innerHeight<=1600)r.classList.add('vp')})();</script>
+<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':true}catch(e){}var r=document.getElementById('root');if(d)r.classList.add('dark');if(innerHeight>=400&&innerHeight<=1600)r.classList.add('vp')})();</script>
+    <script>(function () {
+        // 인트로 영상 재생 정책 — 'first': 첫 방문에만 자동 재생 · 'always': 매번 · 'off': '인트로 다시 보기' 버튼으로만
+        var MODE = 'first';
+        var root = document.getElementById('root');
+        var forced = /[?&]intro=1(&|$)/.test(location.search);
+        var calm = false, seen = false;
+        try { calm = matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) {}
+        try { seen = localStorage.getItem('sk-intro-video') === 'seen' } catch (e) {}
+        var play = forced || (!calm && (MODE === 'always' || (MODE === 'first' && !seen)));
+        if (play) {
+            root.classList.remove('intro');
+            root.classList.add('iv-on');
+            document.documentElement.style.overflow = 'hidden';
+        }
+    })();</script>
+
+    <!-- INTRO VIDEO: 걸어온 길 (41.5s) → then the site's own KIM SUMAN intro -->
+    <div class="iv" id="iv" role="dialog" aria-modal="true" aria-label="인트로 영상: 개발자 김수만, 걸어온 길">
+        <button type="button" class="iv-skip" id="iv-skip">건너뛰기
+            <svg class="ic" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </button>
+        <div class="iv-stage">
+
+            <section class="iv-sc" data-dur="4" data-label="00 — Intro" aria-hidden="true">
+                <div class="iv-wallw" aria-hidden="true">
+                    <div class="iv-wd">
+                        <div class="iv-wg">
+                            <img src="images/op-full.jpg" alt=""><img src="images/link-a.jpg" alt="">
+                            <img src="images/is-route.jpg" alt=""><img src="images/snap-a.jpg" alt="">
+                            <img src="images/aslan-a.jpg" alt=""><img src="images/cy-main.jpg" alt="">
+                            <img src="images/shelter-a.jpg" alt=""><img src="images/hub-a.jpg" alt="">
+                            <img src="images/snap-a.jpg" alt=""><img src="images/op-full.jpg" alt="">
+                            <img src="images/hub-a.jpg" alt=""><img src="images/is-route.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="iv-scrim" aria-hidden="true"></div>
+                <div class="iv-open">
+                    <div class="iv-eb iv-r" style="--d: .3s">2010 — 2026</div>
+                    <h2 class="iv-h"><span class="iv-w" style="--d: .5s"><span>개발자 김수만,</span></span><br><span class="iv-w" style="--d: .66s"><span class="iv-acc">걸어온 길</span></span></h2>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="4.5" data-range="2010-2012" data-label="01 — 시작" aria-hidden="true">
+                <div class="iv-split">
+                    <div class="iv-col">
+                        <div class="iv-eb iv-r" style="--d: .15s">01 — 시작</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>출발은</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">조금 달랐습니다.</span></span></h2>
+                    </div>
+                    <div class="iv-list">
+                        <div class="iv-row iv-r" style="--d: .7s"><span class="y">2010</span><div><span class="t">정보기기운용기능사</span><span class="s">자격 취득</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .9s"><span class="y">2011 — 2012</span><div><span class="t">한세대학교</span><span class="s">광고홍보학과</span></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="5" data-range="2016-2016" data-label="02 — 계기" aria-hidden="true">
+                <div class="iv-turn">
+                    <div class="iv-phone iv-r" style="--d: .1s" aria-hidden="true">
+                        <span class="iv-app"></span><span class="iv-app"></span>
+                        <span class="iv-app on" style="--d: .7s"></span><span class="iv-app"></span>
+                        <span class="iv-app"></span><span class="iv-app"></span>
+                    </div>
+                    <div class="iv-eb iv-r" style="--d: .25s">02 — 계기 · 2016</div>
+                    <h2 class="iv-h"><span class="iv-w" style="--d: .45s"><span>우연히 본</span></span> <span class="iv-w" style="--d: .53s"><span>지인이 개발한</span></span> <span class="iv-w" style="--d: .61s"><span>앱을 보고,</span></span><br><span class="iv-w" style="--d: 1s"><span class="iv-acc">개발자가 되기로</span></span> <span class="iv-w" style="--d: 1.1s"><span class="iv-acc">결심했습니다.</span></span></h2>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="4.5" data-range="2017-2021" data-label="03 — 전환" aria-hidden="true">
+                <div class="iv-split">
+                    <div class="iv-col">
+                        <div class="iv-eb iv-r" style="--d: .15s">03 — 전환</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>그리고,</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">코드를 선택했습니다.</span></span></h2>
+                        <div class="iv-term iv-r" style="--d: 1.1s" aria-hidden="true"><span class="ln">01</span><span class="iv-type" style="--d: 1.5s">System.out.println("Hello, World!");</span><span class="iv-caret"></span></div>
+                    </div>
+                    <div class="iv-list">
+                        <div class="iv-row iv-r" style="--d: .7s"><span class="y">2017 — 2020</span><div><span class="t">학점은행제</span><span class="s">정보처리과</span></div></div>
+                        <div class="iv-row iv-r" style="--d: .9s"><span class="y">2020 — 2021</span><div><span class="t">이젠아카데미</span><span class="s">Java 웹 &amp; 앱 개발자 과정</span></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="7" data-range="2021-2025" data-label="04 — 현장" aria-hidden="true">
+                <div class="iv-s4">
+                    <div class="iv-s4-head">
+                        <div class="iv-col" style="gap: 24px">
+                            <div class="iv-eb iv-r" style="--d: .15s">04 — 현장</div>
+                            <h2 class="iv-h iv-s4-h"><span class="iv-w" style="--d: .3s"><span>포커스에이아이</span></span></h2>
+                        </div>
+                        <div class="iv-meta iv-r" style="--d: .55s"><span class="d">2021.04 — 2025.09</span><span class="r">Smart Access 팀 · Full-Stack Developer</span></div>
+                    </div>
+                    <p class="iv-p iv-r" style="--d: .7s">출입통제 · 통학버스 · CCTV 관제 · 스마트팜 — 실시간 하드웨어와 연동되는 서버를 구축했습니다.</p>
+                    <div class="iv-cards">
+                        <div class="iv-card iv-r" style="--d: 1s"><img src="images/op-full.jpg" alt="ONEPASS PRO 출입·근태 대시보드 화면"><span class="n">ONEPASS PRO</span><span class="x">얼굴 인식 출입통제·근태 관리</span><span class="k">Node.js · Socket.IO · Redis</span></div>
+                        <div class="iv-card iv-r" style="--d: 1.15s"><img src="images/is-route.jpg" alt="아이스쿨 통학버스 노선 현황 화면"><span class="n">아이스쿨</span><span class="x">GPS 통학버스 위치 추적·승하차 알림</span><span class="k">Spring Boot · MySQL · React</span></div>
+                        <div class="iv-card iv-r" style="--d: 1.3s"><img src="images/aslan-a.jpg" alt="아슬란 CCTV 다채널 관제 화면"><span class="n">아슬란</span><span class="x">CCTV·NVR 통합 관제</span><span class="k">NestJS · WebSocket · Next.js</span></div>
+                        <div class="iv-card iv-r" style="--d: 1.45s"><img src="images/shelter-a.jpg" alt="스마트쉘터 구역별 환경 모니터링 화면"><span class="n">스마트쉘터</span><span class="x">IoT 스마트팜 환경 모니터링</span><span class="k">NestJS · MQTT · React</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="5.5" data-range="2025-2026" data-label="05 — 결제" aria-hidden="true">
+                <div class="iv-split iv-wide">
+                    <div class="iv-col iv-s5" style="gap: 0">
+                        <div class="iv-eb iv-r" style="--d: .15s">05 — 결제</div>
+                        <span class="iv-co iv-r" style="--d: .25s">더블다운인터액티브</span>
+                        <span class="iv-ro iv-r" style="--d: .35s">Backend Developer · 2025.10 — 2026.01</span>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .45s"><span>세 개의 결제,</span></span><br><span class="iv-w" style="--d: .57s"><span class="iv-acc">하나의 어댑터.</span></span></h2>
+                        <p class="iv-p iv-r" style="--d: .9s">Strategy/Factory 패턴으로 결제 어댑터를 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
+                    </div>
+                    <div class="iv-dia">
+                        <div class="iv-pill iv-r" style="top: 40px; --d: .6s">Xsolla</div>
+                        <div class="iv-pill iv-r" style="top: 204px; --d: .75s">Google Play</div>
+                        <div class="iv-pill iv-r" style="top: 368px; --d: .9s">Apple Pay</div>
+                        <div class="iv-dx" style="left: 240px; top: 75px; width: 100px; --d: 1.15s" aria-hidden="true"></div>
+                        <div class="iv-dx" style="left: 240px; top: 239px; width: 100px; --d: 1.2s" aria-hidden="true"></div>
+                        <div class="iv-dx" style="left: 240px; top: 403px; width: 100px; --d: 1.25s" aria-hidden="true"></div>
+                        <div class="iv-dy" style="left: 339px; top: 75px; height: 330px; --d: 1.5s" aria-hidden="true"></div>
+                        <div class="iv-dx hot" style="left: 340px; top: 239px; width: 80px; --d: 1.85s" aria-hidden="true"></div>
+                        <div class="iv-adp iv-pop" style="--d: 2s"><b>Payment Adapter</b><span>STRATEGY · FACTORY</span></div>
+                        <div class="iv-dy" style="left: 589px; top: 320px; height: 32px; --d: 2.5s" aria-hidden="true"></div>
+                        <div class="iv-cb iv-r" style="--d: 2.65s"><span>RESILIENCE4J</span><b>Circuit Breaker · Retry</b></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="5" data-range="2022-2026" data-label="06 — 배움" aria-hidden="true">
+                <div class="iv-split">
+                    <div class="iv-col">
+                        <div class="iv-eb iv-r" style="--d: .15s">06 — 배움</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>일하면서도,</span></span><br><span class="iv-w" style="--d: .42s"><span class="iv-acc">배움은 계속.</span></span></h2>
+                    </div>
+                    <div class="iv-stack">
+                        <div class="iv-edu iv-r" style="--d: .6s">
+                            <div class="top"><span class="iv-lb">EDUCATION</span><span class="yy">2023 — 2025</span></div>
+                            <span class="n">한국방송통신대학교</span>
+                            <span class="x">컴퓨터과학과 · 편입</span>
+                        </div>
+                        <div class="iv-certs">
+                            <span class="iv-lb iv-r" style="--d: .85s">CERTIFICATIONS</span>
+                            <div class="iv-cert iv-r" style="--d: 1s"><span class="yy">2022</span><span class="n">컴퓨터활용능력 2급</span></div>
+                            <div class="iv-cert iv-r" style="--d: 1.15s"><span class="yy">2023</span><span class="n">AWS Solutions Architect – Associate</span></div>
+                            <div class="iv-cert iv-r" style="--d: 1.3s"><span class="yy">2026</span><span class="n">SQLD</span></div>
+                            <div class="iv-cert iv-r" style="--d: 1.45s"><span class="yy">2026</span><span class="n">정보처리기사</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="iv-sc" data-dur="6" data-range="2026-2026" data-label="07 — 지금" aria-hidden="true">
+                <div class="iv-split iv-wide">
+                    <div class="iv-col iv-s7" style="gap: 0">
+                        <div class="iv-eb iv-r" style="--d: .15s">07 — 지금</div>
+                        <h2 class="iv-h"><span class="iv-w" style="--d: .3s"><span>만들고,</span></span> <br><span class="iv-w" style="--d: .4s"><span>출시하고,</span></span><br><span class="iv-w" style="--d: .5s"><span class="iv-acc">운영합니다.</span></span></h2>
+                        <p class="iv-p iv-r" style="--d: .9s">회사 밖에서도 개인 프로젝트 9개를 직접 설계하고 구현했습니다.</p>
+                        <div class="iv-stats">
+                            <div class="iv-stat iv-r" style="--d: 1.2s"><b>5<span class="iv-acc">+</span></b><span>년 실무 경력</span></div>
+                            <div class="iv-stat iv-r" style="--d: 1.35s"><b>13</b><span>설계·구현 프로젝트</span></div>
+                            <div class="iv-stat iv-r" style="--d: 1.5s"><b>5</b><span>보유 자격증</span></div>
+                        </div>
+                    </div>
+                    <div class="iv-shots">
+                        <div class="iv-drift">
+                            <div class="iv-shots-in">
+                                <div class="iv-shot iv-r" style="--d: .5s"><img src="images/link-a.jpg" alt="Link 앱 스플래시와 게시글 화면"><div class="cap"><span class="n">Link</span><span class="iv-tag">Google Play 출시</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .65s"><img src="images/snap-a.jpg" alt="Snapmark 북마크 목록 화면"><div class="cap"><span class="n">Snapmark</span><span class="iv-tag">출시</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .8s"><img src="images/cy-main.jpg" alt="사이퍼즈 메타 전적·통계 검색 화면"><div class="cap"><span class="n">사이퍼즈 메타</span><span class="iv-tag">운영 중</span></div></div>
+                                <div class="iv-shot iv-r" style="--d: .95s"><img src="images/hub-a.jpg" alt="AI 에이전트 통합 관제 시스템 대시보드 화면"><div class="cap"><span class="n">AI 에이전트 관제</span><span class="iv-tag dim">개인 · 2026</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="iv-tl" aria-hidden="true">Portfolio — 2026</div>
+            <div class="iv-ruler">
+                <div class="iv-rm" aria-hidden="true"><span class="iv-chap">00 — Intro</span><span class="iv-hint">연도를 눌러 그 시점으로 이동</span><span class="iv-rng">Kim Suman</span></div>
+                <div class="iv-track" aria-hidden="true"><div class="iv-hl"></div><div class="iv-dot"></div></div>
+                <div class="iv-yrs" role="group" aria-label="연도를 골라 해당 장면으로 이동">
+                    <button type="button" class="iv-yr">2010</button><button type="button" class="iv-yr">2011</button><button type="button" class="iv-yr">2012</button><button type="button" class="iv-yr">2013</button><button type="button" class="iv-yr">2014</button><button type="button" class="iv-yr">2015</button>
+                    <button type="button" class="iv-yr">2016</button><button type="button" class="iv-yr">2017</button><button type="button" class="iv-yr">2018</button><button type="button" class="iv-yr">2019</button><button type="button" class="iv-yr">2020</button><button type="button" class="iv-yr">2021</button>
+                    <button type="button" class="iv-yr">2022</button><button type="button" class="iv-yr">2023</button><button type="button" class="iv-yr">2024</button><button type="button" class="iv-yr">2025</button><button type="button" class="iv-yr">2026</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
   <header class="nav" id="nav">
     <div class="nav-in">
@@ -527,13 +927,24 @@ a:hover{color:var(--ink)}
             </div>
           </div>
 
+          <div class="hero-foot">
+            <button type="button" class="replay" id="replay-btn">
+              <svg class="ic" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg>
+              인트로 다시 보기
+            </button>
+          </div>
 
         </div>
       
 </section>
 
     <!-- ABOUT -->
-    <section class="wrap" style="padding-top: 24px" aria-label="요약">
+    <!-- MANIFESTO -->
+    <section class="wrap cx-manifesto" aria-label="소개 문장">
+      <p class="cx-words">실시간 하드웨어 연동, 결제, IoT까지. <b>여러 도메인을</b> 다루며 서비스 전반의 <b>안정성과 확장성</b>을 먼저 생각하는 개발을 해왔습니다.</p>
+    </section>
+
+    <section class="wrap cx-about" style="padding-top: 0" aria-label="요약">
       <div class="bento">
         <div class="card stat">
           <span class="lbl">Experience</span>
@@ -879,84 +1290,105 @@ a:hover{color:var(--ink)}
       </div>
     </section>
 
-    <!-- CAREER -->
-    <section class="wrap sec" id="career">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">03 · Career</span>
-          <h2 class="h2">경력</h2>
+    <!-- CAREER · EDUCATION · CERTIFICATES (기본 보기 / 타임라인 tabs are added by js/cinematic.js) -->
+    <section class="wrap sec cx-path" id="career">
+        <div class="sec-head">
+            <div>
+                <span class="eyebrow">03 · Career &amp; Education</span>
+                <h2 class="h2">경력 · 학력 · 자격</h2>
+            </div>
         </div>
-        <div class="tabs vtabs" role="group" aria-label="경력 보기 방식"><button type="button" class="tab on" data-view="career:tl" aria-pressed="true"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h10M7 12h12M3 17h8"></path></svg>타임라인으로 보기</button><button type="button" class="tab" data-view="career:basic" aria-pressed="false"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="2"></rect><rect x="3" y="13" width="18" height="7" rx="2"></rect></svg>기본 보기</button></div>
-      </div>
-      <div data-view-panel="career:tl">
-      <div class="bento">
-        <div class="card c4" style="padding:0">
-          <div class="yrl"><div class="yr-row now"><div class="yr-y now">NOW</div><div class="yr-rail"><span class="yr-node k-now"></span></div><div class="yr-body"><span class="yr-now">2026.11 · 현재</span></div></div><div class="yr-row"><div class="yr-y">2025</div><div class="yr-rail"><span class="yr-node k-work"></span><span class="yr-seg k-work"></span></div><div class="yr-body"><div class="yr-meta"><span>2025.10 — 2026.01</span><span class="yr-dur">4개월</span></div><h3 class="yr-t">더블다운인터액티브<small>Backend Developer</small></h3><p class="yr-p">Xsolla·Google Play·Apple Pay를 통합하는 결제 어댑터를 Strategy/Factory 패턴으로 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p><div class="tags"><span class="tag">Xsolla</span><span class="tag">Google Play</span><span class="tag">Apple Pay</span><span class="tag">Strategy · Factory</span><span class="tag">Resilience4j</span></div></div></div><div class="yr-row end"><div class="yr-y">2021</div><div class="yr-rail"><span class="yr-node k-work"></span><span class="yr-seg k-work"></span></div><div class="yr-body"><div class="yr-meta"><span>2021.04 — 2025.09</span><span class="yr-dur">4년 6개월</span></div><h3 class="yr-t">포커스에이아이<small>Smart Access 팀 · Full-Stack Developer</small></h3><p class="yr-p">ONEPASS PRO 얼굴 인식 출입통제 시스템을 개발하고, 아이스쿨 통학버스, 아슬란 CCTV 관제, 스마트쉘터 IoT 스마트팜 등 실시간 하드웨어 연동 서버를 구축했습니다.</p><div class="tags"><span class="tag">ONEPASS PRO</span><span class="tag">아이스쿨</span><span class="tag">아슬란</span><span class="tag">스마트쉘터</span></div></div></div></div>
+        <div class="cx-view" data-view="list">
+        <div class="cx-group">
+        <h3 class="cx-gh">경력</h3>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-when">2025.10 — 2026.01</div>
+                <div class="tl-dot" aria-hidden="true"></div>
+                <div class="card tl-card">
+                    <div class="tl-head"><h3>더블다운인터액티브</h3><span class="tl-role">Backend Developer</span></div>
+                    <p>Xsolla·Google Play·Apple Pay를 통합하는 결제 어댑터를 Strategy/Factory 패턴으로 설계하고, Resilience4j 기반
+                        Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
+                    <div class="tags"><span class="tag">Xsolla</span><span class="tag">Google Play</span><span
+                            class="tag">Apple Pay</span><span class="tag">Strategy · Factory</span><span
+                            class="tag">Resilience4j</span></div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-when">2021.04 — 2025.09</div>
+                <div class="tl-dot" aria-hidden="true"></div>
+                <div class="card tl-card">
+                    <div class="tl-head"><h3>포커스에이아이</h3><span
+                            class="tl-role">Smart Access 팀 · Full-Stack Developer</span></div>
+                    <p>ONEPASS PRO 얼굴 인식 출입통제 시스템을 개발하고, 아이스쿨 통학버스, 아슬란 CCTV 관제, 스마트쉘터 IoT 스마트팜 등 실시간 하드웨어 연동 서버를
+                        구축했습니다.</p>
+                    <div class="tags"><span class="tag">ONEPASS PRO</span><span class="tag">아이스쿨</span><span
+                            class="tag">아슬란</span><span class="tag">스마트쉘터</span></div>
+                </div>
+            </div>
         </div>
-      </div>
-      </div>
-      <div data-view-panel="career:basic" hidden>
-      <div class="bento">
-          <article class="card c2 car">
-            <div class="car-top"><span class="period">2021.04 — 2025.09 · 4년 6개월</span></div>
-            <h3>포커스에이아이<small>Smart Access 팀 · Full-Stack Developer</small></h3>
-            <p>ONEPASS PRO 얼굴 인식 출입통제 시스템을 개발하고, 아이스쿨 통학버스, 아슬란 CCTV 관제, 스마트쉘터 IoT 스마트팜 등 실시간 하드웨어 연동 서버를 구축했습니다.</p>
-            <div class="tags"><span class="tag">ONEPASS PRO</span><span class="tag">아이스쿨</span><span class="tag">아슬란</span><span class="tag">스마트쉘터</span></div>
-          </article>
-          <article class="card c2 car">
-            <div class="car-top"><span class="period">2025.10 — 2026.01</span></div>
-            <h3>더블다운인터액티브<small>Backend Developer</small></h3>
-            <p>Xsolla·Google Play·Apple Pay를 통합하는 결제 어댑터를 Strategy/Factory 패턴으로 설계하고, Resilience4j 기반 Circuit Breaker와 Retry로 결제 흐름의 안정성을 높였습니다.</p>
-            <div class="tags"><span class="tag">Xsolla</span><span class="tag">Google Play</span><span class="tag">Apple Pay</span><span class="tag">Strategy · Factory</span><span class="tag">Resilience4j</span></div>
-          </article>
-      </div>
-      </div>
-    </section>
+        </div>
 
-    <!-- EDUCATION -->
-    <section class="wrap sec" id="education">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">04 · Education &amp; Certifications</span>
-          <h2 class="h2">학력 · 자격</h2>
+        <div class="cx-group" id="education">
+        <div class="bento">
+            <div class="card c2 edu">
+                <h3>
+                    <svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M22 9L12 4 2 9l10 5 10-5z"></path>
+                        <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path>
+                    </svg>
+                    학력
+                </h3>
+                <div class="list">
+                    <div class="li">
+                        <div><b>한국방송통신대학교</b><small>컴퓨터과학과 · 편입</small></div>
+                        <span class="yr">2023 — 2025</span></div>
+                    <div class="li">
+                        <div><b>이젠아카데미</b><small>Java 웹 &amp; 앱 개발자 과정</small></div>
+                        <span class="yr">2020 — 2021</span></div>
+                    <div class="li">
+                        <div><b>학점은행제</b><small>정보처리과</small></div>
+                        <span class="yr">2017 — 2020</span></div>
+                    <div class="li">
+                        <div><b>한세대학교</b><small>광고홍보학과 · 중퇴</small></div>
+                        <span class="yr">2011 — 2012</span></div>
+                </div>
+            </div>
+            <div class="card c2 edu">
+                <h3>
+                    <svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="9" r="6"></circle>
+                        <path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path>
+                    </svg>
+                    자격증
+                </h3>
+                <div class="list">
+                    <div class="li">
+                        <div><b>정보처리기사</b></div>
+                        <span class="yr new">2026</span></div>
+                    <div class="li">
+                        <div><b>SQLD</b><small>SQL 개발자</small></div>
+                        <span class="yr new">2026</span></div>
+                    <div class="li">
+                        <div><b>AWS Solutions Architect – Associate</b></div>
+                        <span class="yr">2023</span></div>
+                    <div class="li">
+                        <div><b>컴퓨터활용능력 2급</b></div>
+                        <span class="yr">2022</span></div>
+                    <div class="li">
+                        <div><b>정보기기운용기능사</b></div>
+                        <span class="yr">2010</span></div>
+                </div>
+            </div>
         </div>
-        <div class="tabs vtabs" role="group" aria-label="학력·자격 보기 방식"><button type="button" class="tab on" data-view="edu:tl" aria-pressed="true"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h10M7 12h12M3 17h8"></path></svg>타임라인으로 보기</button><button type="button" class="tab" data-view="edu:basic" aria-pressed="false"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="2"></rect><rect x="3" y="13" width="18" height="7" rx="2"></rect></svg>기본 보기</button></div>
-      </div>
-      <div data-view-panel="edu:tl">
-      <div class="bento">
-        <div class="card c2 yrc"><div class="yrc-h"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9L12 4 2 9l10 5 10-5z"></path><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path></svg><h3>학력</h3><span>4</span></div><div class="yrl sm"><div class="yr-row"><div class="yr-y">2023</div><div class="yr-rail"><span class="yr-node k-edu"></span><span class="yr-seg k-edu"></span></div><div class="yr-body"><div class="yr-meta"><span>2023 — 2025</span></div><h3 class="yr-t">한국방송통신대학교<small>컴퓨터과학과 · 편입</small></h3></div></div><div class="yr-row"><div class="yr-y">2020</div><div class="yr-rail"><span class="yr-node k-edu"></span><span class="yr-seg k-edu"></span></div><div class="yr-body"><div class="yr-meta"><span>2020 — 2021</span></div><h3 class="yr-t">이젠아카데미<small>Java 웹 &amp; 앱 개발자 과정</small></h3></div></div><div class="yr-row"><div class="yr-y dim">2015</div><div class="yr-rail"><span class="yr-node k-edu"></span><span class="yr-seg k-edu"></span></div><div class="yr-body"><div class="yr-meta"><span>2015 — 2017</span></div><h3 class="yr-t">학점은행제<small>정보처리과</small></h3></div></div><div class="yr-row end"><div class="yr-y dim">2011</div><div class="yr-rail"><span class="yr-node k-edu"></span><span class="yr-seg k-edu"></span></div><div class="yr-body"><div class="yr-meta"><span>2011 — 2012</span></div><h3 class="yr-t">한세대학교<small>광고홍보학과 · 중퇴</small></h3></div></div></div></div>
-        <div class="card c2 yrc"><div class="yrc-h"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"></circle><path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path></svg><h3>자격증</h3><span>5</span></div><div class="yrl sm"><div class="yr-row"><div class="yr-y">2026</div><div class="yr-rail"><span class="yr-node k-cert"></span></div><div class="yr-body"><div class="yr-meta"><span>2026</span></div><h3 class="yr-t">정보처리기사</h3></div></div><div class="yr-row"><div class="yr-y" aria-hidden="true"></div><div class="yr-rail"><span class="yr-node k-cert"></span></div><div class="yr-body"><div class="yr-meta"><span>2026</span></div><h3 class="yr-t">SQLD<small>SQL 개발자</small></h3></div></div><div class="yr-row"><div class="yr-y">2023</div><div class="yr-rail"><span class="yr-node k-cert"></span></div><div class="yr-body"><div class="yr-meta"><span>2023</span></div><h3 class="yr-t">AWS Solutions Architect<small>Associate</small></h3></div></div><div class="yr-row"><div class="yr-y">2022</div><div class="yr-rail"><span class="yr-node k-cert"></span></div><div class="yr-body"><div class="yr-meta"><span>2022</span></div><h3 class="yr-t">컴퓨터활용능력 2급</h3></div></div><div class="yr-row end"><div class="yr-y dim">2010</div><div class="yr-rail"><span class="yr-node k-cert"></span></div><div class="yr-body"><div class="yr-meta"><span>2010</span></div><h3 class="yr-t">정보기기운용기능사</h3></div></div></div></div>
-      </div>
-      </div>
-      <div data-view-panel="edu:basic" hidden>
-      <div class="bento">
-        <div class="card c2 edu">
-          <h3><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 9L12 4 2 9l10 5 10-5z"></path><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path></svg>학력</h3>
-          <div class="list">
-            <div class="li"><div><b>한국방송통신대학교</b><small>컴퓨터과학과 · 편입</small></div><span class="yr">2023 — 2025</span></div>
-            <div class="li"><div><b>이젠아카데미</b><small>Java 웹 &amp; 앱 개발자 과정</small></div><span class="yr">2020 — 2021</span></div>
-            <div class="li"><div><b>학점은행제</b><small>정보처리과</small></div><span class="yr">2015 — 2017</span></div>
-            <div class="li"><div><b>한세대학교</b><small>광고홍보학과 · 중퇴</small></div><span class="yr">2011 — 2012</span></div>
-          </div>
         </div>
-        <div class="card c2 edu">
-          <h3><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"></circle><path d="M8.5 14L7 22l5-3 5 3-1.5-8"></path></svg>자격증</h3>
-          <div class="list">
-            <div class="li"><div><b>정보처리기사</b></div><span class="yr">2026</span></div>
-            <div class="li"><div><b>SQLD</b><small>SQL 개발자</small></div><span class="yr">2026</span></div>
-            <div class="li"><div><b>AWS Solutions Architect – Associate</b></div><span class="yr">2023</span></div>
-            <div class="li"><div><b>컴퓨터활용능력 2급</b></div><span class="yr">2022</span></div>
-            <div class="li"><div><b>정보기기운용기능사</b></div><span class="yr">2010</span></div>
-          </div>
         </div>
-      </div>
-      </div>
     </section>
 
     <!-- CONTACT -->
     <section class="wrap sec" id="contact">
       <div class="card cta">
-        <span class="eyebrow">05 · Contact</span>
+        <span class="eyebrow">04 · Contact</span>
         <h2 class="cta-h">함께 좋은 시스템을<br>만들어 나가고 싶습니다.</h2>
         <div class="cta-row">
           <a class="btn btn-inv" href="mailto:zzsdsdsd@gmail.com">
@@ -1001,9 +1433,14 @@ a:hover{color:var(--ink)}
     try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
   });
 
-  // replay the intro: restart every animation inside the hero and the nav
+  // replay the intro: play the intro video when it's on the page, else restart the hero and nav animations
   var replay = document.getElementById('replay-btn');
   if (replay) replay.addEventListener('click', function(){
+    if (window.skIntroVideo) {
+      window.scrollTo({ top: 0 });
+      window.skIntroVideo.play(true);
+      return;
+    }
     var els = [document.querySelector('.hero'), document.querySelector('.nav')];
     els.forEach(function(el){
       if (!el || !el.getAnimations) return;
@@ -1021,21 +1458,6 @@ a:hover{color:var(--ink)}
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  // career / education: timeline or basic view
-  document.querySelectorAll('[data-view]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var v = btn.getAttribute('data-view'), g = v.split(':')[0];
-      document.querySelectorAll('[data-view^="' + g + ':"]').forEach(function(b){
-        var on = b === btn; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
-      });
-      document.querySelectorAll('[data-view-panel^="' + g + ':"]').forEach(function(pn){
-        pn.hidden = pn.getAttribute('data-view-panel') !== v;
-      });
-      var sc = document.querySelector('[data-view-panel="' + v + '"] .rm-scroll');
-      if (sc) sc.scrollLeft = sc.scrollWidth;
-    });
-  });
 
   var tabs = document.querySelectorAll('[data-filter]');
   var cards = document.querySelectorAll('[data-cat]');
@@ -1106,5 +1528,228 @@ a:hover{color:var(--ink)}
   items.forEach(function(el){ var w = watchOf(el); if (seen.indexOf(w) < 0) { seen.push(w); io.observe(w); } });
 })(document.querySelector('main'));
 </script>
+<script>
+    // intro video: scene timeline, year ruler, skip / Esc, and the hand-off to the site's own intro
+    (function () {
+        var root = document.getElementById('root');
+        var iv = document.getElementById('iv');
+        if (!root || !iv) return;
+        var stage = iv.querySelector('.iv-stage');
+        var skip = document.getElementById('iv-skip');
+        var scenes = [].slice.call(iv.querySelectorAll('.iv-sc'));
+        var hl = iv.querySelector('.iv-hl'), dot = iv.querySelector('.iv-dot');
+        var chap = iv.querySelector('.iv-chap'), rng = iv.querySelector('.iv-rng');
+        var years = [].slice.call(iv.querySelectorAll('.iv-yr'));
+        var page = [document.getElementById('nav'), document.querySelector('main'), document.querySelector('footer')];
+        var FIRST = 2010, SPAN = 16;
+
+        var starts = [], total = 0;
+        var info = scenes.map(function (s) {
+            var d = parseFloat(s.getAttribute('data-dur')) || 5;
+            var r = s.getAttribute('data-range');
+            starts.push(total);
+            total += d;
+            return {range: r ? r.split('-').map(Number) : null, label: s.getAttribute('data-label') || ''};
+        });
+
+        var running = false, raf = 0, t = 0, last = 0, cur = -1, back = null, endTimer = 0, hideTimer = 0;
+
+        // a year goes to the scene that starts that year, else the earliest scene covering it, else the next one
+        function sceneFor(year) {
+            var start = -1, cover = -1, next = -1;
+            info.forEach(function (x, k) {
+                var r = x.range;
+                if (!r) return;
+                if (r[0] === year && start < 0) start = k;
+                if (r[0] <= year && year <= r[1] && (cover < 0 || r[0] < info[cover].range[0])) cover = k;
+                if (r[0] > year && (next < 0 || r[0] < info[next].range[0])) next = k;
+            });
+            return start >= 0 ? start : cover >= 0 ? cover : next;
+        }
+
+        years.forEach(function (y) {
+            var k = sceneFor(Number(y.textContent));
+            if (k < 0) {
+                y.disabled = true;
+                return;
+            }
+            y.setAttribute('aria-label', y.textContent + '년: ' + info[k].label.replace(/^\d+\s*—\s*/, '') + ' 장면으로 이동');
+            y.addEventListener('click', function () {
+                seek(k);
+            });
+        });
+
+        // jump (or rewind) to scene i; also works during the short ending before the hand-off
+        function seek(i) {
+            if (!root.classList.contains('iv-on') || root.classList.contains('iv-out')) return;
+            clearTimeout(endTimer);
+            t = starts[i];
+            cur = -1;
+            show(i);
+            if (!running) {
+                running = true;
+                last = performance.now();
+                raf = requestAnimationFrame(frame);
+            }
+        }
+
+        function fit() {
+            var w = window.innerWidth, h = window.innerHeight;
+            var portrait = w / h < 0.9;
+            iv.classList.toggle('portrait', portrait);
+            // portrait: the stage takes the window's aspect (within limits) so phones fill their width
+            var W = portrait ? 1080 : 1920;
+            var H = portrait ? Math.round(Math.max(1900, Math.min(2400, 1080 * h / w))) : 1080;
+            stage.style.height = portrait ? H + 'px' : '';
+            stage.style.setProperty('--iv-s', String(Math.min(w / W, h / H)));
+        }
+
+        function show(i) {
+            if (i === cur) return;
+            scenes.forEach(function (s, k) {
+                if (k === i) {
+                    s.classList.remove('iv-play');
+                    void s.offsetWidth; // restart the scene's animations
+                    s.classList.add('iv-play', 'iv-vis');
+                    s.removeAttribute('aria-hidden');
+                } else if (s.classList.contains('iv-vis')) {
+                    s.classList.remove('iv-vis');
+                    s.setAttribute('aria-hidden', 'true');
+                    setTimeout(function () {
+                        if (!s.classList.contains('iv-vis')) s.classList.remove('iv-play');
+                    }, 600);
+                }
+            });
+            cur = i;
+            var r = info[i].range;
+            chap.textContent = info[i].label;
+            if (r) {
+                var left = (r[0] - FIRST) / SPAN * 100, width = (r[1] - r[0]) / SPAN * 100;
+                hl.style.left = left + '%';
+                hl.style.width = width + '%';
+                hl.style.opacity = '1';
+                dot.style.left = (left + width) + '%';
+                dot.style.opacity = '1';
+                rng.textContent = r[0] === r[1] ? String(r[0]) : r[0] + ' — ' + r[1];
+            } else {
+                hl.style.opacity = '0';
+                dot.style.opacity = '0';
+                rng.textContent = 'Kim Suman';
+            }
+            years.forEach(function (y) {
+                var v = Number(y.textContent);
+                y.classList.toggle('on', !!r && v >= r[0] && v <= r[1]);
+            });
+        }
+
+        function frame(now) {
+            if (!running) return;
+            t += Math.min(0.1, Math.max(0, (now - last) / 1000));
+            last = now;
+            if (t >= total) {
+                finish();
+                return;
+            }
+            var i = 0;
+            while (i < starts.length - 1 && t >= starts[i + 1]) i++;
+            show(i);
+            raf = requestAnimationFrame(frame);
+        }
+
+        function play(fromUser) {
+            if (running) return;
+            clearTimeout(endTimer);
+            clearTimeout(hideTimer);
+            back = document.activeElement;
+            root.classList.remove('intro', 'iv-out');
+            root.classList.add('iv-on');
+            document.documentElement.style.overflow = 'hidden';
+            page.forEach(function (el) {
+                if (el) el.setAttribute('inert', '');
+            });
+            scenes.forEach(function (s) {
+                s.classList.remove('iv-vis', 'iv-play');
+                s.setAttribute('aria-hidden', 'true');
+            });
+            fit();
+            running = true;
+            t = 0;
+            cur = -1;
+            show(0);
+            last = performance.now();
+            raf = requestAnimationFrame(frame);
+            if (fromUser) {
+                try {
+                    skip.focus({preventScroll: true});
+                } catch (e) {
+                }
+            }
+        }
+
+        // end or skip: the last scene fades while the ruler lights the whole 2010–2026 path,
+        // then the site's own "KIM SUMAN" intro takes over (re-adding .intro restarts its curtain → hero timeline)
+        function finish() {
+            if (!running) return;
+            running = false;
+            cancelAnimationFrame(raf);
+            try {
+                localStorage.setItem('sk-intro-video', 'seen');
+            } catch (e) {
+            }
+            if (cur >= 0) {
+                scenes[cur].classList.remove('iv-vis');
+                scenes[cur].setAttribute('aria-hidden', 'true');
+            }
+            chap.textContent = '08 — Kim Suman';
+            rng.textContent = FIRST + ' — ' + (FIRST + SPAN);
+            hl.style.left = '0%';
+            hl.style.width = '100%';
+            hl.style.opacity = '1';
+            dot.style.left = '100%';
+            dot.style.opacity = '1';
+            years.forEach(function (y) {
+                y.classList.add('on');
+            });
+            endTimer = setTimeout(handOff, 900);
+        }
+
+        function handOff() {
+            page.forEach(function (el) {
+                if (el) el.removeAttribute('inert');
+            });
+            document.documentElement.style.overflow = '';
+            window.scrollTo(0, 0);
+            root.classList.add('intro', 'iv-out');
+            hideTimer = setTimeout(function () {
+                root.classList.remove('iv-on', 'iv-out');
+                scenes.forEach(function (s) {
+                    s.classList.remove('iv-vis', 'iv-play');
+                });
+                cur = -1;
+            }, 450);
+            if (back && back !== document.body && back.focus) {
+                try {
+                    back.focus({preventScroll: true});
+                } catch (e) {
+                }
+            }
+        }
+
+        skip.addEventListener('click', finish);
+        document.addEventListener('keydown', function (e) {
+            if (!running) return;
+            if (e.key === 'Escape') finish();
+            else if (e.key === 'ArrowLeft') seek(Math.max(0, cur - 1));
+            else if (e.key === 'ArrowRight' && cur < scenes.length - 1) seek(cur + 1);
+        });
+        window.addEventListener('resize', function () {
+            if (running) fit();
+        });
+
+        window.skIntroVideo = {play: play, skip: finish, seek: seek};
+        if (root.classList.contains('iv-on')) play();
+    })();
+</script>
+<script src="js/cinematic.js"></script>
 </body>
 </html>

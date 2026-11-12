@@ -436,10 +436,11 @@ a:hover{color:var(--ink)}
   .mock{font-size:13.5px}
 }
 </style>
+<link rel="stylesheet" href="css/cinematic.css">
 </head>
 <body style="background:#0A0B0E">
 <div class="root" id="root">
-<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':matchMedia('(prefers-color-scheme: dark)').matches}catch(e){}if(d)document.getElementById('root').classList.add('dark')})();</script>
+<script>(function(){var d=false;try{var s=localStorage.getItem('theme');d=s?s==='dark':true}catch(e){}if(d)document.getElementById('root').classList.add('dark')})();</script>
 
   <header class="nav" id="nav">
     <div class="nav-in">
@@ -733,5 +734,6 @@ a:hover{color:var(--ink)}
   items.forEach(function(el){ var w = watchOf(el); if (seen.indexOf(w) < 0) { seen.push(w); io.observe(w); } });
 })(document.querySelector('main'));
 </script>
+<script src="js/cinematic.js"></script>
 </body>
 </html>

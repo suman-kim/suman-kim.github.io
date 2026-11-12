@@ -1,0 +1,440 @@
+/* =====================================================================
+   Cinematic layer — shared by index.html and the project case studies.
+   Loaded after each page's own <style>, so it re-tokenises the light and
+   dark themes and restyles the shared components without touching content.
+   ===================================================================== */
+
+/* ---------- tokens ---------- */
+.root {
+    --bg: #FFFFFF;
+    --card: #FFFFFF;
+    --line: #E6E6EA;
+    --ink: #0E0F12;
+    --muted: #5C5E66;
+    --soft: #F3F3F5;
+    --accent: #2B47E8;
+    --on-accent: #FFFFFF;
+    --accent-soft: #E2E6FF;
+    --hot: #E2560F;
+    --glow: #7D8CFF;
+    --cx-hi: rgba(255, 255, 255, .9);
+    --cx-shadow: 0 1px 2px rgba(14, 15, 18, .04), 0 30px 60px -36px rgba(14, 15, 18, .22);
+    --cx-glow: rgba(43, 71, 232, .16);
+    --cx-grain: .025;
+    --cx-ease: cubic-bezier(.2, .7, .2, 1);
+    --cx-mono: 'Geist Mono', ui-monospace, monospace;
+    overflow-x: clip;
+}
+
+.root.dark {
+    --bg: #0A0B0E;
+    --card: #111216;
+    --line: #22242B;
+    --ink: #F2F3F5;
+    --muted: #9A9DA6;
+    --soft: #17191E;
+    --accent: #7D8CFF;
+    --on-accent: #0A0B0E;
+    --accent-soft: #1A1F42;
+    --hot: #FF7A3D;
+    --panel: #0D0E11;
+    --panel-2: #15171C;
+    --panel-line: #262931;
+    --cx-hi: rgba(255, 255, 255, .045);
+    --cx-shadow: 0 40px 90px -50px rgba(0, 0, 0, .95);
+    --cx-glow: rgba(125, 140, 255, .26);
+    --cx-grain: .065;
+}
+
+/* ---------- base ---------- */
+.root ::selection { background: var(--accent); color: var(--on-accent) }
+
+.root::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: var(--cx-grain);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")
+}
+
+.root:not(.dark)::after { mix-blend-mode: multiply }
+
+.root :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px }
+
+/* ---------- section type ---------- */
+.root .sec { padding-top: clamp(120px, 14vw, 200px) }
+
+.root .sec-head { margin-bottom: clamp(40px, 5vw, 72px); align-items: flex-end }
+
+.root .eyebrow {
+    font-size: 13px;
+    letter-spacing: .12em;
+    color: var(--muted);
+    gap: 14px
+}
+
+.root .eyebrow::before { width: 36px; background: var(--accent) }
+
+.root .h2 {
+    margin-top: 18px;
+    font-size: clamp(44px, 6.4vw, 92px);
+    line-height: 1.02;
+    letter-spacing: -.055em;
+    font-weight: 820
+}
+
+.root .lead { margin-top: 20px; font-size: 18px; line-height: 1.7; max-width: 600px }
+
+.root .sub-head { margin: 96px 0 28px }
+.root .sub-head h3 { font-family: var(--cx-mono); font-size: 13px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+
+/* ---------- nav ---------- */
+.root .nav.solid {
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: saturate(1.5) blur(18px);
+    -webkit-backdrop-filter: saturate(1.5) blur(18px)
+}
+
+.root .nl { position: relative; text-decoration: none }
+.root .nl::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .4s var(--cx-ease) }
+.root .nl:hover { text-decoration: none }
+.root .nl:hover::after { transform: scaleX(1) }
+.root .nav-cta { transition: background-color .25s, color .25s, border-color .25s }
+
+/* ---------- buttons, tags ---------- */
+.root .btn { border-radius: 99px; padding: 0 26px; transition: transform .35s var(--cx-ease), background-color .2s, border-color .2s, color .2s, box-shadow .35s }
+.root .btn:hover { transform: translateY(-2px) }
+.root .btn-light:hover { box-shadow: 0 14px 40px -12px rgba(125, 140, 255, .7) }
+
+.root .tag {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 99px;
+    border-color: var(--line);
+    background: color-mix(in srgb, var(--card) 60%, transparent)
+}
+
+.root .badge { border-radius: 99px }
+
+/* ---------- cards ---------- */
+.root .card {
+    border-radius: 22px;
+    border-color: var(--line);
+    background: linear-gradient(180deg, var(--cx-hi), transparent 120px), var(--card);
+    box-shadow: var(--cx-shadow);
+    transition: border-color .45s var(--cx-ease), box-shadow .45s var(--cx-ease), transform .45s var(--cx-ease)
+}
+
+.root .lift:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 40px 90px -40px var(--cx-glow);
+    transform: translateY(-4px)
+}
+
+.root .vis, .root .frame { border-radius: 14px }
+.root .vis .shot, .root .frame img { transition: transform 1.2s var(--cx-ease) }
+.root .lift:hover .vis .shot { transform: scale(1.04) }
+
+/* ---------- reveal (classes added by cinematic.js) ---------- */
+.cx-rv { opacity: 0; transform: translateY(44px); transition: opacity 1.1s var(--cx-ease), transform 1.1s var(--cx-ease); transition-delay: calc(var(--cx-i, 0) * 80ms) }
+.cx-rv.cx-in { opacity: 1; transform: none }
+.root .card.cx-rv.cx-in { transition: opacity 1.1s var(--cx-ease) calc(var(--cx-i, 0) * 80ms), transform 1.1s var(--cx-ease) calc(var(--cx-i, 0) * 80ms), border-color .45s var(--cx-ease), box-shadow .45s var(--cx-ease) }
+
+/* =====================================================================
+   MAIN PAGE
+   ===================================================================== */
+
+/* manifesto: words light up line by line as they scroll through */
+.cx-manifesto { padding: clamp(140px, 16vw, 230px) 0 clamp(100px, 12vw, 170px) }
+.cx-manifesto p { margin: 0; max-width: 1120px; font-size: clamp(30px, 4.3vw, 62px); line-height: 1.3; letter-spacing: -.04em; font-weight: 740 }
+.cx-wd { color: color-mix(in srgb, var(--ink) 16%, transparent); transition: color .5s }
+.cx-wd.k { --cx-c: var(--accent) }
+.cx-wd.on { color: var(--cx-c, var(--ink)) }
+
+/* stats row */
+.cx-about .bento { grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, .9fr); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line) }
+.cx-about .stat { background: none; border: 0; border-left: 1px solid var(--line); border-radius: 0; box-shadow: none; padding: 44px 32px 40px; min-height: 0 }
+.cx-about .stat:first-child { border-left: 0; padding-left: 0 }
+.cx-about .num { font-size: clamp(72px, 8.6vw, 136px); line-height: .88; letter-spacing: -.065em; font-weight: 820 }
+.cx-about .plus { font-size: .42em; margin-left: .04em; line-height: 1 }
+.cx-about .stat-cap { font-size: 15px; margin-top: 18px }
+.cx-about .gh { margin: 24px 0 24px 24px; border-radius: 22px; min-height: 0 }
+.cx-about .gh:hover { background: var(--accent); color: var(--on-accent) }
+.cx-about .gh-arr { transition: transform .45s var(--cx-ease) }
+.cx-about .gh:hover .gh-arr { transform: rotate(45deg) }
+
+/* how I work */
+.cx-about .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); counter-reset: cxstep }
+.cx-about .step { counter-increment: cxstep; padding: 30px 26px 26px; gap: 16px }
+.cx-about .step::before { content: counter(cxstep, decimal-leading-zero); font-family: var(--cx-mono); font-size: 13px; color: var(--accent); letter-spacing: .08em }
+.cx-about .step-ic { background: var(--accent-soft); color: var(--accent); border-radius: 14px }
+.cx-about .step h4 { font-size: 24px; letter-spacing: -.035em }
+.cx-about .step p { font-size: 15px; line-height: 1.75 }
+.cx-about .step .row-b { order: -1; position: absolute; top: 26px; right: 22px }
+
+/* stack: spec-sheet rows */
+#stack .bento { grid-template-columns: minmax(0, 1fr); gap: 0; border-top: 1px solid var(--line) }
+#stack .stack-card { flex-direction: row; align-items: center; gap: 32px; min-height: 0; padding: 34px 8px; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; transition: background-color .4s, padding .4s var(--cx-ease) }
+#stack .stack-card:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); padding-left: 20px }
+#stack .stack-card h3 { flex: 0 0 300px; font-size: clamp(24px, 2.4vw, 34px); letter-spacing: -.04em; font-weight: 780 }
+#stack .sk span { font-size: 15px; padding: 9px 16px; border-radius: 99px; background: transparent; border: 1px solid var(--line); transition: border-color .3s, color .3s }
+#stack .sk span:hover { border-color: var(--accent); color: var(--accent) }
+
+/* ---------- big lists: projects, career, education, certificates ---------- */
+#projects.wrap, .cx-path.wrap { max-width: 1440px }
+
+/* projects: two big columns, numbered, image parallax inside the frame */
+#projects .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(72px, 7vw, 120px) clamp(28px, 3.2vw, 56px); counter-reset: cxp }
+#projects .pc, #projects .mini { grid-column: auto; counter-increment: cxp; padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible }
+#projects .pc.feature { display: flex; flex-direction: column; align-items: stretch; gap: 0 }
+#projects .pc.feature.flip .vis { order: 0 }
+#projects .lift:hover { transform: none; border-color: transparent; box-shadow: none }
+#projects .vis { border-radius: 22px; aspect-ratio: 16 / 10; box-shadow: 0 0 0 1px var(--line), var(--cx-shadow); transition: box-shadow .5s var(--cx-ease) }
+#projects .vis.photo::after { border-radius: 22px }
+#projects .vis .shot { inset: -5% 0; height: 110%; transition: transform 1.2s var(--cx-ease) }
+@supports (animation-timeline: view()) {
+    #projects .vis .shot { animation: cxPar linear both; animation-timeline: view(); animation-range: entry 0% exit 100% }
+}
+@keyframes cxPar { from { translate: 0 -4% } to { translate: 0 4% } }
+#projects .lift:hover .vis { box-shadow: 0 0 0 1.5px var(--accent), 0 50px 110px -46px var(--cx-glow) }
+#projects .lift:hover .vis .shot { transform: scale(1.045) }
+#projects .pbody { padding: 30px 2px 0; gap: 16px }
+#projects .pc.feature .pbody { padding: 30px 2px 0 }
+#projects .pmeta::before { content: counter(cxp, decimal-leading-zero); margin-right: 6px; font-family: var(--cx-mono); font-size: 13px; letter-spacing: .08em; color: var(--accent) }
+#projects .pt { font-size: clamp(30px, 2.9vw, 44px); line-height: 1.12; letter-spacing: -.05em; font-weight: 820 }
+#projects .pd { font-size: 17px; line-height: 1.75; max-width: 640px }
+#projects .pts li { font-size: 15.5px }
+#projects .more { min-height: 48px; padding: 0 22px; border: 1px solid var(--line); border-radius: 99px; transition: border-color .25s, color .25s, background-color .25s }
+#projects .more:hover { border-color: var(--accent); background: var(--accent); color: var(--on-accent) }
+#projects .mini { grid-column: 1 / -1; padding: 48px 2px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line) }
+#projects .mini .pt { font-size: clamp(30px, 2.9vw, 44px) }
+
+/* section with its own view switch */
+.root .sec-head .cx-vtabs { align-self: flex-end }
+.cx-vtabs .tab span { color: var(--accent) }
+.cx-group + .cx-group { margin-top: clamp(110px, 11vw, 170px) }
+.cx-gh, .cx-path .edu h3 { display: flex; align-items: center; gap: 14px; margin: 0 0 30px; font-family: var(--cx-mono); font-size: 13px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.cx-gh::before, .cx-path .edu h3::before { content: ""; width: 36px; height: 1px; background: var(--accent) }
+.cx-path .edu h3 svg { display: none }
+
+/* 기본 보기 — career: big rows */
+.cx-path .timeline { gap: 0; border-top: 1px solid var(--line) }
+.cx-path .timeline::before, .cx-path .tl-dot { display: none }
+.cx-path .tl-item { grid-template-columns: minmax(170px, 280px) minmax(0, 1fr); gap: 32px; padding: clamp(40px, 4.6vw, 64px) 0; border-bottom: 1px solid var(--line) }
+.cx-path .tl-when { padding-top: 16px; font-size: 15px; color: var(--accent) }
+.cx-path .tl-card { padding: 0; gap: 20px; background: none; border: 0; border-radius: 0; box-shadow: none }
+.cx-path .tl-head { flex-direction: column; align-items: flex-start; gap: 12px }
+.cx-path .tl-head h3 { font-size: clamp(40px, 5.2vw, 78px); line-height: 1.02; letter-spacing: -.06em; font-weight: 830 }
+.cx-path .tl-role { font-family: var(--cx-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase }
+.cx-path .tl-card p { font-size: 18px; line-height: 1.85; max-width: 860px }
+
+/* 기본 보기 — education & certificates: big rows */
+.cx-path .bento { grid-template-columns: minmax(0, 1fr); gap: clamp(110px, 11vw, 170px) }
+.cx-path .edu { padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible }
+.cx-path .list { border-top: 1px solid var(--line) }
+.cx-path .li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 24px; padding: clamp(28px, 3vw, 40px) 0; border-top: 0; border-bottom: 1px solid var(--line); transition: padding .45s var(--cx-ease), background-color .45s }
+.cx-path .li:hover { padding-left: 18px; background: color-mix(in srgb, var(--accent) 4%, transparent) }
+.cx-path .li b { font-size: clamp(28px, 3.4vw, 50px); line-height: 1.1; letter-spacing: -.05em; font-weight: 820 }
+.cx-path .li small { margin-top: 8px; font-size: 16px }
+.cx-path .yr { padding: 0; font-size: 15px }
+
+/* 타임라인 — everything in one line, newest first, sticky years */
+.cx-tl { --cx-yw: clamp(84px, 9vw, 128px); --cx-tc: var(--accent); position: relative; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line) }
+.cx-tl::before { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--cx-yw) + 24px); width: 1px; background: var(--line) }
+.cx-tl[data-type="edu"] { --cx-tc: #12A150 }
+.cx-tl[data-type="cert"] { --cx-tc: var(--hot) }
+.root.dark .cx-tl[data-type="edu"] { --cx-tc: #4ADE80 }
+/* each of the three timelines gets a proper title */
+.cx-tg { --cx-tc: var(--accent) }
+.cx-tg[data-type="edu"] { --cx-tc: #12A150 }
+.cx-tg[data-type="cert"] { --cx-tc: var(--hot) }
+.root.dark .cx-tg[data-type="edu"] { --cx-tc: #4ADE80 }
+.cx-gh.cx-tgh { gap: 16px; margin: 0 0 22px; font-family: inherit; font-size: clamp(28px, 2.6vw, 40px); font-weight: 820; letter-spacing: -.045em; text-transform: none; color: var(--ink) }
+.cx-gh.cx-tgh::before { width: 12px; height: 12px; flex: none; border-radius: 50%; background: var(--cx-tc); box-shadow: 0 0 0 6px color-mix(in srgb, var(--cx-tc) 18%, transparent) }
+.cx-tgh span { margin-left: auto; font-family: var(--cx-mono); font-size: 12px; font-weight: 500; letter-spacing: .1em; color: var(--muted) }
+.cx-yr { display: grid; grid-template-columns: var(--cx-yw) minmax(0, 1fr); gap: 48px; padding-top: 40px }
+.cx-yr:last-child { padding-bottom: 24px }
+.cx-y { position: sticky; top: 104px; align-self: start; padding-top: 28px; font-size: clamp(24px, 2.2vw, 34px); line-height: 1; font-weight: 800; letter-spacing: -.04em; color: var(--ink) }
+.cx-items { display: flex; flex-direction: column; gap: 18px }
+.cx-ti { position: relative; padding: 30px 34px 32px; border-radius: 22px; border: 1px solid var(--line); background: linear-gradient(180deg, var(--cx-hi), transparent 120px), var(--card); box-shadow: var(--cx-shadow); transition: border-color .45s var(--cx-ease), transform .45s var(--cx-ease) }
+.cx-ti:hover { border-color: color-mix(in srgb, var(--cx-tc) 55%, var(--line)); transform: translateX(6px) }
+.cx-ti::before { content: ""; position: absolute; left: -31px; top: 40px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg); border: 2px solid var(--cx-tc); box-shadow: 0 0 0 5px var(--bg), 0 0 18px color-mix(in srgb, var(--cx-tc) 55%, transparent) }
+.cx-tm { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.cx-type { display: inline-flex; align-items: center; gap: 8px; font-family: var(--cx-mono); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--cx-tc) }
+.cx-type::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor }
+.cx-when { font-family: var(--cx-mono); font-size: 13px; color: var(--cx-tc) }
+.cx-ti h4 { margin: 12px 0 0; font-size: clamp(26px, 2.8vw, 40px); line-height: 1.12; letter-spacing: -.05em; font-weight: 820 }
+.cx-sub { margin-top: 8px; font-size: 16px; color: var(--muted) }
+.cx-ti p { margin: 16px 0 0; max-width: 820px; font-size: 17px; line-height: 1.8 }
+.cx-ti .tags { margin-top: 18px }
+
+/* contact */
+/* a solid blue card; the same deep blue in both themes so white text always reads */
+.root { --cx-cta: #2B47E8 }
+.root.dark { --cx-cta: #3148E4 }
+.root #contact { padding-bottom: clamp(72px, 9vw, 140px) }
+#contact .cta {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background: var(--cx-cta);
+    border: 0;
+    border-radius: clamp(24px, 2.6vw, 36px);
+    box-shadow: 0 40px 100px -50px color-mix(in srgb, var(--cx-cta) 75%, transparent);
+    color: #fff;
+    padding: clamp(48px, 7vw, 112px) clamp(28px, 5.6vw, 96px);
+    isolation: isolate
+}
+/* a faint sheen in the corner so the flat blue doesn't feel dead */
+#contact .cta::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(70% 90% at 100% 0%, rgba(255, 255, 255, .14), transparent 60%); pointer-events: none }
+#contact .cta .eyebrow { color: rgba(255, 255, 255, .88) }
+#contact .cta .eyebrow::before { background: rgba(255, 255, 255, .88) }
+#contact .cta-h { margin: 0; color: #fff; font-size: clamp(38px, 5.4vw, 84px); line-height: 1.12; letter-spacing: -.055em; font-weight: 820; max-width: none }
+#contact .cta-h .acc { color: #fff }
+#contact .cta-row { margin-top: 10px }
+#contact .btn-inv { background: #fff; color: var(--cx-cta) }
+#contact .btn-inv:hover { background: #fff; color: var(--cx-cta); box-shadow: 0 16px 40px -14px rgba(0, 0, 0, .45) }
+#contact .btn-line { color: #fff; border-color: rgba(255, 255, 255, .5) }
+#contact .btn-line:hover { color: #fff; border-color: #fff; background: rgba(255, 255, 255, .08) }
+
+.root .foot { font-family: var(--cx-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; border-top: 1px solid var(--line); max-width: none; padding-left: max(24px, calc(50% - 576px)); padding-right: max(24px, calc(50% - 576px)) }
+
+/* =====================================================================
+   PROJECTS DECK — pinned spotlight, one project at a time, then the camera
+   pulls back to a big 3-column grid ("전체 보기") that keeps scrolling.
+   Built by cinematic.js on wide screens; phones get the list above.
+   ===================================================================== */
+.cx-has-deck .cx-src { display: none !important }
+
+.cx-deck { position: relative }
+.cx-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--bg) }
+.cx-stage::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--ink) 4%, transparent) 1px, transparent 1px); background-size: 120px 120px; background-position: center; mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 20%, transparent 80%) }
+/* spotlight: cards slide under soft fades at the top and bottom */
+.cx-stage::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(var(--bg) 0, var(--bg) 70px, transparent 150px, transparent calc(100% - 90px), var(--bg) 100%); opacity: calc(1 - var(--cx-over, 0)) }
+.cx-cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform }
+.cx-grid { position: absolute; display: grid; grid-template-columns: repeat(3, var(--cx-cw)); gap: 56px var(--cx-gap) }
+
+.cx-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; opacity: var(--cx-dim, 1); transition: opacity .5s var(--cx-ease) }
+.cx-card.on { opacity: 1 }
+.cx-card.off { opacity: .14 }
+.cx-card .cx-img { position: relative; overflow: hidden; aspect-ratio: 16 / 10; border-radius: 14px; background: var(--soft); box-shadow: 0 0 0 1px var(--line), 0 30px 60px -36px rgba(0, 0, 0, .55); transition: box-shadow .45s var(--cx-ease) }
+.cx-card .cx-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; transition: transform 1s var(--cx-ease) }
+.cx-card:hover .cx-img, .cx-card:focus-visible .cx-img { box-shadow: 0 0 0 1.5px var(--accent), 0 30px 70px -28px var(--cx-glow) }
+.cx-card:hover .cx-img img { transform: scale(1.04) }
+.cx-card .cx-cap { display: flex; flex-direction: column; gap: 8px; padding: 20px 2px 0; opacity: var(--cx-over, 0) }
+.cx-card .cx-cap small { display: flex; gap: 10px; font-family: var(--cx-mono); font-size: 12px; letter-spacing: .04em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.cx-card .cx-cap small i { font-style: normal; color: var(--accent) }
+.cx-card .cx-cap b { font-size: clamp(20px, 1.7vw, 26px); line-height: 1.2; font-weight: 800; letter-spacing: -.04em }
+.cx-card .cx-cap em { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: normal; font-size: 15px; line-height: 1.65; color: var(--muted) }
+.cx-poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 8% 9%; background: radial-gradient(120% 90% at 85% 0%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%), var(--panel, #121317); color: #fff }
+.cx-poster span { font-family: var(--cx-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; opacity: .7 }
+.cx-poster b { font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.04em }
+
+/* chrome on top of the stage */
+.cx-top, .cx-overh { position: absolute; left: var(--cx-mx); right: var(--cx-mx); top: 92px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; z-index: 3 }
+.cx-top { font-family: var(--cx-mono); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); opacity: calc(1 - var(--cx-over, 0)) }
+.cx-top .cx-cnt b { color: var(--ink); font-weight: 600 }
+.cx-overh { opacity: var(--cx-over, 0); pointer-events: none }
+.cx-overh.live { pointer-events: auto }
+/* the grid scrolls under the header: give it a solid band with a soft edge */
+.cx-overh::before { content: ""; position: absolute; z-index: -1; left: calc(-1 * var(--cx-mx)); right: calc(-1 * var(--cx-mx)); top: -92px; bottom: -34px; background: linear-gradient(var(--bg) calc(100% - 34px), transparent) }
+.cx-overh h3 { margin: 0; font-size: clamp(28px, 3vw, 42px); line-height: 1; letter-spacing: -.05em; font-weight: 820 }
+.cx-overh h3 small { display: block; margin-bottom: 10px; font-family: var(--cx-mono); font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+.cx-overh .tabs { background: color-mix(in srgb, var(--card) 80%, transparent) }
+.cx-hint { font-family: var(--cx-mono); font-size: 11.5px; letter-spacing: .08em; color: var(--muted) }
+
+.cx-panel { position: absolute; z-index: 2; display: flex; flex-direction: column; justify-content: center; gap: 18px; opacity: calc(1 - var(--cx-z, 0) * 2.6) }
+/* a clean backdrop to the right of the spotlight keeps the text readable over the grid */
+.cx-panel::before { content: ""; position: absolute; z-index: -1; top: -100vh; bottom: -100vh; left: -44px; right: -100vw; background: linear-gradient(90deg, transparent, var(--bg) 44px) }
+.cx-panel .cx-pk { display: flex; align-items: baseline; gap: 10px; font-family: var(--cx-mono); color: var(--muted); font-size: 13px; letter-spacing: .08em }
+.cx-panel .cx-pk b { font-family: inherit; font-size: 15px; color: var(--accent); font-weight: 600 }
+.cx-panel h3 { margin: 0; font-size: clamp(32px, 3.4vw, 54px); line-height: 1.05; letter-spacing: -.05em; font-weight: 820 }
+.cx-panel .cx-pm { font-family: var(--cx-mono); font-size: 12.5px; letter-spacing: .06em; color: var(--muted) }
+.cx-panel p { margin: 0; color: color-mix(in srgb, var(--ink) 76%, transparent); font-size: 16.5px; line-height: 1.75 }
+.cx-panel .pts li { font-size: 15px }
+.cx-panel .cx-more { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; height: 48px; padding: 0 22px; border-radius: 99px; background: var(--ink); color: var(--bg); font-weight: 650; font-size: 14.5px; transition: background-color .25s, color .25s, transform .35s var(--cx-ease) }
+.cx-panel .cx-more:hover { background: var(--accent); color: var(--on-accent); transform: translateY(-2px) }
+.cx-panel .cx-swap { display: flex; flex-direction: column; gap: 18px; animation: cxSwap .6s var(--cx-ease) both }
+@keyframes cxSwap { from { opacity: 0; transform: translateY(18px) } }
+
+.cx-prog { position: absolute; left: var(--cx-mx); right: var(--cx-mx); bottom: 30px; height: 2px; background: color-mix(in srgb, var(--ink) 12%, transparent); z-index: 3; pointer-events: none }
+.cx-prog::before { content: ""; position: absolute; z-index: -1; left: calc(-1 * var(--cx-mx)); right: calc(-1 * var(--cx-mx)); bottom: -30px; height: 96px; background: linear-gradient(transparent, var(--bg) 70%); opacity: var(--cx-over, 0) }
+.cx-prog i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(var(--cx-p, 0)) }
+
+/* =====================================================================
+   CASE STUDIES
+   ===================================================================== */
+.root .dhero { padding-top: 168px; background: #0A0B0E }
+.root .dhero::before { inset: -10% -10% auto; height: 760px; background: radial-gradient(55% 60% at 72% 26%, rgba(125, 140, 255, .26), transparent 70%) }
+.root .dhero::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px); background-size: 120px 120px; mask-image: linear-gradient(180deg, #000 0%, transparent 75%) }
+.root .dh-title { font-size: clamp(56px, 9.6vw, 150px); line-height: .98; letter-spacing: -.065em; font-weight: 830; margin-top: 26px }
+.root .dh-title { animation: cxUp 1.2s var(--cx-ease) both }
+.root .dh-sub { font-size: 19px; animation: cxFade 1.2s var(--cx-ease) .25s both }
+.root .crumb { animation: cxFade 1s var(--cx-ease) both }
+.root .facts { gap: 0; border-top: 1px solid rgba(255, 255, 255, .14); border-bottom: 1px solid rgba(255, 255, 255, .14); margin-top: 52px; animation: cxFade 1.2s var(--cx-ease) .4s both }
+.root .fact { border: 0; border-left: 1px solid rgba(255, 255, 255, .14); border-radius: 0; background: none; padding: 22px 24px }
+.root .fact:first-child { border-left: 0; padding-left: 0 }
+.root .fact b { font-size: 20px; letter-spacing: -.025em }
+.root .dh-row { margin-top: 32px; animation: cxFade 1.2s var(--cx-ease) .5s both }
+.root .dhero .tag { background: rgba(255, 255, 255, .04) }
+.root .shot-frame { border-radius: 22px 22px 0 0; border-color: rgba(255, 255, 255, .16); box-shadow: 0 -40px 140px -40px rgba(125, 140, 255, .45); transform-origin: 50% 0; margin-top: 64px }
+@supports (animation-timeline: view()) {
+    .root .shot-frame { animation: cxTilt linear both; animation-timeline: view(); animation-range: entry 0% cover 40% }
+}
+@keyframes cxTilt { from { transform: perspective(1600px) rotateX(16deg) scale(.94) } to { transform: none } }
+@keyframes cxUp { from { opacity: 0; transform: translateY(60px) } }
+@keyframes cxFade { from { opacity: 0; transform: translateY(20px) } }
+
+.root .prose p { font-size: 17.5px }
+.root .kicker { letter-spacing: .12em }
+.root .note { border-radius: 16px; border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent) }
+.root .prob { border-radius: 26px }
+.root .prob-no { font-size: 13px; letter-spacing: .14em }
+.root .prob h3 { font-size: clamp(26px, 2.8vw, 38px); letter-spacing: -.045em; line-height: 1.25 }
+.root .pstep { border-radius: 18px }
+.root .pstep b { font-size: 19px }
+.root .node { border-radius: 16px }
+.root .zone { border-radius: 22px }
+.root .mock { box-shadow: var(--cx-shadow) }
+.root .next .card .pt { font-size: 28px; letter-spacing: -.04em }
+
+/* ---------- responsive / motion ---------- */
+@media (max-width: 1100px) {
+    .cx-about .steps { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+
+@media (max-width: 900px) {
+    #projects .bento { grid-template-columns: minmax(0, 1fr) }
+    .cx-path .tl-item { grid-template-columns: minmax(0, 1fr); gap: 10px }
+    .cx-path .tl-when { padding-top: 0 }
+    .cx-tl::before, .cx-ti::before { display: none }
+    .cx-yr { grid-template-columns: minmax(0, 1fr); gap: 18px }
+    .cx-y { position: static }
+    .cx-path .li { grid-template-columns: minmax(0, 1fr); gap: 8px }
+    .cx-about .bento { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+    .cx-about .stat:nth-child(3) { border-left: 0; padding-left: 0 }
+    .cx-about .stat { border-top: 1px solid var(--line) }
+    .cx-about .stat:nth-child(-n+2) { border-top: 0 }
+    .cx-about .gh { margin: 20px 0 }
+    #stack .stack-card { flex-direction: column; align-items: flex-start; gap: 16px }
+    #stack .stack-card h3 { flex: none }
+    .root .fact:nth-child(odd) { border-left: 0; padding-left: 0 }
+    .root .facts { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+
+@media (max-width: 600px) {
+    .cx-about .bento, .cx-about .steps { grid-template-columns: minmax(0, 1fr) }
+    .cx-about .stat { border-left: 0 !important; padding-left: 0 }
+    .cx-about .stat:nth-child(2) { border-top: 1px solid var(--line) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cx-rv { opacity: 1; transform: none; transition: none }
+    .cx-wd { color: var(--cx-c, var(--ink)) }
+    .root .shot-frame { animation: none }
+}
