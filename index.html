@@ -1025,13 +1025,33 @@ a:hover{color:var(--ink)}
           <h2 class="h2">프로젝트</h2>
         </div>
         <div class="tabs" role="group" aria-label="프로젝트 분류">
-          <button type="button" class="tab on" data-filter="all" aria-pressed="true">전체 <span>13</span></button>
-          <button type="button" class="tab" data-filter="work" aria-pressed="false">회사 <span>4</span></button>
+          <button type="button" class="tab on" data-filter="all" aria-pressed="true">전체 <span>14</span></button>
+          <button type="button" class="tab" data-filter="work" aria-pressed="false">회사 <span>5</span></button>
           <button type="button" class="tab" data-filter="personal" aria-pressed="false">개인 <span>9</span></button>
         </div>
       </div>
 
       <div class="bento">
+          <article data-cat="work" class="card c4 pc feature lift" id="p-safeai">
+            <div class="vis photo">
+              <img class="shot" src="images/safeai-card.jpg" alt="SafeAI 관제 대시보드 예시 화면 — 5채널 CCTV, AI 위험 감지, PTT 무전" style="object-position: top left">
+            </div>
+            <div class="pbody">
+              <div class="pmeta"><span class="period">2026</span><span class="badge">회사 · 태흥</span></div>
+              <h3 class="pt">SafeAI 산업안전 관리 플랫폼</h3>
+              <p class="pd">AI CCTV 보드가 현장의 위험을 감지하면, 관제 콘솔에서 실시간 영상으로 확인하고 PTT 무전으로 바로 지시하는 플랫폼. 한국전력공사에 납품했습니다.</p>
+              <ul class="pts">
+                <li>카메라 RTSP → MediaMTX → WebRTC 실시간 관제와 상시 녹화</li>
+                <li>mediasoup · FreeSWITCH 기반 PTT 무전과 Whisper STT</li>
+                <li>AI 보드 개통 · OTA 파이프라인과 배포 · 모니터링 인프라</li>
+              </ul>
+              <div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">PostgreSQL</span><span class="tag">MQTT</span><span class="tag">WebRTC</span></div>
+              <a class="more" href="Project-SafeAI.dc.html">자세히 보기
+                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg>
+              </a>
+            </div>
+          </article>
+
                   <article data-cat="work" class="card c2 pc lift">
             <div class="vis photo">
               <img class="shot" src="images/op-full.jpg" alt="ONEPASS PRO 관리자 대시보드 화면">
@@ -1303,6 +1323,16 @@ a:hover{color:var(--ink)}
         <div class="cx-group">
         <h3 class="cx-gh">경력</h3>
         <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-when">2026.04 — 2026.10</div>
+                <div class="tl-dot" aria-hidden="true"></div>
+                <div class="card tl-card">
+                    <div class="tl-head"><h3>태흥</h3><span class="tl-role">스마트사업부 · 책임</span></div>
+                    <p>한국전력공사에 납품한 SafeAI 산업안전 관리 플랫폼과 자체 소프트웨어 관리 플랫폼을 개발하고, Grafana·Prometheus·Slack 기반 서버 모니터링과 AI 보드 OTA 파이프라인을 구축했습니다.</p>
+                    <div class="tags"><span class="tag">SafeAI</span><span class="tag">소프트웨어 관리 플랫폼</span><span
+                            class="tag">서버 모니터링</span><span class="tag">AI 보드 OTA</span></div>
+                </div>
+            </div>
             <div class="tl-item">
                 <div class="tl-when">2025.10 — 2026.01</div>
                 <div class="tl-dot" aria-hidden="true"></div>
