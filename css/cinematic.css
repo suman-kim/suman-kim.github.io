@@ -186,7 +186,10 @@
 #stack .sk span:hover { border-color: var(--accent); color: var(--accent) }
 
 /* ---------- big lists: projects, career, education, certificates ---------- */
-#projects.wrap, .cx-path.wrap { max-width: 1440px }
+/* full-width page, like the projects section: no centred column — nav, hero, every section and
+   the footer run edge to edge and share one gutter, so they all start at the same left edge */
+.root { --cx-maxw: none; --cx-gut: clamp(24px, 4vw, 72px) }
+.root .wrap, .root .nav-in, .root .hero-in, .root .hero-foot { max-width: var(--cx-maxw); padding-left: var(--cx-gut); padding-right: var(--cx-gut) }
 
 /* projects: two big columns, numbered, image parallax inside the frame */
 #projects .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(72px, 7vw, 120px) clamp(28px, 3.2vw, 56px); counter-reset: cxp }
@@ -304,7 +307,7 @@
 #contact .btn-line { color: #fff; border-color: rgba(255, 255, 255, .5) }
 #contact .btn-line:hover { color: #fff; border-color: #fff; background: rgba(255, 255, 255, .08) }
 
-.root .foot { font-family: var(--cx-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; border-top: 1px solid var(--line); max-width: none; padding-left: max(24px, calc(50% - 576px)); padding-right: max(24px, calc(50% - 576px)) }
+.root .foot { font-family: var(--cx-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; border-top: 1px solid var(--line); max-width: none; padding-left: var(--cx-gut); padding-right: var(--cx-gut) }
 
 /* =====================================================================
    PROJECTS DECK — pinned spotlight, one project at a time, then the camera

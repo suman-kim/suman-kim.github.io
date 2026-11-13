@@ -163,13 +163,15 @@
     Deck.prototype.layout = function () {
         var d = this, st = d.wrap.style;
         var vw = document.documentElement.clientWidth, vh = innerHeight;
-        var mx = Math.round(Math.max(32, vw * .06));
+        // the deck lines up with the page grid: same left edge as the section heading above it
+        var sr0 = d.sec.getBoundingClientRect();
+        var mx = Math.round(Math.max(16, sr0.left + (parseFloat(getComputedStyle(d.sec).paddingLeft) || 24)));
         d.wrap.style.width = vw + 'px';
         d.wrap.style.marginLeft = 'calc(50% - ' + vw / 2 + 'px)';
         st.setProperty('--cx-mx', mx + 'px');
 
         // the overview: three big columns; it may be taller than the screen
-        var gTop = 196, gBot = vh - 72, availW = Math.min(1320, vw - 2 * mx), gap = 32;
+        var gTop = 196, gBot = vh - 72, availW = vw - 2 * mx, gap = 32;
         var cw = Math.floor((availW - 2 * gap) / 3);
         st.setProperty('--cx-cw', cw + 'px');
         st.setProperty('--cx-gap', gap + 'px');
